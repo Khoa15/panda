@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import model.Collection;
 import panda.Collection.CpnUICollectionVocab;
 import panda.Collection.FrmAddCollection;
@@ -51,9 +52,6 @@ public class CpnCollection extends javax.swing.JPanel {
     }
     public static void setIsFrmAddCollectionOpen(boolean closed){
         isFrmAddCollectionOpen = closed;
-        if(closed == false){
-            
-        }
     }
     /*
     
@@ -62,28 +60,32 @@ public class CpnCollection extends javax.swing.JPanel {
     */
     public CpnCollection() {
         initComponents();
-        collections = CollectionDAO.load();
-        load();
-        
-        
-        
+        load();        
     }
     private int rows(int n, int columns){
         return (int) Math.ceil((double) n / columns);
     }
     private  void load(){
-        pnListCollections.removeAll();
+        collections = CollectionDAO.loadWithAnalysis();
         for(Collection c : collections){
+            if(c == null) continue;
             CpnUICollectionVocab jPanelCollection = new CpnUICollectionVocab(this, c);
 
             pnListCollections.add(jPanelCollection);
-            
         }
+    }
+    
+    private void reload(){
+        pnListCollections.removeAll();
+        load();
+        pnListCollections.revalidate();
+        pnListCollections.repaint();
     }
     
     public void btnDeleteCollection(Collection c){
         if(CollectionDAO.delete(c)){
-            load();
+            reload();
+            //SwingUtilities.invokeLater(this::reload);
         }
     }
 

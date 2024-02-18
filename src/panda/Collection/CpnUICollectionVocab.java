@@ -4,6 +4,7 @@
  */
 package panda.Collection;
 
+import java.text.DecimalFormat;
 import javax.swing.border.TitledBorder;
 import model.Collection;
 import panda.user.CpnCollection;
@@ -23,8 +24,13 @@ public class CpnUICollectionVocab extends javax.swing.JPanel {
         initComponents();
         panelParent = parent;
         collection = c;
+        DecimalFormat df = new DecimalFormat("#.#");
+        String percentLv5 = df.format(c.getPercentLevel5());
+        String percentTrue = df.format(c.getPercentTrue());
         pnCover.setBorder(javax.swing.BorderFactory.createTitledBorder(c.getName()));
-        
+        labelNWords.setText(String.valueOf(c.getTotalCard()));
+        labelPercentLevel5.setText(percentLv5);
+        labelPercentTrue.setText(percentTrue);
     }
 
     /**
@@ -39,13 +45,13 @@ public class CpnUICollectionVocab extends javax.swing.JPanel {
         pnCover = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
+        labelNWords = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        labelPercentTrue = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
+        labelPercentLevel5 = new javax.swing.JLabel();
         btnDelete = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(179, 125));
@@ -56,7 +62,7 @@ public class CpnUICollectionVocab extends javax.swing.JPanel {
 
         jLabel12.setText("Số từ");
 
-        jLabel13.setText("1000");
+        labelNWords.setText("1000");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -66,7 +72,7 @@ public class CpnUICollectionVocab extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
-                .addComponent(jLabel13)
+                .addComponent(labelNWords)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -75,13 +81,13 @@ public class CpnUICollectionVocab extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(jLabel13))
+                    .addComponent(labelNWords))
                 .addContainerGap())
         );
 
         jLabel2.setText("Tỉ lệ đúng");
 
-        jLabel3.setText("100%");
+        labelPercentTrue.setText("100%");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -91,7 +97,7 @@ public class CpnUICollectionVocab extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3)
+                .addComponent(labelPercentTrue)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -100,13 +106,13 @@ public class CpnUICollectionVocab extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel3))
+                    .addComponent(labelPercentTrue))
                 .addContainerGap())
         );
 
-        jLabel10.setText("Tỉ lệ từ level 5");
+        jLabel10.setText("Tỉ lệ level 5");
 
-        jLabel11.setText("80%");
+        labelPercentLevel5.setText("80%");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -115,8 +121,8 @@ public class CpnUICollectionVocab extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addComponent(labelPercentLevel5)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -125,7 +131,7 @@ public class CpnUICollectionVocab extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jLabel11))
+                    .addComponent(labelPercentLevel5))
                 .addContainerGap())
         );
 
@@ -201,14 +207,14 @@ public class CpnUICollectionVocab extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDelete;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JLabel labelNWords;
+    private javax.swing.JLabel labelPercentLevel5;
+    private javax.swing.JLabel labelPercentTrue;
     private javax.swing.JPanel pnCover;
     // End of variables declaration//GEN-END:variables
 }

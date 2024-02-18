@@ -4,72 +4,73 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class BaseClass {
-	protected int id;
-	protected String description;
-	protected byte priority;
-	protected LocalDate createdAt;
-	protected LocalDate updatedAt;
-	protected LocalDateTime startedAt;
-	protected LocalDateTime endedAt;
-	
-	public BaseClass() {
-		this.priority = 0;
-		this.id = -1;
-	}
 
-	public int getId() {
-		return id;
-	}
+    protected int id;
+    protected String description;
+    protected byte priority;
+    protected LocalDate createdAt;
+    protected LocalDate updatedAt;
+    protected LocalDateTime startedAt;
+    protected LocalDateTime endedAt;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public BaseClass() {
+        this.priority = 0;
+        this.id = -1;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public byte getPriority() {
-		return priority;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setPriority(byte priority) {
-		this.priority = priority;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public LocalDate getCreatedAt() {
-		return createdAt;
-	}
+    public byte getPriority() {
+        return priority;
+    }
 
-	public void setCreatedAt(LocalDate createdAt) {
-		this.createdAt = createdAt;
-	}
+    public void setPriority(byte priority) {
+        this.priority = priority;
+    }
 
-	public LocalDate getUpdatedAt() {
-		return updatedAt;
-	}
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
 
-	public void setUpdatedAt(LocalDate updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public LocalDateTime getStartedAt() {
-		return startedAt;
-	}
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
 
-	public void setStartedAt(LocalDateTime startedAt) {
-		this.startedAt = startedAt;
-	}
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
-	public LocalDateTime getEndedAt() {
-		return endedAt;
-	}
+    public LocalDateTime getStartedAt() {
+        return startedAt;
+    }
 
-	public void setEndedAt(LocalDateTime endedAt) {
-		this.endedAt = endedAt;
-	}
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public LocalDateTime getEndedAt() {
+        return endedAt;
+    }
+
+    public void setEndedAt(LocalDateTime endedAt) {
+        this.endedAt = endedAt;
+    }
 }

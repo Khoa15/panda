@@ -181,7 +181,7 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
         btnAddSample = new javax.swing.JButton();
         ckBoxAddVocabInSample = new javax.swing.JCheckBox();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel3.setText("Type:");
 

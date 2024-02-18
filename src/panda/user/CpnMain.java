@@ -4,10 +4,18 @@
  */
 package panda.user;
 
+import dao.CardDAO;
+import dao.ProjectDAO;
+import dao.TaskDAO;
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import model.Project;
+import model.Task;
 
 /**
  *
@@ -16,43 +24,67 @@ import javax.swing.JProgressBar;
 public class CpnMain extends javax.swing.JPanel {
 
     private JProgressBar[] progressBars;
+
     /**
      * Creates new form pnMain
      */
+    private ArrayList<Task> tasksToday;
+    private ArrayList<Task> inboxes;
+    private ArrayList<Project> projects;
+
     public CpnMain() {
         initComponents();
         initializeProgressBars();
         addProgressBarsToFrame();
-    }
-        private void initializeProgressBars() {
-        progressBars = new JProgressBar[8];
+        // Load inbox, load project
+        // Load task today
+        // add inbox
+        // show percent of collection
 
-        for (int i = 0; i < 8; i++) {
+        tasksToday = TaskDAO.loadTaskToday();
+        inboxes = TaskDAO.loadInboxes();
+        projects = ProjectDAO.load();
+        //listInboxes = new JList<>(tasksToday.toArray(Task[]::new));
+
+        String strInboxes[] = new String[inboxes.size()];
+        String strTasks[] = new String[tasksToday.size()];
+        String strProjects[] = new String[projects.size()];
+        
+        for(int i =0; i < inboxes.size(); i++){
+            strInboxes[i] = inboxes.get(i).getDescription();
+        }
+        
+        for(int i =0; i < tasksToday.size(); i++){
+            strTasks[i] = tasksToday.get(i).getDescription();
+        }
+        
+        for(int i =0; i < projects.size(); i++){
+            strProjects[i] = projects.get(i).getName();
+        }
+        
+
+        // Create the JList with the correct model
+        listInboxes = new JList<>(strInboxes);
+        listTasksToday = new JList<>(strTasks);
+        listProjects = new JList<>(strProjects);
+    }
+
+    private void initializeProgressBars() {
+        int[] memories = CardDAO.loadAnalysisMemory();
+        progressBars = new JProgressBar[10];
+
+        for (int i = 0; i < 10; i++) {
             progressBars[i] = new JProgressBar(0, 100);
             progressBars[i].setOrientation(JProgressBar.VERTICAL);
-            //progressBars[i].setPreferredSize(new Dimension(10, 130)); // Set preferred size
-            //progressBars[i].setLayout(mgr);
-            progressBars[i].setValue(10);
+            progressBars[i].setValue(memories[i]);
         }
     }
+
     private void addProgressBarsToFrame() {
-        //progressBarPanel = new JPanel(new GridLayout(1,1)); // 2 rows, 4 columns, with gaps
-        
-//        String[] titles = {"Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8"};
-//
-//        for (int i = 0; i < progressBars.length; i++) {
-//            JPanel panel = new JPanel(new BorderLayout());
-//            JLabel titleLabel = new JLabel(titles[i], JLabel.CENTER);
-//
-//            panel.add(progressBars[i], BorderLayout.CENTER);
-//            panel.add(titleLabel, BorderLayout.SOUTH);
-//            
-//            pnProgressBars.add(panel);
-//        }
-        //pnProgressBars = new JPanel(new GridLayout(1, 0, 10, 0)); // 1 row, as many columns as needed, with horizontal gap
-
-        String[] titles = {"Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8"};
-
+        String[] titles = new String[10];
+        for (int i = 0; i < titles.length; i++) {
+            titles[i] = "Level " + i;
+        }
         for (int i = 0; i < progressBars.length; i++) {
             JPanel panel = new JPanel(new BorderLayout()); // 2 rows, 0 columns for vertical layout
             JLabel titleLabel = new JLabel(titles[i], JLabel.CENTER);
@@ -77,14 +109,16 @@ public class CpnMain extends javax.swing.JPanel {
         pnProgressBars = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btnAddInbox = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        listInboxes = new javax.swing.JList<>();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
+        listProjects = new javax.swing.JList<>();
         jPanel4 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        listTasksToday = new javax.swing.JList<>();
 
         setPreferredSize(new java.awt.Dimension(652, 418));
 
@@ -92,7 +126,12 @@ public class CpnMain extends javax.swing.JPanel {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Add Inbox"));
 
-        jButton1.setText("Add");
+        btnAddInbox.setText("Add");
+        btnAddInbox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAddInboxMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -100,10 +139,10 @@ public class CpnMain extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btnAddInbox)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -111,18 +150,13 @@ public class CpnMain extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(btnAddInbox))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Inbox"));
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(listInboxes);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -130,7 +164,7 @@ public class CpnMain extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -142,12 +176,7 @@ public class CpnMain extends javax.swing.JPanel {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Project"));
 
-        jList2.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(jList2);
+        jScrollPane2.setViewportView(listProjects);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -167,15 +196,22 @@ public class CpnMain extends javax.swing.JPanel {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Task's Today"));
 
+        jScrollPane3.setViewportView(listTasksToday);
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 179, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(jScrollPane3)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout pnMainLayout = new javax.swing.GroupLayout(pnMain);
@@ -183,18 +219,18 @@ public class CpnMain extends javax.swing.JPanel {
         pnMainLayout.setHorizontalGroup(
             pnMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnMainLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(pnMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnProgressBars, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(pnMainLayout.createSequentialGroup()
                         .addGroup(pnMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         pnMainLayout.setVerticalGroup(
             pnMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -208,7 +244,7 @@ public class CpnMain extends javax.swing.JPanel {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pnProgressBars, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                .addComponent(pnProgressBars, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -234,18 +270,24 @@ public class CpnMain extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAddInboxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddInboxMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAddInboxMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JList<String> jList2;
+    private javax.swing.JButton btnAddInbox;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JList<String> listInboxes;
+    private javax.swing.JList<String> listProjects;
+    private javax.swing.JList<String> listTasksToday;
     private javax.swing.JPanel pnMain;
     private javax.swing.JPanel pnProgressBars;
     // End of variables declaration//GEN-END:variables

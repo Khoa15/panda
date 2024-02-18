@@ -18,10 +18,21 @@ public class CollectionDAO {
     public static ArrayList<Collection> load(){
         try{
             collections.clear();
-            Object[] values = new Object[]{
-                DBConnection.getUsername()
-            };
-            ResultSet rs = DBConnectionDAO.Load("SelectCollections", values);
+            ResultSet rs = DBConnectionDAO.Load("SelectCollections");
+            while(rs.next()){
+                collections.add(setCollection(rs));
+            }
+            return collections;
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public static ArrayList<Collection> loadWithAnalysis(){
+        try{
+            collections.clear();
+            ResultSet rs = DBConnectionDAO.Load("SelectCollectionsAnalysis");
             while(rs.next()){
                 collections.add(setCollection(rs));
             }
@@ -35,7 +46,6 @@ public class CollectionDAO {
     public static boolean add(Collection c){
         try{
             Object[] values = new Object[] {
-                DBConnection.getUsername(),
                 c.getName()
             };
             
@@ -51,7 +61,8 @@ public class CollectionDAO {
             Object[] values = {
                 c.getName()
             };
-            return DBConnectionDAO.Update("DeleteCollection", values) > 0;
+            int res = DBConnectionDAO.Update("DeleteCollection", values);
+            return res > 0;
         }catch(Exception e){
             return false;
         }finally{
@@ -64,6 +75,21 @@ public class CollectionDAO {
             Collection c = new Collection();
             c.setId(rs.getInt("id"));
             c.setName(rs.getNString("name"));
+            int count = rs.getMetaData().getColumnCount();
+            
+            if(count > 3){
+                int total_card = rs.getInt("total_card");
+                int n_learn = rs.getInt("n_learn");
+                int n_missed = rs.getInt("n_missed");
+                
+                c.setTotalCard(total_card);
+                if(n_missed != 0)
+                    c.setPercentTrue((float) n_learn / n_missed);
+                int lv5 = rs.getInt("memory");
+                if(lv5 != 0){
+                    c.setPercentLevel5((float) lv5 / total_card);
+                }
+            }
             return c;
         }catch(Exception e){
             return null;

@@ -7,6 +7,7 @@ package panda;
 import java.awt.Component;
 import panda.user.CpnMain;
 import javax.swing.JButton;
+import model.DBConnection;
 import panda.user.CpnCollection;
 import panda.user.CpnDictionary;
 import panda.user.CpnInbox;

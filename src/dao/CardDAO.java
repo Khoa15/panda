@@ -31,6 +31,24 @@ public class CardDAO {
             DBConnection.closeConnection();
         }
     }
+    
+    public static int[] loadAnalysisMemory(){
+        try{
+            int[] memories = new int[10];
+            ResultSet rs = DBConnectionDAO.Load("SelectCardsAnalysisMemory");
+            while(rs.next()){
+                int m = rs.getInt("memory");
+                int c = rs.getInt("count");
+                memories[m] = c;
+            }
+            return memories;
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }finally{
+            DBConnection.closeConnection();
+        }
+    }
 
 //    public static ArrayList<Card> load(Object id) {
 //        try {

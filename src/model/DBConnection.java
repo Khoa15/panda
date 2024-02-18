@@ -34,6 +34,19 @@ public class DBConnection {
 
     public DBConnection() {
     }
+    
+    private static String getUrl(){
+        url = "jdbc:sqlserver://"
+            + srvname
+            + ":1433;databaseName="
+            + dbname
+            + ";integratedSecurity = false;trustServerCertificate=True"
+            + ";user="
+            + username
+            + ";password="
+            + password;
+        return url;
+    }
 
     public static Connection openConnection() {
         try {
@@ -42,7 +55,7 @@ public class DBConnection {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            con = DriverManager.getConnection(url);
+            con = DriverManager.getConnection(getUrl());
             return con;
         } catch (SQLException e) {
             e.printStackTrace();
