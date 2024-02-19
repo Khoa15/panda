@@ -18,6 +18,7 @@ public class ProjectDAO {
             projects.clear();
             ResultSet rs = DBConnectionDAO.Load("SelectProjects");
             while (rs.next()) {
+                if(rs.getRow() == 0) continue;
                 projects.add(setProject(rs));
             }
             return projects;
@@ -34,6 +35,7 @@ public class ProjectDAO {
             projects.clear();
             ResultSet rs = DBConnectionDAO.Load(null, id);
             while (rs.next()) {
+                if(rs.getRow() == 0) continue;
                 projects.add(setProject(rs));
             }
             return projects;
