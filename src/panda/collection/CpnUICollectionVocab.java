@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package panda.Collection;
+package panda.collection;
 
 import java.text.DecimalFormat;
 import javax.swing.border.TitledBorder;

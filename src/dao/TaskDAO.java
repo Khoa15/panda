@@ -63,10 +63,30 @@ public class TaskDAO {
         }
     }
 
-    public static ArrayList<Task> loadTaskToday() {
+    public static ArrayList<Task> loadTasksToday() {
         try {
             tasks.clear();
-            ResultSet rs = DBConnectionDAO.Load("SelectTaskToday");
+            ResultSet rs = DBConnectionDAO.Load("SelectTasksToday");
+            while (rs.next()) {
+                if(rs.getRow() == 0) continue;
+                tasks.add(setTask(rs));
+            }
+            return tasks;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            DBConnection.closeConnection();
+        }
+    }
+    
+    public static ArrayList<Task> loadTasksToday(int pid) {
+        try {
+            tasks.clear();
+            Object[] values ={
+                pid
+            };
+            ResultSet rs = DBConnectionDAO.Load("SelectTasksTodayByProjectId", values);
             while (rs.next()) {
                 if(rs.getRow() == 0) continue;
                 tasks.add(setTask(rs));

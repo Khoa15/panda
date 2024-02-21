@@ -60,7 +60,19 @@ public class CpnMain extends javax.swing.JPanel {
     }
 
     private void loadTasksToday() {
-        tasksToday = TaskDAO.loadTaskToday();
+        tasksToday = TaskDAO.loadTasksToday();
+        if (tasksToday == null) {
+            return;
+        }
+        String strTasks[] = new String[tasksToday.size()];
+        for (int i = 0; i < strTasks.length; i++) {
+            strTasks[i] = tasksToday.get(i).getDescription();
+        }
+        listTasksToday.setListData(strTasks);
+    }
+
+    private void loadTasksToday(int pid) {
+        tasksToday = TaskDAO.loadTasksToday(pid);
         if (tasksToday == null) {
             return;
         }
@@ -185,7 +197,7 @@ public class CpnMain extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -219,6 +231,11 @@ public class CpnMain extends javax.swing.JPanel {
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Project", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
         listProjects.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        listProjects.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listProjectsValueChanged(evt);
+            }
+        });
         jScrollPane5.setViewportView(listProjects);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -248,9 +265,9 @@ public class CpnMain extends javax.swing.JPanel {
                     .addGroup(pnMainLayout.createSequentialGroup()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(pnMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
@@ -277,7 +294,7 @@ public class CpnMain extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pnMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -295,18 +312,26 @@ public class CpnMain extends javax.swing.JPanel {
 
     private void btnAddInboxKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnAddInboxKeyPressed
         // TODO add your handling code here:
-        if(evt.getKeyCode() == 10){ // Enter
+        if (evt.getKeyCode() == 10) { // Enter
             AddInbox();
         }
     }//GEN-LAST:event_btnAddInboxKeyPressed
-    
-    private void AddInbox(){
+
+    private void AddInbox() {
         String inbox = txtFieldInbox.getText();
         if (TaskDAO.insertInbox(inbox)) {
             // true
             loadInboxes();
         }
     }
+
+    private void listProjectsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listProjectsValueChanged
+        // TODO add your handling code here:
+        int i = listProjects.getSelectedIndex();
+        
+        loadTasksToday(projects.get(i).getId());
+    }//GEN-LAST:event_listProjectsValueChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddInbox;

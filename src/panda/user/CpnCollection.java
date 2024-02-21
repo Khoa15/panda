@@ -13,9 +13,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import model.Collection;
-import panda.Collection.CpnUICollectionVocab;
-import panda.Collection.FrmAddCollection;
-import panda.Collection.FrmAddFlashcard;
+import panda.collection.CpnUICollectionVocab;
+import panda.collection.FrmAddCollection;
+import panda.collection.FrmAddFlashcard;
 
 /**
  *
