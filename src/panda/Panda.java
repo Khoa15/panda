@@ -4,8 +4,8 @@
  */
 package panda;
 
+import com.sun.jdi.connect.spi.Connection;
 import model.DBConnection;
-
 /**
  *
  * @author nguye
@@ -20,7 +20,6 @@ public class Panda {
         //Login.main(args);
         SignIn.main(args);
 //        DBConnection db = new DBConnection();
-//        DBConnection.openConnection();
 //        DBConnection.closeConnection();
     }
     
