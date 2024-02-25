@@ -52,7 +52,7 @@ public class CpnMain extends javax.swing.JPanel {
             return;
         }
         String strProjects[] = new String[projects.size()];
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < strProjects.length; i++) {
             strProjects[i] = projects.get(i).getName();
         }
         listProjects.setListData(strProjects);
