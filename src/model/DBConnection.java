@@ -18,9 +18,9 @@ public class DBConnection {
     public static void setPassword(String aPassword) {
         password = aPassword;
     }
-    private static String username = "c##panda";//"sa";
+    private static String username = "panda";//"sa";
     private static String password = "panda";//"123";
-    private static String url = "jdbc:oracle:thin:@localhost:1521:orcl";
+    private static String url = "jdbc:oracle:thin:@localhost:1521/orclpdb";
     private static Connection con;
 
     public DBConnection() {
