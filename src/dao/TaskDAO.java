@@ -22,7 +22,7 @@ public class TaskDAO {
             e.printStackTrace();
             return false;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -42,7 +42,7 @@ public class TaskDAO {
             e.printStackTrace();
             return null;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -59,7 +59,7 @@ public class TaskDAO {
             e.printStackTrace();
             return null;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -76,7 +76,7 @@ public class TaskDAO {
             e.printStackTrace();
             return null;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
     
@@ -96,7 +96,7 @@ public class TaskDAO {
             e.printStackTrace();
             return null;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -113,7 +113,7 @@ public class TaskDAO {
             e.printStackTrace();
             return null;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -124,7 +124,7 @@ public class TaskDAO {
             e.printStackTrace();
             return -1;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -136,7 +136,7 @@ public class TaskDAO {
             e.printStackTrace();
             return -1;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 

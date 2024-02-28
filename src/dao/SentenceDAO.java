@@ -33,7 +33,7 @@ public class SentenceDAO {
         }catch(Exception e){
             return false;
         }finally{
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 }

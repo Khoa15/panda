@@ -27,7 +27,7 @@ public class FlashcardDAO {
             e.printStackTrace();
             return false;
         }finally{
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 }

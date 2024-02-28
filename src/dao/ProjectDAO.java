@@ -26,7 +26,7 @@ public class ProjectDAO {
             e.printStackTrace();
             return null;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -43,7 +43,7 @@ public class ProjectDAO {
             e.printStackTrace();
             return null;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -54,7 +54,7 @@ public class ProjectDAO {
             e.printStackTrace();
             return -1;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -66,7 +66,7 @@ public class ProjectDAO {
             e.printStackTrace();
             return -1;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 

@@ -15,16 +15,24 @@ import model.DBConnection;
 public class AccountDAO {
     public AccountDAO(){}
     
-    public static Account signIn(Account account){
+    public static boolean signIn(Account account){
         try{
             Object[] values = new Object[] {account.getEmail(), account.getPassword()};
             ResultSet rs = DBConnectionDAO.Load("SelectAccount", values);
-            
-            return setAccount(rs);
+            if(setAccount(rs) != null){
+                DBConnection.closeConnection();
+                
+                if(DBConnection.openConnection(account.getEmail(), account.getPassword()) != null){
+                    DBConnection.setUsername(account.getEmail());
+                    DBConnection.setPassword(account.getPassword());
+                    return true;
+                }
+            }
+            return false;
         }catch(Exception e){
-            return null;
+            return false;
         }finally{
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
     

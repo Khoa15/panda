@@ -28,7 +28,7 @@ public class CardDAO {
             e.printStackTrace();
             return null;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
     
@@ -46,7 +46,7 @@ public class CardDAO {
             e.printStackTrace();
             return null;
         }finally{
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -71,7 +71,7 @@ public class CardDAO {
             e.printStackTrace();
             return -1;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -84,7 +84,7 @@ public class CardDAO {
             e.printStackTrace();
             return -1;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -99,7 +99,7 @@ public class CardDAO {
             e.printStackTrace();
             return -1;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 
@@ -111,7 +111,7 @@ public class CardDAO {
             e.printStackTrace();
             return -1;
         } finally {
-            DBConnection.closeConnection();
+            //DBConnection.closeConnection();
         }
     }
 

@@ -7,6 +7,7 @@ package panda;
 import java.awt.Component;
 import panda.user.CpnMain;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import model.DBConnection;
 import panda.user.CpnCollection;
 import panda.user.CpnDictionary;
@@ -18,7 +19,7 @@ import panda.user.CpnProject;
  *
  * @author nguye
  */
-public class Main extends javax.swing.JFrame {
+public class Main extends javax.swing.JFrame  {
     /**
      * Creates new form Main
      */
@@ -50,6 +51,11 @@ public class Main extends javax.swing.JFrame {
         jFormattedTextField1.setText("jFormattedTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         pnMain.setLayout(new javax.swing.BoxLayout(pnMain, javax.swing.BoxLayout.LINE_AXIS));
 
@@ -190,6 +196,11 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
         navigateToPanel(new CpnMain());
     }//GEN-LAST:event_btnNavHomeMouseClicked
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        Panda.exit(evt);
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

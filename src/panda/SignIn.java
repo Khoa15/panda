@@ -6,6 +6,9 @@ package panda;
 
 import dao.AccountDAO;
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import model.Account;
@@ -48,6 +51,11 @@ public class SignIn extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jLabel1.setText("Email:");
 
@@ -164,9 +172,7 @@ public class SignIn extends javax.swing.JFrame {
         // TODO add your handling code here:
         setInput();
         Account account = new Account(email, password);
-        if(AccountDAO.signIn(account) != null){
-            DBConnection.setUsername(email);
-            DBConnection.setPassword(password);
+        if(AccountDAO.signIn(account)){
             this.dispose();
             Main m = new Main();
             m.setVisible(true);
@@ -175,6 +181,11 @@ public class SignIn extends javax.swing.JFrame {
             txtFieldPassword.setBorder(new LineBorder(Color.RED, 2));
         }
     }//GEN-LAST:event_btnSignInMouseClicked
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        Panda.exit(evt);
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
@@ -210,8 +221,25 @@ public class SignIn extends javax.swing.JFrame {
                 SignIn s = new SignIn();
                 s.setVisible(true);
                 s.setLocationRelativeTo(null);
+//                s.addWindowListener(new WindowAdapter() {
+//                    @Override
+//                    public void windowClosing(WindowEvent e) {
+//                        // Handle your program closing logic here
+//                        // Example: prompt user for confirmation
+//                        int confirmed = JOptionPane.showConfirmDialog(s,
+//                                "Bạn có muốn tắt chương trình?", "Xác nhận",
+//                                JOptionPane.YES_NO_OPTION);
+//                        
+//                        if (confirmed == JOptionPane.YES_OPTION) {
+//                            // User confirms closing, you can close resources or perform actions before exiting
+//                            System.exit(0);
+//                        }
+//                    }
+//                });
             }
         });
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
