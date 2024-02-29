@@ -17,13 +17,13 @@ public class AccountDAO {
     
     public static boolean signIn(Account account){
         try{
-            Object[] values = new Object[] {account.getEmail(), account.getPassword()};
+            Object[] values = new Object[] {account.getUsername(), account.getPassword()};
             ResultSet rs = DBConnectionDAO.Load("SelectAccount", values);
             if(setAccount(rs) != null){
                 DBConnection.closeConnection();
                 
-                if(DBConnection.openConnection(account.getEmail(), account.getPassword()) != null){
-                    DBConnection.setUsername(account.getEmail());
+                if(DBConnection.openConnection(account.getUsername(), account.getPassword()) != null){
+                    DBConnection.setUsername(account.getUsername());
                     DBConnection.setPassword(account.getPassword());
                     return true;
                 }
@@ -39,7 +39,7 @@ public class AccountDAO {
     public static boolean add(Account account){
         try{
             Object[] values = new Object[] {
-                account.getEmail(),
+                account.getUsername(),
                 account.getFullname(),
                 account.getPassword()
             };
@@ -55,10 +55,10 @@ public class AccountDAO {
     private static Account setAccount(ResultSet rs){
         try{
             if(rs.next()){
-                String email = rs.getString("email");
+                String username = rs.getString("username");
                 String fullname = rs.getString("fullname");
 
-                return new Account(email, fullname, null);
+                return new Account(username, fullname, null);
             }else return null;
         }catch(Exception e){
             e.printStackTrace();

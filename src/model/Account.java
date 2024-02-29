@@ -5,20 +5,20 @@ import java.time.LocalDate;
 public class Account {
 
     private String fullname;
-    private String email;
+    private String username;
     private String password;
 
     public Account() {
     }
 
-    public Account(String email, String fullname, String password) {
-        this.email = email;
+    public Account(String username, String fullname, String password) {
+        this.username = username;
         this.fullname = fullname;
         this.password = password;
     }
 
-    public Account(String email, String password) {
-        this.email = email;
+    public Account(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
@@ -37,17 +37,17 @@ public class Account {
     }
 
     /**
-     * @return the email
+     * @return the username
      */
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * @param email the email to set
+     * @param email the username to set
      */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**

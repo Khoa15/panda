@@ -21,6 +21,7 @@ public class Panda {
     public static void main(String[] args) {
         // TODO code application logic here
         //Login.main(args);
+        DBConnection.openConnection();
         SignIn.main(args);
 //        DBConnection db = new DBConnection();
 //        DBConnection.closeConnection();

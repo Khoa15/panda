@@ -19,10 +19,14 @@ public class DBConnection {
     public static void setPassword(String aPassword) {
         password = aPassword;
     }
+    
+    public static Connection getConn(){
+        return con;
+    }
     private static String username = "panda";//"sa";
     private static String password = "panda";//"123";
     private static String database = "orclpdb";
-    private static String url = "jdbc:oracle:thin:@localhost:1521/" + database;
+    private static String url = "jdbc:oracle:thin:@localhost:1521/" + database + "?current_schema="+username;
     private static Connection con;
 
     public DBConnection() {

@@ -18,9 +18,9 @@ public class SignUp extends javax.swing.JFrame {
      */
     public SignUp() {
         initComponents();
-        txtFieldEmail.setText("hp09.com@gmail.com");
-        txtFieldPassword.setText("baotrung123");
-        txtFieldFullname.setText("Nguyễn Trọng Đăng Khoa");
+        txtFieldEmail.setText("abc");
+        txtFieldPassword.setText("abc");
+        txtFieldFullname.setText("abc");
     }
 
     /**
@@ -51,7 +51,7 @@ public class SignUp extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Email:");
+        jLabel1.setText("Username:");
 
         jLabel2.setText("Password:");
 

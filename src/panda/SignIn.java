@@ -27,8 +27,8 @@ public class SignIn extends javax.swing.JFrame {
      */
     public SignIn() {
         initComponents();
-        txtFieldEmail.setText("hp09.com@gmail.com");
-        txtFieldPassword.setText("baotrung123");
+        txtFieldEmail.setText("abc");
+        txtFieldPassword.setText("abc");
     }
 
     /**
