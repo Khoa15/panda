@@ -18,9 +18,21 @@ public class DBConnectionDAO {
         try{
             Connection con = DBConnection.getConn();
             Statement statement =con.createStatement();
-            return (ResultSet)statement.executeQuery(query);
+            return statement.executeQuery(query);
         }catch(Exception e){
+            e.printStackTrace();
             return null;
+        }
+    }
+    
+    public static Boolean ExecuteScalarQuery(String query){
+        try{
+            Connection con = DBConnection.getConn();
+            Statement statement =con.createStatement();
+            return statement.executeUpdate(query) > 0;
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
         }
     }
 

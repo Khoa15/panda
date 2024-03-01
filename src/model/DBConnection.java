@@ -25,7 +25,7 @@ public class DBConnection {
     }
     private static String username = "panda";//"sa";
     private static String password = "panda";//"123";
-    private static String database = "orclpdb";
+    private static String database = "orcl";
     private static String url = "jdbc:oracle:thin:@localhost:1521/" + database + "?current_schema="+username;
     private static Connection con;
 

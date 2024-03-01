@@ -4,6 +4,10 @@
  */
 package panda.user;
 
+import dao.SystemDAO;
+import java.util.HashMap;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author nguye
@@ -13,13 +17,15 @@ public class CpnProfile extends javax.swing.JPanel {
     /**
      * Creates new form CpnProfile
      */
+    String[] systems = {
+        "SGA", "PGA", "PROCESS", "INSTANCE", "DATABASE", "DATAFILE", "CONTROL FILES", "SPFILE",
+        "SESSION", "TABLESPACE"
+    };
+    
     public CpnProfile() {
         initComponents();
-        String[] systems = {
-          "SGA"  , "PGA", "PROCESS", "INSTANCE", "DATABASE", "DATAFILE", "CONTROL FILES", "SPFILE",
-          "SESSION", "TABLESPACE"
-        };
         listSystems.setListData(systems);
+        LoadDataModel("SGA");
     }
 
     /**
@@ -46,9 +52,10 @@ public class CpnProfile extends javax.swing.JPanel {
         jButton6 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jButton8 = new javax.swing.JButton();
+        btnKillSession = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableSystem = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listSystems = new javax.swing.JList<>();
@@ -116,15 +123,15 @@ public class CpnProfile extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 26, Short.MAX_VALUE)
                 .addComponent(jButton6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 26, Short.MAX_VALUE)
                 .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 26, Short.MAX_VALUE)
                 .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 26, Short.MAX_VALUE)
                 .addComponent(jButton5)
                 .addContainerGap())
         );
@@ -144,6 +151,13 @@ public class CpnProfile extends javax.swing.JPanel {
 
         jButton8.setText("jButton8");
 
+        btnKillSession.setText("Kill Session");
+        btnKillSession.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnKillSessionMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -151,46 +165,50 @@ public class CpnProfile extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton8)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnKillSession)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton8)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton8)
+                    .addComponent(btnKillSession))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+        jTableSystem.setAutoResizeMode(0);
+        jTableSystem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableSystemMouseClicked(evt);
             }
-        ));
-        jScrollPane3.setViewportView(jTable1);
+        });
+        jScrollPane3.setViewportView(jTableSystem);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        listSystems.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listSystemsMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(listSystems);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -243,8 +261,89 @@ public class CpnProfile extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void listSystemsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listSystemsMouseClicked
+        // TODO add your handling code here:
+        String system = systems[listSystems.getSelectedIndex()];
+        LoadDataModel(system);
+        
+    }//GEN-LAST:event_listSystemsMouseClicked
+
+    private void jTableSystemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableSystemMouseClicked
+        // TODO add your handling code here:
+        
+        //sid, serial#
+    }//GEN-LAST:event_jTableSystemMouseClicked
+
+    private void btnKillSessionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnKillSessionMouseClicked
+        // TODO add your handling code here:
+        if(systems[listSystems.getSelectedIndex()] == "SESSION"){
+            int row = jTableSystem.getSelectedRow();
+            if(row != -1){
+                Object sid = jTableSystem.getValueAt(row, 1);
+                Object serial = jTableSystem.getValueAt(row, 2);
+                if(SystemDAO.killSession(sid, serial)){
+                    LoadDataModel("SESSION");
+                }
+            }
+        }
+    }//GEN-LAST:event_btnKillSessionMouseClicked
+
+//    public void LoadSGA() {
+//        DefaultTableModel sga = SystemDAO.LoadSGA();
+//        jTableSystem.setModel(sga);
+//    }
+    
+    public void LoadDataModel(String system){
+        jTableSystem.setModel(SystemDAO.loadInfoSystem(system));
+    }
+
+//    public void LoadPGA() {
+//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
+//        jTableSystem.setModel(pga);
+//    }
+//
+//    public void LoadProcess() {
+//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
+//        jTableSystem.setModel(pga);
+//    }
+//
+//    public void LoadInstance() {
+//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
+//        jTableSystem.setModel(pga);
+//    }
+//
+//    public void LoadDatabase() {
+//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
+//        jTableSystem.setModel(pga);
+//    }
+//
+//    public void LoadDatafile() {
+//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
+//        jTableSystem.setModel(pga);
+//    }
+//
+//    public void LoadControlFiles() {
+//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
+//        jTableSystem.setModel(pga);
+//    }
+//
+//    public void LoadSpfile() {
+//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
+//        jTableSystem.setModel(pga);
+//    }
+//
+//    public void LoadSession() {
+//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
+//        jTableSystem.setModel(pga);
+//    }
+//
+//    public void LoadTablespace() {
+//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
+//        jTableSystem.setModel(pga);
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnKillSession;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -260,7 +359,7 @@ public class CpnProfile extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableSystem;
     private javax.swing.JList<String> listSystems;
     private javax.swing.JTextField txtFieldConfirmPassword;
     private javax.swing.JTextField txtFieldEmail;

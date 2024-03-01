@@ -35,6 +35,8 @@ public class Panda {
         if (confirmed == JOptionPane.YES_OPTION) {
             DBConnection.closeConnection();
             System.exit(0);
+        }else{
+            //e.consume;
         }
     }
 }

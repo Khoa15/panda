@@ -136,15 +136,15 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" pref="26" max="32767" attributes="0"/>
                   <Component id="jButton6" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" pref="26" max="32767" attributes="0"/>
                   <Component id="jButton3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="21" max="32767" attributes="0"/>
                   <Component id="jButton2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" pref="26" max="32767" attributes="0"/>
                   <Component id="jButton4" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" pref="26" max="32767" attributes="0"/>
                   <Component id="jButton5" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -209,6 +209,8 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButton8" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
+                  <Component id="btnKillSession" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -216,7 +218,10 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jButton8" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jButton8" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnKillSession" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -228,6 +233,14 @@
             <Property name="text" type="java.lang.String" value="jButton8"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JButton" name="btnKillSession">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Kill Session"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnKillSessionMouseClicked"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="jPanel4">
@@ -236,9 +249,9 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="jScrollPane3" min="-2" pref="380" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jScrollPane3" pref="0" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -246,8 +259,8 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane3" min="-2" pref="191" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jScrollPane3" pref="191" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -260,17 +273,15 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTable" name="jTable1">
+            <Component class="javax.swing.JTable" name="jTableSystem">
               <Properties>
-                <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="4" rowCount="4">
-                    <Column editable="true" title="Title 1" type="java.lang.Object"/>
-                    <Column editable="true" title="Title 2" type="java.lang.Object"/>
-                    <Column editable="true" title="Title 3" type="java.lang.Object"/>
-                    <Column editable="true" title="Title 4" type="java.lang.Object"/>
-                  </Table>
+                <Property name="autoResizeMode" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="0" type="code"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTableSystemMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -307,6 +318,9 @@
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
             <Component class="javax.swing.JList" name="listSystems">
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="listSystemsMouseClicked"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
