@@ -6,6 +6,7 @@ package panda.user;
 
 import dao.SystemDAO;
 import java.util.HashMap;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -21,11 +22,52 @@ public class CpnProfile extends javax.swing.JPanel {
         "SGA", "PGA", "PROCESS", "INSTANCE", "DATABASE", "DATAFILE", "CONTROL FILES", "SPFILE",
         "SESSION", "TABLESPACE"
     };
-    
+
     public CpnProfile() {
         initComponents();
         listSystems.setListData(systems);
-        LoadDataModel("SGA");
+        LoadDataTableModel(SystemDAO.LoadSGA());
+
+    }
+    
+    public void reloadTable(){
+        String system = "SGA";
+        if(listSystems.getSelectedIndex() != -1){
+            system = systems[listSystems.getSelectedIndex()];
+        }
+        switch (system) {
+            case "PGA":
+                LoadDataTableModel(SystemDAO.LoadPGA());
+                break;
+            case "PROCESS":
+                LoadDataTableModel(SystemDAO.LoadProcessInfo());
+                break;
+            case "INSTANCE":
+                LoadDataTableModel(SystemDAO.LoadInstanceInfo());
+                break;
+            case "DATABASE":
+                LoadDataTableModel(SystemDAO.LoadDatabaseInfo());
+                break;
+            case "DATAFILE":
+                LoadDataTableModel(SystemDAO.LoadDataFileInfo());
+                break;
+            case "CONTROL FILES":
+                LoadDataTableModel(SystemDAO.LoadControlFile());
+                break;
+            case "SPFILE":
+                LoadDataTableModel(SystemDAO.LoadSpFileInfo());
+                break;
+            case "SESSION":
+                LoadDataTableModel(SystemDAO.LoadSession());
+                break;
+            case "TABLESPACE":
+                LoadDataTableModel(SystemDAO.LoadTableSpace());
+                break;
+            default:
+                LoadDataTableModel(SystemDAO.LoadSGA());
+                break;
+        }
+        
     }
 
     /**
@@ -37,6 +79,7 @@ public class CpnProfile extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFrame1 = new javax.swing.JFrame();
         jPanel1 = new javax.swing.JPanel();
         txtFieldEmail = new javax.swing.JTextField();
         txtFieldFullname = new javax.swing.JTextField();
@@ -53,12 +96,24 @@ public class CpnProfile extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         jButton8 = new javax.swing.JButton();
         btnKillSession = new javax.swing.JButton();
+        btnViewSession = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableSystem = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listSystems = new javax.swing.JList<>();
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
         txtFieldEmail.setText("Email");
 
@@ -158,6 +213,13 @@ public class CpnProfile extends javax.swing.JPanel {
             }
         });
 
+        btnViewSession.setText("Xem Session");
+        btnViewSession.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnViewSessionMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -166,6 +228,8 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jButton8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnViewSession)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnKillSession)
                 .addContainerGap())
         );
@@ -175,11 +239,14 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton8)
-                    .addComponent(btnKillSession))
+                    .addComponent(btnKillSession)
+                    .addComponent(btnViewSession))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTableSystem.setAutoResizeMode(0);
+        jTableSystem.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jTableSystem.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jTableSystem.setMinimumSize(new java.awt.Dimension(200, 0));
         jTableSystem.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTableSystemMouseClicked(evt);
@@ -263,39 +330,56 @@ public class CpnProfile extends javax.swing.JPanel {
 
     private void listSystemsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listSystemsMouseClicked
         // TODO add your handling code here:
-        String system = systems[listSystems.getSelectedIndex()];
-        LoadDataModel(system);
-        
+        reloadTable();
+
     }//GEN-LAST:event_listSystemsMouseClicked
 
     private void jTableSystemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableSystemMouseClicked
         // TODO add your handling code here:
-        
+
         //sid, serial#
     }//GEN-LAST:event_jTableSystemMouseClicked
 
     private void btnKillSessionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnKillSessionMouseClicked
         // TODO add your handling code here:
-        if(systems[listSystems.getSelectedIndex()] == "SESSION"){
+        if (systems[listSystems.getSelectedIndex()] == "SESSION") {
             int row = jTableSystem.getSelectedRow();
-            if(row != -1){
+            if (row != -1) {
                 Object sid = jTableSystem.getValueAt(row, 1);
                 Object serial = jTableSystem.getValueAt(row, 2);
-                if(SystemDAO.killSession(sid, serial)){
-                    LoadDataModel("SESSION");
+                if (SystemDAO.killSession(sid, serial)) {
+                    LoadDataTableModel(SystemDAO.LoadSession());
                 }
             }
         }
     }//GEN-LAST:event_btnKillSessionMouseClicked
 
+    private void btnViewSessionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnViewSessionMouseClicked
+        // TODO add your handling code here:
+        if (systems[listSystems.getSelectedIndex()] == "SESSION") {
+            int row = jTableSystem.getSelectedRow();
+            if (row != -1) {
+                Object sid = jTableSystem.getValueAt(row, 1);
+                Object serial = jTableSystem.getValueAt(row, 2);
+                Object addr = jTableSystem.getValueAt(row, 0);
+                ViewSession vsession = new ViewSession(sid.toString());
+                vsession.setVisible(true);
+                vsession.setLocationRelativeTo(null);
+            }
+        }
+    }//GEN-LAST:event_btnViewSessionMouseClicked
+
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();
 //        jTableSystem.setModel(sga);
 //    }
-    
-    public void LoadDataModel(String system){
-        jTableSystem.setModel(SystemDAO.loadInfoSystem(system));
+    private void LoadDataTableModel(DefaultTableModel model) {
+        jTableSystem.setModel(model);
     }
+
+//    public void LoadDataModel(String system) {
+//        jTableSystem.setModel(SystemDAO.loadInfoSystem(system));
+//    }
 
 //    public void LoadPGA() {
 //        DefaultTableModel pga = SystemDAO.loadInfoSystem();
@@ -344,6 +428,7 @@ public class CpnProfile extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnKillSession;
+    private javax.swing.JButton btnViewSession;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -352,6 +437,7 @@ public class CpnProfile extends javax.swing.JPanel {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JFrame jFrame1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

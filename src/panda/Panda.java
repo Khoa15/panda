@@ -6,8 +6,11 @@ package panda;
 
 import com.sun.jdi.connect.spi.Connection;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import model.DBConnection;
+import model.SystemListener;
 
 /**
  *
@@ -18,13 +21,11 @@ public class Panda {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
-        //Login.main(args);
+    public static void main(String[] args) throws SQLException, InterruptedException {
+        DBConnection dbconnection = new DBConnection();
         DBConnection.openConnection();
+        dbconnection.start();
         SignIn.main(args);
-//        DBConnection db = new DBConnection();
-//        DBConnection.closeConnection();
     }
 
     public static void exit(WindowEvent e) {
@@ -33,10 +34,9 @@ public class Panda {
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmed == JOptionPane.YES_OPTION) {
+            
             DBConnection.closeConnection();
             System.exit(0);
-        }else{
-            //e.consume;
         }
     }
 }

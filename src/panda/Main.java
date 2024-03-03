@@ -14,6 +14,7 @@ import panda.user.CpnDictionary;
 import panda.user.CpnInbox;
 import panda.user.CpnProfile;
 import panda.user.CpnProject;
+import panda.user.TrackCpnProfileSystem;
 
 /**
  *
@@ -50,7 +51,7 @@ public class Main extends javax.swing.JFrame  {
 
         jFormattedTextField1.setText("jFormattedTextField1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -169,7 +170,10 @@ public class Main extends javax.swing.JFrame  {
     }
     private void btnNavProfileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNavProfileMouseClicked
         // TODO add your handling code here:
-        navigateToPanel(new CpnProfile());
+        //navigateToPanel(new CpnProfile());
+        TrackCpnProfileSystem track = new TrackCpnProfileSystem();
+        new Thread(track).start();
+        navigateToPanel(track.cpnProfile);
     }//GEN-LAST:event_btnNavProfileMouseClicked
 
     private void btnNavProjectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNavProjectMouseClicked

@@ -49,6 +49,18 @@ public class AccountDAO {
             return false;
         }
     }
+    
+    private static boolean signOut(){
+        try{
+            Object[] values = {
+                DBConnection.getUsername()
+            };
+            
+            return DBConnectionDAO.Update("SignOut", values) > 0;
+        }catch(Exception e){
+            return false;
+        }
+    }
 
     private static Account setAccount(ResultSet rs) {
         try {

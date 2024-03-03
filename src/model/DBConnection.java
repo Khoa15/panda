@@ -4,9 +4,29 @@ package model;
 //import java.sql.DriverManager;
 //import java.sql.SQLException;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class DBConnection {
-
+public class DBConnection extends Thread {
+    @Override
+    public void run(){
+        while (true) {
+            try {
+                if(con.isValid(10) == false){
+                    System.out.println("Connection is dead");
+                    System.exit(0);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            //System.out.println("Connection is alive");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public static String getUsername() {
         return username;
     }
@@ -23,6 +43,8 @@ public class DBConnection {
     public static Connection getConn(){
         return con;
     }
+    private final static String sysuser = "panda";
+    private final static String syspass = "panda";
     private static String username = "panda";//"sa";
     private static String password = "panda";//"123";
     private static String database = "orcl";
@@ -65,7 +87,19 @@ public class DBConnection {
             return null;
         }
     }
-
+    
+    public boolean checkCurrentConnection(){
+        try{
+            con.isValid(10);
+            
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }finally{
+        }
+    }
+    
     public static int closeConnection() {
         try {
             if (con == null) {
@@ -74,6 +108,8 @@ public class DBConnection {
             if (con.isClosed()) {
                 return 0;
             }
+            username = sysuser;
+            password = sysuser;
             con.close();
             return 1;
         } catch (SQLException e) {
