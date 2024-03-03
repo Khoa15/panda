@@ -5,6 +5,7 @@
 package panda;
 
 import com.sun.jdi.connect.spi.Connection;
+import dao.DBConnectionDAO;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -34,7 +35,10 @@ public class Panda {
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmed == JOptionPane.YES_OPTION) {
-            
+            Object[] values = {
+                DBConnection.getUsername().toUpperCase()
+            };
+            DBConnectionDAO.CallProcedureNoParameter("signout", values);
             DBConnection.closeConnection();
             System.exit(0);
         }

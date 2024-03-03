@@ -93,7 +93,16 @@ public class DBConnectionDAO {
             return -1;
         }
     }
-
+    public static boolean CallProcedureNoParameter(String procedure, Object[] values) {
+        try {
+            values = add(values, null);
+            CallableStatement callStatement = setCallable(procedure, values, false);
+            return callStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     public static ResultSet CallProcedure(String procedure, Object[] values) {
         try {
             values = add(values, null);
