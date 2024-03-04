@@ -175,6 +175,7 @@ public class SignIn extends javax.swing.JFrame {
         if(AccountDAO.signIn(account)){
             this.dispose();
             Main m = new Main();
+            
             m.setVisible(true);
         }else{
             txtFieldEmail.setBorder(new LineBorder(Color.RED, 2));

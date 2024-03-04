@@ -23,9 +23,6 @@ public class Panda {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException, InterruptedException {
-        DBConnection dbconnection = new DBConnection();
-        DBConnection.openConnection();
-        dbconnection.start();
         SignIn.main(args);
     }
 

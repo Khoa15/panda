@@ -95,7 +95,6 @@ public class DBConnectionDAO {
     }
     public static boolean CallProcedureNoParameter(String procedure, Object[] values) {
         try {
-            values = add(values, null);
             CallableStatement callStatement = setCallable(procedure, values, false);
             return callStatement.execute();
         } catch (Exception e) {

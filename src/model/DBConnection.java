@@ -19,7 +19,7 @@ public class DBConnection extends Thread {
             } catch (SQLException ex) {
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
-            //System.out.println("Connection is alive");
+            System.out.println("Connection is alive");
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
@@ -43,10 +43,10 @@ public class DBConnection extends Thread {
     public static Connection getConn(){
         return con;
     }
-    private final static String sysuser = "panda";
-    private final static String syspass = "panda";
-    private static String username = "panda";//"sa";
-    private static String password = "panda";//"123";
+    private final static String sysuser = "panda_register";
+    private final static String syspass = "panda_register";
+    private static String username = "";
+    private static String password = "";
     private static String database = "orcl";
     private static String url = "jdbc:oracle:thin:@localhost:1521/" + database + "?current_schema="+username;
     private static Connection con;
