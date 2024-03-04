@@ -224,7 +224,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jButton8" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnCreateTableSpace" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="btnViewSession" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -238,7 +238,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButton8" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnCreateTableSpace" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnKillSession" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnViewSession" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -248,10 +248,13 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="jButton8">
+        <Component class="javax.swing.JButton" name="btnCreateTableSpace">
           <Properties>
-            <Property name="text" type="java.lang.String" value="jButton8"/>
+            <Property name="text" type="java.lang.String" value="T&#x1ea1;o tablespace"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnCreateTableSpaceMouseClicked"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnKillSession">
           <Properties>

@@ -8,6 +8,7 @@ import dao.SystemDAO;
 import java.util.HashMap;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import panda.user.system.CreateTablespace;
 
 /**
  *
@@ -94,7 +95,7 @@ public class CpnProfile extends javax.swing.JPanel {
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jButton8 = new javax.swing.JButton();
+        btnCreateTableSpace = new javax.swing.JButton();
         btnKillSession = new javax.swing.JButton();
         btnViewSession = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
@@ -204,7 +205,12 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addContainerGap(7, Short.MAX_VALUE))
         );
 
-        jButton8.setText("jButton8");
+        btnCreateTableSpace.setText("Tạo tablespace");
+        btnCreateTableSpace.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCreateTableSpaceMouseClicked(evt);
+            }
+        });
 
         btnKillSession.setText("Kill Session");
         btnKillSession.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -226,7 +232,7 @@ public class CpnProfile extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton8)
+                .addComponent(btnCreateTableSpace)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnViewSession)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -238,7 +244,7 @@ public class CpnProfile extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton8)
+                    .addComponent(btnCreateTableSpace)
                     .addComponent(btnKillSession)
                     .addComponent(btnViewSession))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -369,6 +375,13 @@ public class CpnProfile extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnViewSessionMouseClicked
 
+    private void btnCreateTableSpaceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCreateTableSpaceMouseClicked
+        // TODO add your handling code here:
+        CreateTablespace createTablespace = new CreateTablespace();
+        createTablespace.setVisible(true);
+        createTablespace.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnCreateTableSpaceMouseClicked
+
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();
 //        jTableSystem.setModel(sga);
@@ -427,6 +440,7 @@ public class CpnProfile extends javax.swing.JPanel {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCreateTableSpace;
     private javax.swing.JButton btnKillSession;
     private javax.swing.JButton btnViewSession;
     private javax.swing.JButton jButton1;
@@ -436,7 +450,6 @@ public class CpnProfile extends javax.swing.JPanel {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

@@ -21,6 +21,19 @@ import oracle.jdbc.OracleTypes;
  */
 public class SystemDAO {
 
+    public static boolean createTablespace(String tablespace, String location, String size) {
+        try{
+            Object[] values = {
+                tablespace,
+                size,
+            };
+            return DBConnectionDAO.CallProcedureNoParameter("addtablespaces", values);
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public SystemDAO() {
     }
 
