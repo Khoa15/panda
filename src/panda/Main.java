@@ -5,6 +5,9 @@
 package panda;
 
 import java.awt.Component;
+import java.security.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import panda.user.CpnMain;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -27,6 +30,14 @@ public class Main extends javax.swing.JFrame  {
     public Main() {
         initComponents();
         pnMain.add(new CpnMain());
+        LocalDateTime lastLoginTimestamp = DBConnection.getLastLogin();
+
+        // Using DateTimeFormatter for formatting
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedLastLogin = lastLoginTimestamp.format(formatter);
+
+        // Set the title with the formatted timestamp
+        setTitle("Hello: " + DBConnection.getUsername() + ", Last login: " + formattedLastLogin);
     } 
 
 
@@ -52,6 +63,7 @@ public class Main extends javax.swing.JFrame  {
         jFormattedTextField1.setText("jFormattedTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("123");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);

@@ -15,13 +15,15 @@ import panda.user.system.CreateTablespace;
  * @author nguye
  */
 public class CpnProfile extends javax.swing.JPanel {
-
+    String sid;
+    String serial;
+    String addr;
     /**
      * Creates new form CpnProfile
      */
     String[] systems = {
         "SGA", "PGA", "PROCESS", "INSTANCE", "DATABASE", "DATAFILE", "CONTROL FILES", "SPFILE",
-        "SESSION", "TABLESPACE"
+        "SESSION", "TABLESPACE", "DATAFILES", "POLICY", "AUDIT"
     };
 
     public CpnProfile() {
@@ -64,6 +66,15 @@ public class CpnProfile extends javax.swing.JPanel {
             case "TABLESPACE":
                 LoadDataTableModel(SystemDAO.LoadTableSpace());
                 break;
+            case "DATAFILES":
+                LoadDataTableModel(SystemDAO.LoadDataFiles());
+                break;
+            case "POLICY":
+                LoadDataTableModel(SystemDAO.LoadPolicy());
+                break;
+            case "AUDIT":
+                LoadDataTableModel(SystemDAO.LoadAudit());
+                break;
             default:
                 LoadDataTableModel(SystemDAO.LoadSGA());
                 break;
@@ -98,6 +109,7 @@ public class CpnProfile extends javax.swing.JPanel {
         btnCreateTableSpace = new javax.swing.JButton();
         btnKillSession = new javax.swing.JButton();
         btnViewSession = new javax.swing.JButton();
+        btnViewAudit = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableSystem = new javax.swing.JTable();
@@ -213,6 +225,7 @@ public class CpnProfile extends javax.swing.JPanel {
         });
 
         btnKillSession.setText("Kill Session");
+        btnKillSession.setEnabled(false);
         btnKillSession.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnKillSessionMouseClicked(evt);
@@ -220,9 +233,18 @@ public class CpnProfile extends javax.swing.JPanel {
         });
 
         btnViewSession.setText("Xem Session");
+        btnViewSession.setEnabled(false);
         btnViewSession.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnViewSessionMouseClicked(evt);
+            }
+        });
+
+        btnViewAudit.setText("Xem Audit");
+        btnViewAudit.setEnabled(false);
+        btnViewAudit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnViewAuditMouseClicked(evt);
             }
         });
 
@@ -234,6 +256,8 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(btnCreateTableSpace)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnViewAudit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnViewSession)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnKillSession)
@@ -246,7 +270,8 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreateTableSpace)
                     .addComponent(btnKillSession)
-                    .addComponent(btnViewSession))
+                    .addComponent(btnViewSession)
+                    .addComponent(btnViewAudit))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -337,12 +362,24 @@ public class CpnProfile extends javax.swing.JPanel {
     private void listSystemsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listSystemsMouseClicked
         // TODO add your handling code here:
         reloadTable();
-
+        if (systems[listSystems.getSelectedIndex()] != "SESSION") {
+            btnViewSession.setEnabled(false);
+            btnKillSession.setEnabled(false);
+        }
     }//GEN-LAST:event_listSystemsMouseClicked
 
     private void jTableSystemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableSystemMouseClicked
         // TODO add your handling code here:
-
+        if (systems[listSystems.getSelectedIndex()] == "SESSION") {
+            int row = jTableSystem.getSelectedRow();
+            sid = jTableSystem.getValueAt(row, 1).toString();
+            serial = jTableSystem.getValueAt(row, 2).toString();
+            addr = jTableSystem.getValueAt(row, 0).toString();
+            if (row != -1) {
+                btnViewSession.setEnabled(true);
+                btnKillSession.setEnabled(true);
+            }
+        }
         //sid, serial#
     }//GEN-LAST:event_jTableSystemMouseClicked
 
@@ -351,8 +388,8 @@ public class CpnProfile extends javax.swing.JPanel {
         if (systems[listSystems.getSelectedIndex()] == "SESSION") {
             int row = jTableSystem.getSelectedRow();
             if (row != -1) {
-                Object sid = jTableSystem.getValueAt(row, 1);
-                Object serial = jTableSystem.getValueAt(row, 2);
+                sid = jTableSystem.getValueAt(row, 1).toString();
+                serial = jTableSystem.getValueAt(row, 2).toString();
                 if (SystemDAO.killSession(sid, serial)) {
                     LoadDataTableModel(SystemDAO.LoadSession());
                 }
@@ -363,11 +400,9 @@ public class CpnProfile extends javax.swing.JPanel {
     private void btnViewSessionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnViewSessionMouseClicked
         // TODO add your handling code here:
         if (systems[listSystems.getSelectedIndex()] == "SESSION") {
-            int row = jTableSystem.getSelectedRow();
-            if (row != -1) {
-                Object sid = jTableSystem.getValueAt(row, 1);
-                Object serial = jTableSystem.getValueAt(row, 2);
-                Object addr = jTableSystem.getValueAt(row, 0);
+            //int row = jTableSystem.getSelectedRow();
+            if (!sid.isEmpty()) {
+                
                 ViewSession vsession = new ViewSession(sid.toString());
                 vsession.setVisible(true);
                 vsession.setLocationRelativeTo(null);
@@ -382,11 +417,26 @@ public class CpnProfile extends javax.swing.JPanel {
         createTablespace.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnCreateTableSpaceMouseClicked
 
+    private void btnViewAuditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnViewAuditMouseClicked
+        // TODO add your handling code here:
+        if (systems[listSystems.getSelectedIndex()] == "POLICY") {
+            int row = jTableSystem.getSelectedRow();
+            if (row != -1) {
+                
+            }
+        }
+    }//GEN-LAST:event_btnViewAuditMouseClicked
+
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();
 //        jTableSystem.setModel(sga);
 //    }
     private void LoadDataTableModel(DefaultTableModel model) {
+        if(model.getColumnCount() < 10){
+            jTableSystem.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        }else{
+            jTableSystem.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        }
         jTableSystem.setModel(model);
     }
 
@@ -442,6 +492,7 @@ public class CpnProfile extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateTableSpace;
     private javax.swing.JButton btnKillSession;
+    private javax.swing.JButton btnViewAudit;
     private javax.swing.JButton btnViewSession;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

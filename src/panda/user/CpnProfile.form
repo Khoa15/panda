@@ -226,6 +226,8 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnCreateTableSpace" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
+                  <Component id="btnViewAudit" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnViewSession" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnKillSession" min="-2" max="-2" attributes="0"/>
@@ -241,6 +243,7 @@
                       <Component id="btnCreateTableSpace" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnKillSession" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnViewSession" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnViewAudit" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -259,6 +262,7 @@
         <Component class="javax.swing.JButton" name="btnKillSession">
           <Properties>
             <Property name="text" type="java.lang.String" value="Kill Session"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnKillSessionMouseClicked"/>
@@ -267,9 +271,19 @@
         <Component class="javax.swing.JButton" name="btnViewSession">
           <Properties>
             <Property name="text" type="java.lang.String" value="Xem Session"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnViewSessionMouseClicked"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnViewAudit">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Xem Audit"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnViewAuditMouseClicked"/>
           </Events>
         </Component>
       </SubComponents>

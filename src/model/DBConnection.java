@@ -3,7 +3,9 @@ package model;
 //import java.sql.Connection;
 //import java.sql.DriverManager;
 //import java.sql.SQLException;
+import dao.DBConnectionDAO;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,10 +45,15 @@ public class DBConnection extends Thread {
     public static Connection getConn(){
         return con;
     }
+    
+    public static LocalDateTime getLastLogin(){
+        return last_login;
+    }
     private final static String sysuser = "panda_register";
     private final static String syspass = "panda_register";
     private static String username = "";
     private static String password = "";
+    private static LocalDateTime last_login;
     private static String database = "orcl";
     private static String url = "jdbc:oracle:thin:@localhost:1521/" + database + "?current_schema="+username;
     private static Connection con;
@@ -59,6 +66,11 @@ public class DBConnection extends Thread {
             if(con != null &&  con.isClosed() == false) closeConnection();
             DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
             con = DriverManager.getConnection(url, normalize(username), password);
+            Object[] values = {
+                username.toUpperCase()
+            };
+            Timestamp last_login = (Timestamp)DBConnectionDAO.CallFunction("get_last_login", values, Types.TIMESTAMP);
+            DBConnection.last_login = last_login.toLocalDateTime();
             if (con != null) {
                 System.out.println("Connected");
             } else {

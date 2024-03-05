@@ -27,8 +27,8 @@ public class SignIn extends javax.swing.JFrame {
      */
     public SignIn() {
         initComponents();
-        txtFieldEmail.setText("abc");
-        txtFieldPassword.setText("abc");
+        txtFieldEmail.setText("panda");
+        txtFieldPassword.setText("panda");
     }
 
     /**
@@ -121,6 +121,11 @@ public class SignIn extends javax.swing.JFrame {
                 btnSignInMouseClicked(evt);
             }
         });
+        btnSignIn.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btnSignInKeyPressed(evt);
+            }
+        });
 
         btnSignUp.setText("SignUp");
         btnSignUp.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -170,6 +175,10 @@ public class SignIn extends javax.swing.JFrame {
 
     private void btnSignInMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignInMouseClicked
         // TODO add your handling code here:
+        signin();
+    }//GEN-LAST:event_btnSignInMouseClicked
+    
+    private void signin(){
         setInput();
         Account account = new Account(email, password);
         if(AccountDAO.signIn(account)){
@@ -181,12 +190,21 @@ public class SignIn extends javax.swing.JFrame {
             txtFieldEmail.setBorder(new LineBorder(Color.RED, 2));
             txtFieldPassword.setBorder(new LineBorder(Color.RED, 2));
         }
-    }//GEN-LAST:event_btnSignInMouseClicked
-
+    }
+    
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
         Panda.exit(evt);
     }//GEN-LAST:event_formWindowClosing
+
+    private void btnSignInKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnSignInKeyPressed
+        // TODO add your handling code here:
+        int x = evt.getKeyCode();
+        if(x == 10){
+            // Enter
+            signin();
+        }
+    }//GEN-LAST:event_btnSignInKeyPressed
 
     /**
      * @param args the command line arguments

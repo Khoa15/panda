@@ -121,17 +121,17 @@ public class DBConnectionDAO {
             callStatement.execute();
             return (ResultSet) callStatement.getObject(1);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
-
-    public static ResultSet CallFunction(String function, Object[] values, Object type) {
+    public static Object CallFunction(String function, Object[] values, Object type) {
         try {
             CallableStatement callStatement = setCallable(function, values, true);
             callStatement.registerOutParameter(1, (int)type);
 
             callStatement.execute();
-            return (ResultSet) callStatement.getObject(1);
+            return (Object) callStatement.getObject(1);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

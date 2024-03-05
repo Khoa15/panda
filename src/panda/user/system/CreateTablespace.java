@@ -47,7 +47,7 @@ public class CreateTablespace extends javax.swing.JFrame {
 
         jFileChooser2.setSelectedFile(new java.io.File("D:\\Tools\\NetBeans-20\\helloworld.dbf"));
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Tablespace:");
 

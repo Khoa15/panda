@@ -129,7 +129,43 @@ public class SystemDAO {
     
     public static DefaultTableModel LoadTableSpace(){
         try {
+            
             return setDefaultDataTableModel("GetTableSpaces");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+        public static DefaultTableModel LoadDataFiles(){
+        try {
+            
+            ResultSet rs = DBConnectionDAO.ExecuteSelectQuery("SELECT file_id, file_name, tablespace_name from dba_data_files");
+            return setDefaultDataTableModel(rs);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public static DefaultTableModel LoadPolicy(){
+        try {
+            DefaultTableModel tmp = setDefaultDataTableModel("get_policy_in_user");
+            
+            return tmp;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public static DefaultTableModel LoadAudit(){
+        try {
+            ResultSet rs = DBConnectionDAO.ExecuteSelectQuery("SELECT * FROM DBA_AUDIT_TRAIL");
+            return setDefaultDataTableModel(rs);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,6 +249,7 @@ public class SystemDAO {
             return null;
         }
     }
+
     
     public static boolean killSession(Object sid, Object serial){
         try{
@@ -233,7 +270,7 @@ public class SystemDAO {
     public static DefaultTableModel LoadProcessWithSession(String sid){
         try{
             Object[] values = {sid};
-            ResultSet resultSet = DBConnectionDAO.CallFunction("get_process_with_session", values, OracleTypes.CURSOR);
+            ResultSet resultSet = (ResultSet) DBConnectionDAO.CallFunction("get_process_with_session", values, OracleTypes.CURSOR);
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
             DefaultTableModel tableModel = new DefaultTableModel(new Object[columnCount], 0);
@@ -254,7 +291,33 @@ public class SystemDAO {
     
     private static DefaultTableModel setDefaultDataTableModel(String name){
         try{
-            ResultSet resultSet = DBConnectionDAO.Load(name);
+            ResultSet resultSet = DBConnectionDAO.CallFunction(name);
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            DefaultTableModel tableModel = new DefaultTableModel(0, columnCount);
+
+            Vector<String> columnNames = new Vector<>();
+            for (int i = 1; i <= columnCount; i++) {
+                columnNames.add(metaData.getColumnName(i));
+            }
+            tableModel.setColumnIdentifiers(columnNames);
+
+            while (resultSet.next()) {
+                Object[] rowData = new Object[columnCount];
+                for (int i = 1; i <= columnCount; i++) {
+                    rowData[i - 1] = resultSet.getObject(i);
+                }
+                tableModel.addRow(rowData);
+            }
+
+            return tableModel;
+        }catch(Exception e){
+            return null;
+        }
+    }
+    
+    private static DefaultTableModel setDefaultDataTableModel(ResultSet resultSet){
+        try{
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
             DefaultTableModel tableModel = new DefaultTableModel(0, columnCount);
