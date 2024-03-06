@@ -8,6 +8,13 @@ import dao.SystemDAO;
 import java.util.HashMap;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import model.DBConnection;
+import panda.user.entities.ManageCollection;
+import panda.user.entities.ManageFlashcard;
+import panda.user.entities.ManageProject;
+import panda.user.entities.ManageSentence;
+import panda.user.entities.ManageTask;
+import panda.user.entities.ManageVocab;
 import panda.user.system.CreateTablespace;
 
 /**
@@ -29,7 +36,10 @@ public class CpnProfile extends javax.swing.JPanel {
     public CpnProfile() {
         initComponents();
         listSystems.setListData(systems);
-        LoadDataTableModel(SystemDAO.LoadSGA());
+        if(!"panda_user".equals(DBConnection.getUsername())){
+            LoadDataTableModel(SystemDAO.LoadSGA());
+            
+        }
 
     }
     
@@ -99,12 +109,12 @@ public class CpnProfile extends javax.swing.JPanel {
         txtFieldPassword = new javax.swing.JTextField();
         txtFieldConfirmPassword = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnCollection = new javax.swing.JButton();
+        btnSentence = new javax.swing.JButton();
+        btnFlashcard = new javax.swing.JButton();
+        btnProject = new javax.swing.JButton();
+        btnTask = new javax.swing.JButton();
+        btnVocab = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         btnCreateTableSpace = new javax.swing.JButton();
         btnKillSession = new javax.swing.JButton();
@@ -172,17 +182,47 @@ public class CpnProfile extends javax.swing.JPanel {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Management"));
 
-        jButton1.setText("Collection");
+        btnCollection.setText("Collection");
+        btnCollection.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCollectionMouseClicked(evt);
+            }
+        });
 
-        jButton2.setText("Vocabulary");
+        btnSentence.setText("Sentence");
+        btnSentence.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSentenceMouseClicked(evt);
+            }
+        });
 
-        jButton3.setText("Flashcard");
+        btnFlashcard.setText("Flashcard");
+        btnFlashcard.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnFlashcardMouseClicked(evt);
+            }
+        });
 
-        jButton4.setText("Project");
+        btnProject.setText("Project");
+        btnProject.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnProjectMouseClicked(evt);
+            }
+        });
 
-        jButton5.setText("Task");
+        btnTask.setText("Task");
+        btnTask.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnTaskMouseClicked(evt);
+            }
+        });
 
-        jButton6.setText("Vocab");
+        btnVocab.setText("Vocab");
+        btnVocab.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnVocabMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -190,17 +230,17 @@ public class CpnProfile extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 26, Short.MAX_VALUE)
-                .addComponent(jButton6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 26, Short.MAX_VALUE)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 26, Short.MAX_VALUE)
-                .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 26, Short.MAX_VALUE)
-                .addComponent(jButton5)
+                .addComponent(btnCollection)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 28, Short.MAX_VALUE)
+                .addComponent(btnVocab)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 28, Short.MAX_VALUE)
+                .addComponent(btnFlashcard)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addComponent(btnSentence)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 28, Short.MAX_VALUE)
+                .addComponent(btnProject)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 28, Short.MAX_VALUE)
+                .addComponent(btnTask)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -208,12 +248,12 @@ public class CpnProfile extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6))
+                    .addComponent(btnCollection)
+                    .addComponent(btnSentence)
+                    .addComponent(btnFlashcard)
+                    .addComponent(btnProject)
+                    .addComponent(btnTask)
+                    .addComponent(btnVocab))
                 .addContainerGap(7, Short.MAX_VALUE))
         );
 
@@ -427,6 +467,48 @@ public class CpnProfile extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnViewAuditMouseClicked
 
+    private void btnCollectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCollectionMouseClicked
+        // TODO add your handling code here:
+        ManageCollection collection = new ManageCollection();
+        collection.setVisible(true);
+        collection.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnCollectionMouseClicked
+
+    private void btnProjectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProjectMouseClicked
+        // TODO add your handling code here:
+        ManageProject project = new ManageProject();
+        project.setVisible(true);
+        project.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnProjectMouseClicked
+
+    private void btnVocabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVocabMouseClicked
+        // TODO add your handling code here:
+        ManageVocab vocab = new ManageVocab();
+        vocab.setVisible(true);
+        vocab.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnVocabMouseClicked
+
+    private void btnFlashcardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFlashcardMouseClicked
+        // TODO add your handling code here:
+        ManageFlashcard flashcard = new ManageFlashcard();
+        flashcard.setVisible(true);
+        flashcard.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnFlashcardMouseClicked
+
+    private void btnSentenceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSentenceMouseClicked
+        // TODO add your handling code here:
+        ManageSentence sentence = new ManageSentence();
+        sentence.setVisible(true);
+        sentence.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnSentenceMouseClicked
+
+    private void btnTaskMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTaskMouseClicked
+        // TODO add your handling code here:
+        ManageTask task = new ManageTask();
+        task.setVisible(true);
+        task.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnTaskMouseClicked
+
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();
 //        jTableSystem.setModel(sga);
@@ -490,16 +572,16 @@ public class CpnProfile extends javax.swing.JPanel {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCollection;
     private javax.swing.JButton btnCreateTableSpace;
+    private javax.swing.JButton btnFlashcard;
     private javax.swing.JButton btnKillSession;
+    private javax.swing.JButton btnProject;
+    private javax.swing.JButton btnSentence;
+    private javax.swing.JButton btnTask;
     private javax.swing.JButton btnViewAudit;
     private javax.swing.JButton btnViewSession;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton btnVocab;
     private javax.swing.JButton jButton7;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JPanel jPanel1;

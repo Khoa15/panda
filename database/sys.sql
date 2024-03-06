@@ -19,6 +19,8 @@ CREATE USER panda IDENTIFIED BY panda;
 
 GRANT dba TO panda;
 
+--GRANT EXECUTE ON DBMS_SESSION TO panda;
+
 GRANT ALL PRIVILEGES TO panda;
 
 GRANT SELECT ON v$sgainfo TO panda;
@@ -402,6 +404,29 @@ EXCEPTION
 END addvocab;
 /
 
+CREATE OR REPLACE FUNCTION select_vocab RETURN SYS_REFCURSOR
+IS
+    list_vocab SYS_REFCURSOR;
+BEGIN
+-- open cursor
+    OPEN list_vocab FOR SELECT
+                                *
+                            FROM
+                                VOCAB_TYPEVOCAB v
+                                INNER JOIN CARD c
+                                ON v.cid = c.id
+                                INNER JOIN COLLECTION_CARD CC
+                                ON CC.CARD_ID = c.id
+                                INNER JOIN COLLECTION COL
+                                ON CC.COLLECT_ID = COL.ID
+                                WHERE COL.username = 'panda_user'
+                                ;
+  -- Return the cursor
+
+    RETURN list_vocab;
+END;
+/
+
 -- END PROCEDURE VOCAB
 
 --- PROCEDURE SENTENCE
@@ -534,19 +559,45 @@ END;
 
 --- PROCEDURE PROJECT
 
-CREATE OR REPLACE PROCEDURE selectprojects (
+CREATE OR REPLACE PROCEDURE select_projects (
     p_cursor OUT SYS_REFCURSOR
 ) AS
+    curr_username VARCHAR2(30); -- Adjust the size based on your needs
 BEGIN
-    OPEN p_cursor FOR SELECT
-                                            *
-                                        FROM
-                                            project
-                      WHERE
-                          username = sys_context('USERENV', 'CURRENT_USER');
+    -- Assign the current user to the variable
+    SELECT USER INTO curr_username FROM DUAL;
 
-END selectprojects;
+    -- Open the cursor using the declared variable
+    OPEN p_cursor FOR
+        SELECT
+            ID, NAME, DESCRIPTION, PRIORITY, CREATED_AT, UPDATED_AT, STARTED_AT, ENDED_AT
+        FROM
+            panda.project
+        WHERE
+            username = curr_username;
+END select_projects;
 /
+
+
+--CREATE OR REPLACE PROCEDURE select_projects (
+--    p_cursor OUT SYS_REFCURSOR
+--) AS
+--BEGIN
+--    BEGIN
+--        OPEN p_cursor FOR
+--            SELECT ID, NAME, DESCRIPTION, PRIORITY, CREATED_AT, UPDATED_AT, STARTED_AT, ENDED_AT
+--            FROM project
+--            WHERE username = sys_context('USERENV', 'CURRENT_USER');
+--    EXCEPTION
+--        WHEN OTHERS THEN
+--            IF p_cursor%ISOPEN THEN
+--                CLOSE p_cursor;
+--            END IF;
+--            RAISE;
+--    END;
+--END select_projects;
+--/
+
 
 -- END PROCEDURE PROJECT
 
@@ -729,7 +780,7 @@ GRANT EXECUTE ON PANDA.SELECTCARDSANALYSISMEMORY TO PANDA_USER_ROLE;
 GRANT EXECUTE ON PANDA.SELECTCOLLECTIONS TO PANDA_USER_ROLE;
 GRANT EXECUTE ON PANDA.SELECTCOLLECTIONSANALYSIS TO PANDA_USER_ROLE;
 GRANT EXECUTE ON PANDA.SELECTINBOXES TO PANDA_USER_ROLE;
-GRANT EXECUTE ON PANDA.SELECTPROJECTS TO PANDA_USER_ROLE;
+GRANT EXECUTE ON PANDA.SELECT_PROJECTS TO PANDA_USER_ROLE;
 GRANT EXECUTE ON PANDA.SELECTTASKSTODAY TO PANDA_USER_ROLE;
 GRANT EXECUTE ON PANDA.SELECTTASKSTODAYBYPROJECTID TO PANDA_USER_ROLE;
 GRANT EXECUTE ON PANDA.SIGNOUT TO PANDA_USER_ROLE;
@@ -779,6 +830,8 @@ END;
 CREATE USER panda_user IDENTIFIED BY panda_user;
 
 GRANT PANDA_USER_ROLE TO panda_user;
+GRANT PANDA_USER_ROLE TO panda;
+GRANT SELECT ON PROJECT TO panda;
 
 Alter session set current_schema=panda;
 INSERT INTO ACCOUNT (USERNAME, FULLNAME) VALUES ('panda_user', 'PANDA USER');
@@ -851,3 +904,8 @@ INSERT INTO sentence(origin, translated, type) VALUES ('Living healthfully requi
 
 INSERT INTO SENTENCE_VOCAB_TYPEVOCAB (sid, word, pos) VALUES (1, 'healthfully', 'adverb');
 INSERT INTO SENTENCE_VOCAB_TYPEVOCAB (sid, word, pos) VALUES (2, 'healthfully', 'adverb');
+
+INSERT INTO ACCOUNT VALUES ('panda', '123');
+
+INSERT INTO PANDA.PROJECT (username, name, description, created_at, updated_at, started_at, ended_at) 
+VALUES ('panda', 'panda', '', null, null, null, null);

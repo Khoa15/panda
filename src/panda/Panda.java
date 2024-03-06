@@ -26,7 +26,7 @@ public class Panda {
         SignIn.main(args);
     }
 
-    public static void exit(WindowEvent e) {
+    public static void exit(WindowEvent e) throws Exception {
         int confirmed = JOptionPane.showConfirmDialog(e.getComponent(),
                 "Bạn muốn tắt chương trình?", "Xác nhận",
                 JOptionPane.YES_NO_OPTION);

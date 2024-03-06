@@ -21,16 +21,23 @@ import oracle.jdbc.OracleTypes;
  */
 public class SystemDAO {
 
-    public static boolean createTablespace(String tablespace, String location, String size) {
+    public static boolean createTablespace(String tablespace, ArrayList<String> location, ArrayList<String> size) throws Exception {
         try{
+            if(location.size() != size.size()) return false;
+            StringBuilder datafiles = new StringBuilder();
+            int i = 0;
+            for(; i < location.size() - 1; i++){
+                datafiles.append(location.get(i)).append(" size ").append(size.get(i)).append("M,");
+            }
+            datafiles.append(location.get(i)).append(" size ").append(size.get(i)).append("M");
             Object[] values = {
                 tablespace,
+                location,
                 size,
             };
             return DBConnectionDAO.CallProcedureNoParameter("addtablespaces", values);
         }catch(Exception e){
-            e.printStackTrace();
-            return false;
+            throw e;
         }
     }
 

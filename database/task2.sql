@@ -198,12 +198,27 @@ END;
 
 create or replace PROCEDURE AddTableSpaces (
     name_tbs IN VARCHAR2,
+    location_tbs IN VARCHAR2,
     size_tbs IN VARCHAR2
 )
 AS
     v_sql VARCHAR2(3000);
 BEGIN
-    v_sql := 'CREATE TABLESPACE ' || name_tbs || ' datafile ''' || 'D:\' || name_tbs || '.dbf'' size ' || size_tbs || 'm' ;
+    v_sql := 'CREATE TABLESPACE ' || name_tbs || ' datafile ''' || location_tbs || ''' size ' || size_tbs || 'm' ;
     EXECUTE IMMEDIATE v_sql;
 END AddTableSpaces;
 /
+
+--CREATE OR REPLACE PROCEDURE AddTableSpaces(
+--  name_tbs IN VARCHAR2,
+--  location_tbs IN VARCHAR2,
+--  size_tbs IN NUMBER
+--)
+--AS
+--BEGIN
+--
+--  EXECUTE IMMEDIATE 'CREATE TABLESPACE :name DATAFILE :location SIZE :sizeM'
+--    USING name_tbs, location_tbs, size_tbs * 1024 * 1024; -- Convert size to MB
+--END AddTableSpaces;
+--/
+

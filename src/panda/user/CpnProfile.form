@@ -152,17 +152,17 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" pref="26" max="32767" attributes="0"/>
-                  <Component id="jButton6" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" pref="26" max="32767" attributes="0"/>
-                  <Component id="jButton3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="21" max="32767" attributes="0"/>
-                  <Component id="jButton2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" pref="26" max="32767" attributes="0"/>
-                  <Component id="jButton4" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" pref="26" max="32767" attributes="0"/>
-                  <Component id="jButton5" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnCollection" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" pref="28" max="32767" attributes="0"/>
+                  <Component id="btnVocab" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" pref="28" max="32767" attributes="0"/>
+                  <Component id="btnFlashcard" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="24" max="32767" attributes="0"/>
+                  <Component id="btnSentence" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" pref="28" max="32767" attributes="0"/>
+                  <Component id="btnProject" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" pref="28" max="32767" attributes="0"/>
+                  <Component id="btnTask" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -172,12 +172,12 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton4" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton5" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton6" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnCollection" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnSentence" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnFlashcard" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnProject" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnTask" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnVocab" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="7" max="32767" attributes="0"/>
               </Group>
@@ -185,35 +185,53 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="btnCollection">
           <Properties>
             <Property name="text" type="java.lang.String" value="Collection"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnCollectionMouseClicked"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton2">
+        <Component class="javax.swing.JButton" name="btnSentence">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Vocabulary"/>
+            <Property name="text" type="java.lang.String" value="Sentence"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnSentenceMouseClicked"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton3">
+        <Component class="javax.swing.JButton" name="btnFlashcard">
           <Properties>
             <Property name="text" type="java.lang.String" value="Flashcard"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnFlashcardMouseClicked"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton4">
+        <Component class="javax.swing.JButton" name="btnProject">
           <Properties>
             <Property name="text" type="java.lang.String" value="Project"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnProjectMouseClicked"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton5">
+        <Component class="javax.swing.JButton" name="btnTask">
           <Properties>
             <Property name="text" type="java.lang.String" value="Task"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnTaskMouseClicked"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton6">
+        <Component class="javax.swing.JButton" name="btnVocab">
           <Properties>
             <Property name="text" type="java.lang.String" value="Vocab"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnVocabMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

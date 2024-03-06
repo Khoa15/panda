@@ -5,9 +5,14 @@
 package panda.user.system;
 
 import dao.SystemDAO;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import model.CustomDialog;
 
 /**
  *
@@ -18,8 +23,14 @@ public class CreateTablespace extends javax.swing.JFrame {
     /**
      * Creates new form CreateTablespace
      */
+    ArrayList<CpnDatafile> datafiles = new ArrayList<>();
     public CreateTablespace() {
         initComponents();
+        CpnDatafile datafile = new CpnDatafile();
+        datafiles.add(datafile);
+        pnDatafiles.add(datafile);
+        pnDatafiles.revalidate();
+        pnDatafiles.repaint();
     }
 
     /**
@@ -31,21 +42,14 @@ public class CreateTablespace extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jFileChooser2 = new javax.swing.JFileChooser();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtFieldTablespaceName = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        txtFieldLocation = new javax.swing.JTextField();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        txtFieldSize = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
         btnCreate = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
-
-        jFileChooser2.setSelectedFile(new java.io.File("D:\\Tools\\NetBeans-20\\helloworld.dbf"));
+        btnAddDatafile = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        pnDatafiles = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -59,7 +63,7 @@ public class CreateTablespace extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(txtFieldTablespaceName, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtFieldTablespaceName)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -72,84 +76,6 @@ public class CreateTablespace extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel2.setText("Location:");
-
-        txtFieldLocation.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txtFieldLocationMouseClicked(evt);
-            }
-        });
-        txtFieldLocation.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtFieldLocationKeyPressed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(txtFieldLocation)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtFieldLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jLabel3.setText("Size:");
-
-        txtFieldSize.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFieldSizeActionPerformed(evt);
-            }
-        });
-        txtFieldSize.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtFieldSizeKeyPressed(evt);
-            }
-        });
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "M" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
-                .addComponent(txtFieldSize, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtFieldSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         btnCreate.setText("Create");
         btnCreate.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -159,6 +85,16 @@ public class CreateTablespace extends javax.swing.JFrame {
 
         btnClear.setText("Clear");
 
+        btnAddDatafile.setText("Add Datafile");
+        btnAddDatafile.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAddDatafileMouseClicked(evt);
+            }
+        });
+
+        pnDatafiles.setLayout(new javax.swing.BoxLayout(pnDatafiles, javax.swing.BoxLayout.Y_AXIS));
+        jScrollPane1.setViewportView(pnDatafiles);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -166,14 +102,15 @@ public class CreateTablespace extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 184, Short.MAX_VALUE)
+                        .addComponent(btnAddDatafile)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCreate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClear)))
+                        .addComponent(btnClear))
+                    .addComponent(jScrollPane1)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -182,14 +119,13 @@ public class CreateTablespace extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClear)
                     .addComponent(btnCreate)
-                    .addComponent(btnClear))
-                .addContainerGap(31, Short.MAX_VALUE))
+                    .addComponent(btnAddDatafile))
+                .addContainerGap())
         );
 
         pack();
@@ -198,45 +134,42 @@ public class CreateTablespace extends javax.swing.JFrame {
     private void btnCreateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCreateMouseClicked
         // TODO add your handling code here:
         String tablespace = txtFieldTablespaceName.getText();
-        String location = txtFieldLocation.getText();
-        String size = txtFieldSize.getText();
-        JDialog jDialog = new JDialog();
-        if(SystemDAO.createTablespace(tablespace, location, size)){
-            jDialog.setTitle("Success");
-        }else{
-            jDialog.setTitle("Fail");    
+        ArrayList<String> location = new ArrayList<>();
+        ArrayList<String> size = new ArrayList<>();
+        for(CpnDatafile datafile : datafiles){
+            location.add(datafile.getTxtLocation());
+            size.add(datafile.getTxtSize());
         }
+        CustomDialog jDialog = new CustomDialog();
+        JOptionPane option = new JOptionPane();
+        
+        try{
+            SystemDAO.createTablespace(tablespace, location, size);
+            CustomDialog.show("Successfully");
+        }catch(Exception e){
+            CustomDialog.show(e.getMessage());
+        }
+        
     }//GEN-LAST:event_btnCreateMouseClicked
 
-    private void txtFieldSizeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFieldSizeKeyPressed
+    private void btnAddDatafileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddDatafileMouseClicked
         // TODO add your handling code here:
-        Object x = evt;
-    }//GEN-LAST:event_txtFieldSizeKeyPressed
-
-    private void txtFieldSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldSizeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldSizeActionPerformed
-
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
-    private void txtFieldLocationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFieldLocationMouseClicked
-        // TODO add your handling code here:
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Datafile", "dbf");
-        jFileChooser2.setAcceptAllFileFilterUsed(false);
-        jFileChooser2.addChoosableFileFilter(filter);
-        int r = jFileChooser2.showSaveDialog(null);
-        if(r == JFileChooser.APPROVE_OPTION){
-            txtFieldLocation.setText(jFileChooser2.getSelectedFile().getAbsolutePath());
+        CpnDatafile datafile = new CpnDatafile();
+        datafiles.add(datafile);
+        pnDatafiles.add(datafile);
+        
+        pnDatafiles.revalidate();
+        pnDatafiles.repaint();
+    }//GEN-LAST:event_btnAddDatafileMouseClicked
+    
+    private boolean accept(File f){
+        if (f.isDirectory()) {
+            return true;
+        } else {
+            return f.getName().toLowerCase().endsWith(".dbf");
         }
-    }//GEN-LAST:event_txtFieldLocationMouseClicked
-
-    private void txtFieldLocationKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFieldLocationKeyPressed
-        // TODO add your handling code here:
-        evt.consume();
-    }//GEN-LAST:event_txtFieldLocationKeyPressed
-
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -273,18 +206,13 @@ public class CreateTablespace extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddDatafile;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnCreate;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JFileChooser jFileChooser2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField txtFieldLocation;
-    private javax.swing.JTextField txtFieldSize;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel pnDatafiles;
     private javax.swing.JTextField txtFieldTablespaceName;
     // End of variables declaration//GEN-END:variables
 }

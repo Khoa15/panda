@@ -11,20 +11,19 @@ BEGIN
 END;
 /
 
+GRANT EXECUTE ON PANDA.GET_LAST_LOGIN TO PANDA_USER_ROLE;
 
-CREATE OR REPLACE FUNCTION get_policy_in_user RETURN SYS_REFCURSOR IS
+
+CREATE OR REPLACE FUNCTION get_policies (p_owner IN VARCHAR2)
+RETURN SYS_REFCURSOR IS
     c_policy SYS_REFCURSOR;
 BEGIN
 
     OPEN c_policy FOR SELECT
-                                tablespace_name,
-                                contents,
-                                status,
-                                extent_management,
-                                allocation_type,
-                                logging
+                                object_owner, policy_name, function
                             FROM
-                                dba_tablespaces;
+                                all_policies
+                                WHERE object_owner = UPPER(p_owner);
 
     RETURN c_policy;
 END;

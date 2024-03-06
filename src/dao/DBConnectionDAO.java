@@ -5,16 +5,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLType;
 import java.sql.Types;
 import java.sql.Statement;
+import java.util.Vector;
+import javax.swing.JButton;
+import javax.swing.table.DefaultTableModel;
 import oracle.jdbc.OracleTypes;
 
 public class DBConnectionDAO {
 
     public DBConnectionDAO() {
     }
-
+    
     public static ResultSet ExecuteSelectQuery(String query) {
         try {
             Connection con = DBConnection.getConn();
@@ -40,15 +44,17 @@ public class DBConnectionDAO {
     public static ResultSet Load(String storedProcedure) {
         try {
             String call = "{call PANDA." + storedProcedure + "(?)}";
-            //Connection con = DBConnection.openConnection();
             Connection con = DBConnection.getConn();
             CallableStatement callStatement = con.prepareCall(call);
+            //Connection con = DBConnection.openConnection();
             callStatement.registerOutParameter(1, OracleTypes.CURSOR);
             callStatement.execute();
             return (ResultSet) callStatement.getObject(1);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }finally{
+            
         }
     }
 
@@ -93,13 +99,13 @@ public class DBConnectionDAO {
             return -1;
         }
     }
-    public static boolean CallProcedureNoParameter(String procedure, Object[] values) {
+    public static boolean CallProcedureNoParameter(String procedure, Object[] values) throws Exception {
         try {
             CallableStatement callStatement = setCallable(procedure, values, false);
-            return callStatement.execute();
+            Object x = callStatement.execute();
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw e;
         }
     }
     public static ResultSet CallProcedure(String procedure, Object[] values) {
