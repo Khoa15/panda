@@ -15,6 +15,7 @@ import panda.user.entities.ManageProject;
 import panda.user.entities.ManageSentence;
 import panda.user.entities.ManageTask;
 import panda.user.entities.ManageVocab;
+import panda.user.system.AddDatafile;
 import panda.user.system.CreateTablespace;
 
 /**
@@ -30,7 +31,7 @@ public class CpnProfile extends javax.swing.JPanel {
      */
     String[] systems = {
         "SGA", "PGA", "PROCESS", "INSTANCE", "DATABASE", "DATAFILE", "CONTROL FILES", "SPFILE",
-        "SESSION", "TABLESPACE", "DATAFILES", "POLICY", "AUDIT"
+        "SESSION", "TABLESPACE", "DATAFILES", "POLICY", "AUDIT", "USERS"
     };
 
     public CpnProfile() {
@@ -85,6 +86,9 @@ public class CpnProfile extends javax.swing.JPanel {
             case "AUDIT":
                 LoadDataTableModel(SystemDAO.LoadAudit());
                 break;
+            case "USERS":
+                LoadDataTableModel(SystemDAO.LoadUsers());
+                break;
             default:
                 LoadDataTableModel(SystemDAO.LoadSGA());
                 break;
@@ -120,6 +124,8 @@ public class CpnProfile extends javax.swing.JPanel {
         btnKillSession = new javax.swing.JButton();
         btnViewSession = new javax.swing.JButton();
         btnViewAudit = new javax.swing.JButton();
+        btnAddDatafile = new javax.swing.JButton();
+        btnAddProfile = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableSystem = new javax.swing.JTable();
@@ -231,15 +237,15 @@ public class CpnProfile extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnCollection)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 28, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnVocab)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 28, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnFlashcard)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSentence)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 28, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnProject)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 28, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnTask)
                 .addContainerGap())
         );
@@ -288,6 +294,20 @@ public class CpnProfile extends javax.swing.JPanel {
             }
         });
 
+        btnAddDatafile.setText("Thêm datafile");
+        btnAddDatafile.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAddDatafileMouseClicked(evt);
+            }
+        });
+
+        btnAddProfile.setText("Thêm Profile");
+        btnAddProfile.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAddProfileMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -295,6 +315,10 @@ public class CpnProfile extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnCreateTableSpace)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddDatafile)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddProfile)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnViewAudit)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -311,7 +335,9 @@ public class CpnProfile extends javax.swing.JPanel {
                     .addComponent(btnCreateTableSpace)
                     .addComponent(btnKillSession)
                     .addComponent(btnViewSession)
-                    .addComponent(btnViewAudit))
+                    .addComponent(btnViewAudit)
+                    .addComponent(btnAddDatafile)
+                    .addComponent(btnAddProfile))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -412,7 +438,7 @@ public class CpnProfile extends javax.swing.JPanel {
         // TODO add your handling code here:
         if (systems[listSystems.getSelectedIndex()] == "SESSION") {
             int row = jTableSystem.getSelectedRow();
-            sid = jTableSystem.getValueAt(row, 1).toString();
+            sid = jTableSystem.getValueAt(row, 0).toString();
             serial = jTableSystem.getValueAt(row, 2).toString();
             addr = jTableSystem.getValueAt(row, 0).toString();
             if (row != -1) {
@@ -428,8 +454,8 @@ public class CpnProfile extends javax.swing.JPanel {
         if (systems[listSystems.getSelectedIndex()] == "SESSION") {
             int row = jTableSystem.getSelectedRow();
             if (row != -1) {
-                sid = jTableSystem.getValueAt(row, 1).toString();
-                serial = jTableSystem.getValueAt(row, 2).toString();
+                sid = jTableSystem.getValueAt(row, 0).toString();
+                serial = jTableSystem.getValueAt(row, 1).toString();
                 if (SystemDAO.killSession(sid, serial)) {
                     LoadDataTableModel(SystemDAO.LoadSession());
                 }
@@ -509,6 +535,18 @@ public class CpnProfile extends javax.swing.JPanel {
         task.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnTaskMouseClicked
 
+    private void btnAddDatafileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddDatafileMouseClicked
+        // TODO add your handling code here:
+        AddDatafile datafile = new AddDatafile();
+        datafile.setVisible(true);
+        datafile.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnAddDatafileMouseClicked
+
+    private void btnAddProfileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddProfileMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnAddProfileMouseClicked
+
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();
 //        jTableSystem.setModel(sga);
@@ -572,6 +610,8 @@ public class CpnProfile extends javax.swing.JPanel {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddDatafile;
+    private javax.swing.JButton btnAddProfile;
     private javax.swing.JButton btnCollection;
     private javax.swing.JButton btnCreateTableSpace;
     private javax.swing.JButton btnFlashcard;

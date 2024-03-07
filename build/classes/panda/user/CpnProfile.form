@@ -153,15 +153,15 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnCollection" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" pref="28" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
                   <Component id="btnVocab" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" pref="28" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
                   <Component id="btnFlashcard" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="24" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Component id="btnSentence" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" pref="28" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
                   <Component id="btnProject" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" pref="28" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
                   <Component id="btnTask" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -243,6 +243,10 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnCreateTableSpace" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="btnAddDatafile" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="btnAddProfile" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="btnViewAudit" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -262,6 +266,8 @@
                       <Component id="btnKillSession" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnViewSession" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnViewAudit" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnAddDatafile" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnAddProfile" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -302,6 +308,22 @@
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnViewAuditMouseClicked"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnAddDatafile">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Th&#xea;m datafile"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnAddDatafileMouseClicked"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnAddProfile">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Th&#xea;m Profile"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnAddProfileMouseClicked"/>
           </Events>
         </Component>
       </SubComponents>

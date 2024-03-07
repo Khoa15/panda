@@ -102,7 +102,7 @@ IS
     data_session SYS_REFCURSOR;
 BEGIN
     OPEN data_session FOR
-    SELECT SID, USERNAME, STATUS, OSUSER, MACHINE
+    SELECT SID, serial#, USERNAME, STATUS, OSUSER, MACHINE
     FROM v$SESSION 
     WHERE type!='BACKGROUND';
     
@@ -209,16 +209,28 @@ BEGIN
 END AddTableSpaces;
 /
 
---CREATE OR REPLACE PROCEDURE AddTableSpaces(
---  name_tbs IN VARCHAR2,
---  location_tbs IN VARCHAR2,
---  size_tbs IN NUMBER
---)
---AS
---BEGIN
---
---  EXECUTE IMMEDIATE 'CREATE TABLESPACE :name DATAFILE :location SIZE :sizeM'
---    USING name_tbs, location_tbs, size_tbs * 1024 * 1024; -- Convert size to MB
---END AddTableSpaces;
---/
+create or replace PROCEDURE AddTableSpacesAndManyDatafiles (
+    name_tbs IN VARCHAR2,
+    seq_datafiles IN VARCHAR2
+)
+AS
+    v_sql VARCHAR2(3000);
+BEGIN
+    v_sql := 'CREATE TABLESPACE ' || name_tbs || ' datafile ' || seq_datafiles ;
+    EXECUTE IMMEDIATE v_sql;
+END AddTableSpacesAndManyDatafiles;
+/
 
+-- KHOA
+CREATE OR REPLACE PROCEDURE add_datafile(
+    tablespace_name IN VARCHAR2,
+    location_dt IN VARCHAR2,
+    size_dt IN VARCHAR2
+)
+AS
+    v_sql VARCHAR2(3000);
+BEGIN
+    v_sql := 'ALTER TABLESPACE ' || tablespace_name || ' ADD DATAFILE '''|| location_dt ||''' SIZE ' || size_dt ||'M';
+    EXECUTE IMMEDIATE v_sql;
+END add_datafile;
+/

@@ -46,7 +46,6 @@ public class CreateTablespace extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtFieldTablespaceName = new javax.swing.JTextField();
         btnCreate = new javax.swing.JButton();
-        btnClear = new javax.swing.JButton();
         btnAddDatafile = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         pnDatafiles = new javax.swing.JPanel();
@@ -63,7 +62,7 @@ public class CreateTablespace extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(txtFieldTablespaceName)
+                .addComponent(txtFieldTablespaceName, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -83,8 +82,6 @@ public class CreateTablespace extends javax.swing.JFrame {
             }
         });
 
-        btnClear.setText("Clear");
-
         btnAddDatafile.setText("Add Datafile");
         btnAddDatafile.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -102,15 +99,13 @@ public class CreateTablespace extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 184, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnAddDatafile)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCreate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnClear))
-                    .addComponent(jScrollPane1)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnCreate)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -122,7 +117,6 @@ public class CreateTablespace extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnClear)
                     .addComponent(btnCreate)
                     .addComponent(btnAddDatafile))
                 .addContainerGap())
@@ -137,8 +131,13 @@ public class CreateTablespace extends javax.swing.JFrame {
         ArrayList<String> location = new ArrayList<>();
         ArrayList<String> size = new ArrayList<>();
         for(CpnDatafile datafile : datafiles){
-            location.add(datafile.getTxtLocation());
-            size.add(datafile.getTxtSize());
+            String location_datafile = datafile.getTxtLocation();
+            String size_datafile = datafile.getTxtSize();
+            if(location_datafile.isEmpty() || size_datafile.isEmpty()){
+                return;
+            }
+            location.add(location_datafile);
+            size.add(size_datafile);
         }
         CustomDialog jDialog = new CustomDialog();
         JOptionPane option = new JOptionPane();
@@ -207,7 +206,6 @@ public class CreateTablespace extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddDatafile;
-    private javax.swing.JButton btnClear;
     private javax.swing.JButton btnCreate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;

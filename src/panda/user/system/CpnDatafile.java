@@ -17,6 +17,7 @@ public class CpnDatafile extends javax.swing.JPanel {
     /**
      * Creates new form TableSpace
      */
+    private String location = "D:";
     public CpnDatafile() {
         initComponents();
     }
@@ -38,6 +39,7 @@ public class CpnDatafile extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         txtFieldSize = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jFormattedTextField1 = new javax.swing.JFormattedTextField();
 
         jLabel2.setText("Location:");
 
@@ -127,15 +129,21 @@ public class CpnDatafile extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jFormattedTextField1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -145,7 +153,8 @@ public class CpnDatafile extends javax.swing.JPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -158,12 +167,13 @@ public class CpnDatafile extends javax.swing.JPanel {
         jFileChooser2.setSelectedFile(new File(".dbf"));
         int r = jFileChooser2.showSaveDialog(null);
         if (r == JFileChooser.APPROVE_OPTION) {
-            if(accept(jFileChooser2.getSelectedFile())){
+            if (accept(jFileChooser2.getSelectedFile())) {
+                //location = jFileChooser2.getSelectedFile().getAbsolutePath();
                 txtFieldLocation.setText(jFileChooser2.getSelectedFile().getAbsolutePath());
             }
         }
     }//GEN-LAST:event_txtFieldLocationMouseClicked
-    private boolean accept(File f){
+    private boolean accept(File f) {
         if (f.isDirectory()) {
             return true;
         } else {
@@ -186,23 +196,28 @@ public class CpnDatafile extends javax.swing.JPanel {
 
     private void txtFieldSizeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFieldSizeKeyPressed
         // TODO add your handling code here:
-        Object x = evt;
+        if (!Character.isDigit(evt.getKeyChar()) && !(evt.getKeyCode() == java.awt.event.KeyEvent.VK_BACK_SPACE)) {
+            evt.consume();
+        }
+        //48-57
+        //if(keyCode >=)
     }//GEN-LAST:event_txtFieldSizeKeyPressed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
-    public String getTxtLocation(){
+    public String getTxtLocation() {
         return txtFieldLocation.getText();
     }
-    
-    public String getTxtSize(){
+
+    public String getTxtSize() {
         return txtFieldSize.getText();
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChooseFile;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel2;

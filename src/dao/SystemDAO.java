@@ -27,17 +27,40 @@ public class SystemDAO {
             StringBuilder datafiles = new StringBuilder();
             int i = 0;
             for(; i < location.size() - 1; i++){
-                datafiles.append(location.get(i)).append(" size ").append(size.get(i)).append("M,");
+                datafiles.append("'").append(location.get(i)).append("'").append(" size ").append(size.get(i)).append("M,");
             }
-            datafiles.append(location.get(i)).append(" size ").append(size.get(i)).append("M");
+            datafiles.append("'").append(location.get(i)).append("'").append(" size ").append(size.get(i)).append("M");
+            Object[] values = {
+                tablespace,
+                datafiles.toString()
+            };
+            return DBConnectionDAO.CallProcedureNoParameter("AddTableSpacesAndManyDatafiles", values);
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
+    public static boolean createDatafile(String tablespace, String size, String maxsize, String quota, String location) throws Exception {
+        try{
             Object[] values = {
                 tablespace,
                 location,
-                size,
+                size
             };
-            return DBConnectionDAO.CallProcedureNoParameter("addtablespaces", values);
+            return DBConnectionDAO.CallProcedureNoParameter("add_datafile", values);
         }catch(Exception e){
             throw e;
+        }
+        
+    }
+
+    public static DefaultTableModel LoadUsers() {
+        try {
+            return setDefaultDataTableModel("get_all_users");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -94,7 +117,7 @@ public class SystemDAO {
             return null;
         }
     }
-           
+    
     public static DefaultTableModel LoadInstanceInfo(){
         try {
             return setDefaultDataTableModel("GetInstanceInfo");
@@ -145,7 +168,20 @@ public class SystemDAO {
         }
     }
     
-        public static DefaultTableModel LoadDataFiles(){
+    public static ArrayList<String> LoadTableSpaceName() {
+        ArrayList<String> result = new ArrayList<>();
+        try{
+            ResultSet rs = DBConnectionDAO.CallFunction("get_tablespaces");
+            while(rs.next()){
+                result.add(rs.getString("tablespace_name"));
+            }
+        }catch(Exception e){
+            //throw e;
+        }
+        return result;
+    }
+    
+    public static DefaultTableModel LoadDataFiles(){
         try {
             
             ResultSet rs = DBConnectionDAO.ExecuteSelectQuery("SELECT file_id, file_name, tablespace_name from dba_data_files");
@@ -292,6 +328,7 @@ public class SystemDAO {
 
             return tableModel;
         }catch(Exception e){
+            e.printStackTrace();
             return null;
         }
     }

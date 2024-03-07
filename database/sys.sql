@@ -58,6 +58,7 @@ ALTER SESSION SET current_schema = panda;
 -- CREATE TABLES
 
 CREATE TABLE account (
+    avatar CLOB,
     username VARCHAR2(100) NOT NULL,
     fullname NVARCHAR2(100) NOT NULL,
     CONSTRAINT pk_account PRIMARY KEY ( username )
@@ -834,7 +835,36 @@ GRANT PANDA_USER_ROLE TO panda;
 GRANT SELECT ON PROJECT TO panda;
 
 Alter session set current_schema=panda;
-INSERT INTO ACCOUNT (USERNAME, FULLNAME) VALUES ('panda_user', 'PANDA USER');
+--DECLARE
+--    v_clob CLOB;
+--    v_blob BLOB;
+--    v_bfile BFILE;
+--BEGIN
+--    v_bfile := BFILENAME('C:\Users\Khoa\Pictures', 'meme-meo-cuoi.jpg');
+--
+--    DBMS_LOB.fileopen(v_bfile, DBMS_LOB.file_readonly);
+--
+--    DBMS_LOB.loadfromfile(v_blob, v_bfile, DBMS_LOB.getlength(v_bfile));
+--
+--    DBMS_LOB.createtemporary(v_clob, TRUE);
+--    DBMS_LOB.converttoclob(dest_lob => v_clob,
+--                            src_blob => v_blob,
+--                            amount => DBMS_LOB.getLength(v_blob),
+--                            dest_offset => 1,
+--                            src_offset => 1,
+--                            bfile_csid => DBMS_LOB.default_csid,
+--                            lang_context => DBMS_LOB.default_lang_ctx,
+--                            warning => DBMS_LOB.warnings);
+--
+--    INSERT INTO account (avatar, username, fullname) VALUES (v_clob, 'panda_user', 'PANDA USER');
+--
+--    DBMS_LOB.fileclose(v_bfile);
+--    DBMS_LOB.freetemporary(v_clob);
+--END;
+--/
+
+
+--INSERT INTO ACCOUNT (AVATAR, USERNAME, FULLNAME) VALUES ('panda_user', 'PANDA USER');
 
 
 INSERT INTO project (username, name, description, priority, created_at, updated_at, started_at, ended_at)

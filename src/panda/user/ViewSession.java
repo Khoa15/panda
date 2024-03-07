@@ -19,7 +19,9 @@ public class ViewSession extends javax.swing.JFrame {
     public ViewSession(String sid) {
         initComponents();
         DefaultTableModel tableModel = SystemDAO.LoadProcessWithSession(sid);
-        jTable1.setModel(tableModel);
+        if(tableModel != null){
+            jTable1.setModel(tableModel);            
+        }
     }
 
     /**
