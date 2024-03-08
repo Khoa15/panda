@@ -192,10 +192,8 @@ CREATE TABLE sentence_vocab_typevocab (
                                      pos ),
     CONSTRAINT fk_svt_sentence2 FOREIGN KEY ( sid )
         REFERENCES sentence ( id ),
-    CONSTRAINT fk_svt_vocab_typevocab2 FOREIGN KEY ( word,
-                                                     pos )
-        REFERENCES vocab_typevocab ( word,
-                                     pos )
+    CONSTRAINT fk_svt_vocab_typevocab2 FOREIGN KEY ( word,pos )
+        REFERENCES vocab_typevocab ( word,pos )
 );
 
 CREATE TABLE collection_card (
@@ -217,14 +215,33 @@ CREATE OR REPLACE PROCEDURE addaccount (
     p_password VARCHAR2
 ) AS
     v_sql VARCHAR2(4000);
+    v_project_id NUMBER;
+    v_task_id NUMBER;
+    up_username VARCHAR2(255);
 BEGIN
+    up_username := UPPER(p_username);
     v_sql := 'CREATE USER '
              || p_username
              || ' IDENTIFIED BY '
              || p_password;
     EXECUTE IMMEDIATE v_sql;
-    v_sql := 'GRANT CREATE SESSION, CONNECT TO ' || p_username;
+    v_sql := 'GRANT CREATE SESSION, CONNECT TO ' || p_username;    
     EXECUTE IMMEDIATE v_sql;
+    
+    INSERT INTO ACCOUNT (avatar, username, fullname)
+    VALUES (null, up_username, p_fullname);
+    BEGIN
+        INSERT INTO project (username, name, description, priority, created_at, updated_at)
+        VALUES (up_username, 'Inboxes', null, 0, SYSTIMESTAMP, SYSTIMESTAMP)
+        RETURNING id INTO v_project_id;
+        
+        BEGIN
+            INSERT INTO task (pid, description, done, type_date, is_full_day, type_loop, done_after_n_days, priority, created_at, updated_at)
+            VALUES (v_project_id, 'Inbox created automacally', 0, null, null, 0, 0, 0, SYSTIMESTAMP, SYSTIMESTAMP)
+            RETURNING id INTO v_task_id;
+        END;
+    END;
+    
     COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
@@ -828,7 +845,9 @@ BEGIN
 END;
 /
 
-CREATE USER panda_user IDENTIFIED BY panda_user;
+--CREATE USER panda_user IDENTIFIED BY panda_user;
+call addaccount('panda_user', 'PANDA USER', 'panda_user');
+/
 
 GRANT PANDA_USER_ROLE TO panda_user;
 GRANT PANDA_USER_ROLE TO panda;
@@ -868,19 +887,19 @@ Alter session set current_schema=panda;
 
 
 INSERT INTO project (username, name, description, priority, created_at, updated_at, started_at, ended_at)
-VALUES ('panda_user', 'oracle', NULL, 1, TO_DATE('20/12/2023', 'DD/MM/YYYY'), TO_DATE('05/01/2024', 'DD/MM/YYYY'), TO_DATE('20/01/2024', 'DD/MM/YYYY'), TO_DATE('01/06/2024', 'DD/MM/YYYY'));
+VALUES ('PANDA_USER', 'oracle', NULL, 1, TO_DATE('20/12/2023', 'DD/MM/YYYY'), TO_DATE('05/01/2024', 'DD/MM/YYYY'), TO_DATE('20/01/2024', 'DD/MM/YYYY'), TO_DATE('01/06/2024', 'DD/MM/YYYY'));
 
 INSERT INTO task (pid, description, priority, created_at)
-VALUES (1, 'Write unit tests', 2, TO_DATE('2024-03-05', 'YYYY-MM-DD'));
+VALUES (2, 'Write unit tests', 2, TO_DATE('2024-03-05', 'YYYY-MM-DD'));
 
 INSERT INTO task (pid, description, priority, created_at)
-VALUES (1, 'Fix bugs', 3, TO_DATE('2024-03-05', 'YYYY-MM-DD'));
+VALUES (2, 'Fix bugs', 3, TO_DATE('2024-03-05', 'YYYY-MM-DD'));
 
 INSERT INTO task (pid, description, priority, created_at)
-VALUES (1, 'Deploy to production', 1, TO_DATE('2024-03-05', 'YYYY-MM-DD'));
+VALUES (2, 'Deploy to production', 1, TO_DATE('2024-03-05', 'YYYY-MM-DD'));
 
 INSERT INTO collection (username, name) VALUES
-('panda_user', 'Oracle');
+('PANDA_USER', 'Oracle');
 
 INSERT INTO card (memory, n_learn, n_missed, learn_next_time_at)
 VALUES
@@ -911,7 +930,7 @@ INSERT INTO collection_card (collect_id, card_id) VALUES (1, 4);
 
 -- 2
 INSERT INTO collection (username, name) values
-('panda_user', 'English');
+('PANDA_USER', 'English');
 
 
 INSERT INTO card (memory, n_learn, n_missed, learn_next_time_at)
@@ -931,11 +950,12 @@ values
     
 INSERT INTO sentence(origin, translated, type) VALUES ('The website gives advice to dieters for ways to eat more healthfully and lose weight.', null, 0);
 INSERT INTO sentence(origin, translated, type) VALUES ('Living healthfully requires being active and getting regular exercise.', null, 0);
-
+/
 INSERT INTO SENTENCE_VOCAB_TYPEVOCAB (sid, word, pos) VALUES (1, 'healthfully', 'adverb');
 INSERT INTO SENTENCE_VOCAB_TYPEVOCAB (sid, word, pos) VALUES (2, 'healthfully', 'adverb');
-
-INSERT INTO ACCOUNT VALUES ('panda', '123');
-
-INSERT INTO PANDA.PROJECT (username, name, description, created_at, updated_at, started_at, ended_at) 
-VALUES ('panda', 'panda', '', null, null, null, null);
+/
+--INSERT INTO ACCOUNT VALUES ('panda', '123');
+/
+--INSERT INTO PANDA.PROJECT (username, name, description, created_at, updated_at, started_at, ended_at) 
+--VALUES ('panda', 'panda', '', null, null, null, null);
+/

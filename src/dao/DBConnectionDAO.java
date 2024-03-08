@@ -91,8 +91,9 @@ public class DBConnectionDAO {
     public static int Update(String storedProcedure, Object[] values) {
         try {
             CallableStatement callStatement = setCallable(storedProcedure, values, false);
-            int rs = callStatement.executeUpdate();
-            return rs;
+            Object rs = callStatement.execute();
+            //int rs = callStatement.executeUpdate();
+            return 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -169,7 +170,8 @@ public class DBConnectionDAO {
             int i = (isFunction) ? 1 : 0;
             int length = values.length + i;
             for (; i < length; i++) {
-                callStatement.setObject(i + 1, values[i - ((isFunction) ? 1 : 0)]);
+                Object value = values[i - ((isFunction) ? 1 : 0)];
+                callStatement.setObject(i + 1, value);
             }
             return callStatement;
 
