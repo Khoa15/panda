@@ -5,6 +5,7 @@
 package panda.user.entities;
 
 import dao.ProjectDAO;
+import dao.TaskDAO;
 
 /**
  *
@@ -17,7 +18,7 @@ public class ManageTask extends javax.swing.JFrame {
      */
     public ManageTask() {
         initComponents();
-       jTableProject.setModel(ProjectDAO.getDataTable());
+       jTableProject.setModel(TaskDAO.getDataTable());
     }
 
     /**

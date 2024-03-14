@@ -4,6 +4,11 @@
  */
 package dao;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.util.Vector;
+import javax.swing.JButton;
+import javax.swing.table.DefaultTableModel;
 import model.DBConnection;
 import model.Sentence;
 import model.Vocab;
@@ -27,13 +32,50 @@ public class SentenceDAO {
                     v.getWord(),
                     v.getPartOfSpeech()
                 };
-                r += DBConnectionDAO.Update("AddSentence", values);
+                r += DBConnectionDAO.Update("Add_Sentence", values);
             }
             return r > 0;
         }catch(Exception e){
             return false;
         }finally{
             //DBConnection.closeConnection();
+        }
+    }
+    
+    public static DefaultTableModel getDataTable(){
+        try{
+            ResultSet resultSet = DBConnectionDAO.CallFunction("select_sentences");
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            DefaultTableModel tableModel = new DefaultTableModel(0, columnCount);
+
+            Vector<String> columnNames = new Vector<>();
+            for (int i = 1; i <= columnCount; i++) {
+                columnNames.add(metaData.getColumnName(i));
+            }
+            columnNames.add("Sửa");
+            columnNames.add("Xóa");
+            tableModel.setColumnIdentifiers(columnNames);
+
+            while (resultSet.next()) {
+                Object[] rowData = new Object[columnCount + 2];
+                for (int i = 1; i <= columnCount; i++) {
+                    rowData[i - 1] = resultSet.getObject(i);
+                }
+                int entityId = resultSet.getInt(1);
+                JButton editButton = new JButton("Sửa");
+                JButton deleteButton = new JButton("Xóa");
+                //editButton.addActionListener(e -> editEntity(entityId));
+                //deleteButton.addActionListener(e -> deleteEntity(entityId));
+                rowData[columnCount] = editButton;
+                rowData[columnCount + 1] = deleteButton;
+                
+                tableModel.addRow(rowData);
+            }
+
+            return tableModel;
+        }catch(Exception e){
+            return null;
         }
     }
 }

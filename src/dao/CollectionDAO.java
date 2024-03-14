@@ -18,7 +18,7 @@ public class CollectionDAO {
     public static ArrayList<Collection> load(){
         try{
             collections.clear();
-            ResultSet rs = DBConnectionDAO.Load("SelectCollections");
+            ResultSet rs = DBConnectionDAO.CallFunction("Select_Collections");
             while(rs.next()){
                 collections.add(setCollection(rs));
             }
@@ -32,7 +32,7 @@ public class CollectionDAO {
     public static ArrayList<Collection> loadWithAnalysis(){
         try{
             collections.clear();
-            ResultSet rs = DBConnectionDAO.Load("SelectCollectionsAnalysis");
+            ResultSet rs = DBConnectionDAO.CallFunction("Select_Collections_Analysis");
             while(rs.next()){
                 collections.add(setCollection(rs));
             }
@@ -49,7 +49,7 @@ public class CollectionDAO {
                 c.getName()
             };
             
-            return DBConnectionDAO.Update("AddCollection", values) > 0;
+            return DBConnectionDAO.Update("Add_Collection", values) > 0;
         }catch(Exception e){
             e.printStackTrace();
             return false;
@@ -61,7 +61,7 @@ public class CollectionDAO {
             Object[] values = {
                 c.getName()
             };
-            int res = DBConnectionDAO.Update("DeleteCollection", values);
+            int res = DBConnectionDAO.Update("Delete_Collection", values);
             return res > 0;
         }catch(Exception e){
             return false;

@@ -20,7 +20,7 @@ public class ProjectDAO {
     public static ArrayList<Project> load() {
         try {
             projects.clear();
-            ResultSet rs = DBConnectionDAO.Load("select_projects");
+            ResultSet rs = DBConnectionDAO.CallFunction("select_projects");
             while (rs.next()) {
                 projects.add(setProject(rs));
             }
@@ -75,7 +75,7 @@ public class ProjectDAO {
 
     public static DefaultTableModel getDataTable(){
         try{
-            ResultSet resultSet = DBConnectionDAO.Load("select_projects");
+            ResultSet resultSet = DBConnectionDAO.CallFunction("select_projects");
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
             DefaultTableModel tableModel = new DefaultTableModel(0, columnCount);
@@ -89,7 +89,7 @@ public class ProjectDAO {
             tableModel.setColumnIdentifiers(columnNames);
 
             while (resultSet.next()) {
-                Object[] rowData = new Object[columnCount];
+                Object[] rowData = new Object[columnCount + 2];
                 for (int i = 1; i <= columnCount; i++) {
                     rowData[i - 1] = resultSet.getObject(i);
                 }

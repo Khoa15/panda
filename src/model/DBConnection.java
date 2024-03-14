@@ -55,7 +55,7 @@ public class DBConnection extends Thread {
     private static String password = "";
     private static LocalDateTime last_login;
     private static String database = "orcl";
-    private static String url = "jdbc:oracle:thin:@localhost:1521/" + database + "?current_schema="+username;
+    private static String url = "jdbc:oracle:thin:@localhost:1521/" + database + "?current_schema=panda";
     private static Connection con;
 
     public DBConnection() {
@@ -66,10 +66,7 @@ public class DBConnection extends Thread {
             if(con != null &&  con.isClosed() == false) closeConnection();
             DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
             con = DriverManager.getConnection(url, normalize(username), password);
-            Object[] values = {
-                username.toUpperCase()
-            };
-            Timestamp last_login = (Timestamp)DBConnectionDAO.CallFunction("get_last_login", values, Types.TIMESTAMP);
+            Timestamp last_login = (Timestamp)DBConnectionDAO.CallFunctionWithOutValues("get_last_login", Types.TIMESTAMP);
             DBConnection.last_login = last_login.toLocalDateTime();
             if (con != null) {
                 System.out.println("Connected");
@@ -86,7 +83,12 @@ public class DBConnection extends Thread {
         try {
             if(con != null && con.isClosed() == false) closeConnection();
             DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+            if(username.isEmpty()){
+                con = DriverManager.getConnection(url, sysuser, syspass);
+            }else{
             con = DriverManager.getConnection(url, username, password);
+                
+            }
             if (con != null) {
                 System.out.println("Connected");
             } else {

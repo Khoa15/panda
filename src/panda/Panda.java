@@ -7,7 +7,10 @@ package panda;
 import com.sun.jdi.connect.spi.Connection;
 import dao.DBConnectionDAO;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import model.DBConnection;
@@ -23,7 +26,7 @@ public class Panda {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException, InterruptedException {
-        SignIn.main(args);
+                SignIn.main(args);        
     }
 
     public static void exit(WindowEvent e) throws Exception {
@@ -32,13 +35,7 @@ public class Panda {
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmed == JOptionPane.YES_OPTION) {
-            if(DBConnection.getConn() != null){
-                Object[] values = {
-                    DBConnection.getUsername().toUpperCase()
-                };
-                DBConnectionDAO.CallProcedureNoParameter("signout", values);
-                DBConnection.closeConnection();
-            }
+            DBConnection.closeConnection();
             System.exit(0);
         }
     }

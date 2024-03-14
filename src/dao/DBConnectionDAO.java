@@ -92,7 +92,6 @@ public class DBConnectionDAO {
         try {
             CallableStatement callStatement = setCallable(storedProcedure, values, false);
             Object rs = callStatement.execute();
-            //int rs = callStatement.executeUpdate();
             return 0;
 
         } catch (SQLException e) {
@@ -120,13 +119,48 @@ public class DBConnectionDAO {
             return null;
         }
     }
+    
+    public static boolean CallProcedureNoParameterOut(String procedure, Object[] values) throws Exception{
+        try{
+            CallableStatement callStatement = setCallable(procedure, values, false);
+            callStatement.execute();
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
     public static ResultSet CallFunction(String function) {
         try {
-            CallableStatement callStatement = DBConnection.getConn().prepareCall("{? = call " + function + "}");
+            CallableStatement callStatement = DBConnection.getConn().prepareCall("{? = call PANDA." + function + "}");
             callStatement.registerOutParameter(1, OracleTypes.CURSOR);
             callStatement.execute();
             return (ResultSet) callStatement.getObject(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static ResultSet CallFunction(String function, Object value) {
+        try {
+            CallableStatement callStatement = DBConnection.getConn().prepareCall("{? = call PANDA." + function + "(?)}");
+            callStatement.setObject(2, value);
+            callStatement.registerOutParameter(1, OracleTypes.CURSOR);
+            callStatement.execute();
+            return (ResultSet) callStatement.getObject(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static Object CallFunctionWithOutValues(String function, Object type){
+        try {
+            CallableStatement callStatement = DBConnection.getConn().prepareCall("{? = call PANDA." + function + "}");
+            callStatement.registerOutParameter(1, (int)type);
+
+            callStatement.execute();
+            return (Object) callStatement.getObject(1);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -171,7 +205,11 @@ public class DBConnectionDAO {
             int length = values.length + i;
             for (; i < length; i++) {
                 Object value = values[i - ((isFunction) ? 1 : 0)];
-                callStatement.setObject(i + 1, value);
+                if(value instanceof Boolean){
+                    callStatement.setBoolean(i + 1, ((Boolean) value));
+                }else{
+                    callStatement.setObject(i + 1, value);
+                }
             }
             return callStatement;
 

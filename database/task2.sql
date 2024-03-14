@@ -1,5 +1,17 @@
 alter session set current_schema=panda;
 --- Task Week 2
+CREATE OR REPLACE PROCEDURE kill_session (
+    s_sid VARCHAR2,
+    s_serial VARCHAR2
+)
+AS
+    v_sql VARCHAR2(3000);
+BEGIN
+    v_sql := 'ALTER SYSTEM KILL SESSION '''|| s_sid || ',' || s_serial ||''' IMMEDIATE';
+    EXECUTE IMMEDIATE v_sql;
+END;
+/
+
 create or replace FUNCTION GetControlfileInfo RETURN SYS_REFCURSOR
 IS
     Controlfile_info SYS_REFCURSOR;

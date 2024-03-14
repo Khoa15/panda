@@ -7,6 +7,7 @@ import model.Card;
 import model.DBConnection;
 import model.Flashcard;
 import model.Vocab;
+import oracle.jdbc.OracleTypes;
 
 public class CardDAO {
 
@@ -19,7 +20,7 @@ public class CardDAO {
         try {
             cards.clear();
             Object[] values = new Object[]{collectionId};
-            ResultSet rs = DBConnectionDAO.Load("SelectCards", values);
+            ResultSet rs = (ResultSet)DBConnectionDAO.CallFunction("Select_Cards", values, OracleTypes.CURSOR);
             while (rs.next()) {
                 cards.add(setCard(rs));
             }
@@ -35,7 +36,7 @@ public class CardDAO {
     public static int[] loadAnalysisMemory(){
         try{
             int[] memories = new int[10];
-            ResultSet rs = DBConnectionDAO.Load("SelectCardsAnalysisMemory");
+            ResultSet rs = DBConnectionDAO.CallFunction("Select_Cards_Analysis_Memory");
             while(rs.next()){
                 int m = rs.getInt("memory");
                 int c = rs.getInt("count");

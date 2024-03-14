@@ -4,10 +4,16 @@
  */
 package panda.user;
 
+import dao.DBConnectionDAO;
 import dao.SystemDAO;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import model.Account;
 import model.DBConnection;
 import panda.user.entities.ManageCollection;
 import panda.user.entities.ManageFlashcard;
@@ -17,12 +23,16 @@ import panda.user.entities.ManageTask;
 import panda.user.entities.ManageVocab;
 import panda.user.system.AddDatafile;
 import panda.user.system.CreateTablespace;
-
+import panda.user.system.User;
+import panda.user.system.mgnAudit;
+import panda.user.system.mgnProfile;
+import panda.user.system.mgnRole;
 /**
  *
  * @author nguye
  */
 public class CpnProfile extends javax.swing.JPanel {
+
     String sid;
     String serial;
     String addr;
@@ -31,22 +41,22 @@ public class CpnProfile extends javax.swing.JPanel {
      */
     String[] systems = {
         "SGA", "PGA", "PROCESS", "INSTANCE", "DATABASE", "DATAFILE", "CONTROL FILES", "SPFILE",
-        "SESSION", "TABLESPACE", "DATAFILES", "POLICY", "AUDIT", "USERS"
+        "SESSION", "TABLESPACE", "DATAFILES", "POLICY", "AUDIT", "USERS", "PROFILES"
     };
-
+    String system = "SGA";
+    boolean isDialog = false;
     public CpnProfile() {
         initComponents();
         listSystems.setListData(systems);
-        if(!"panda_user".equals(DBConnection.getUsername())){
+        if (!"panda_user".equals(DBConnection.getUsername())) {
             LoadDataTableModel(SystemDAO.LoadSGA());
-            
+
         }
 
     }
-    
-    public void reloadTable(){
-        String system = "SGA";
-        if(listSystems.getSelectedIndex() != -1){
+
+    public void reloadTable() {
+        if (listSystems.getSelectedIndex() != -1) {
             system = systems[listSystems.getSelectedIndex()];
         }
         switch (system) {
@@ -89,11 +99,14 @@ public class CpnProfile extends javax.swing.JPanel {
             case "USERS":
                 LoadDataTableModel(SystemDAO.LoadUsers());
                 break;
+            case "PROFILES":
+                LoadDataTableModel(SystemDAO.loadProfiles());
+                break;
             default:
                 LoadDataTableModel(SystemDAO.LoadSGA());
                 break;
         }
-        
+
     }
 
     /**
@@ -112,6 +125,7 @@ public class CpnProfile extends javax.swing.JPanel {
         jButton7 = new javax.swing.JButton();
         txtFieldPassword = new javax.swing.JTextField();
         txtFieldConfirmPassword = new javax.swing.JTextField();
+        btnSignout = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         btnCollection = new javax.swing.JButton();
         btnSentence = new javax.swing.JButton();
@@ -119,11 +133,15 @@ public class CpnProfile extends javax.swing.JPanel {
         btnProject = new javax.swing.JButton();
         btnTask = new javax.swing.JButton();
         btnVocab = new javax.swing.JButton();
+        btnPolicy = new javax.swing.JButton();
+        btnProfile = new javax.swing.JButton();
+        btnAudit = new javax.swing.JButton();
+        btnRole = new javax.swing.JButton();
+        btnUser = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         btnCreateTableSpace = new javax.swing.JButton();
         btnKillSession = new javax.swing.JButton();
         btnViewSession = new javax.swing.JButton();
-        btnViewAudit = new javax.swing.JButton();
         btnAddDatafile = new javax.swing.JButton();
         btnAddProfile = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
@@ -154,6 +172,13 @@ public class CpnProfile extends javax.swing.JPanel {
 
         txtFieldConfirmPassword.setText("Confirm password");
 
+        btnSignout.setText("SignOut");
+        btnSignout.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSignoutMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -167,8 +192,10 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtFieldFullname, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                     .addComponent(txtFieldConfirmPassword))
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addComponent(jButton7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnSignout, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -182,7 +209,8 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtFieldPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtFieldConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFieldConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSignout))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -230,23 +258,63 @@ public class CpnProfile extends javax.swing.JPanel {
             }
         });
 
+        btnPolicy.setText("Policy");
+
+        btnProfile.setText("Profile");
+        btnProfile.setEnabled(false);
+
+        btnAudit.setText("Audit");
+        btnAudit.setEnabled(false);
+        btnAudit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAuditMouseClicked(evt);
+            }
+        });
+
+        btnRole.setText("Role");
+        btnRole.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnRoleMouseClicked(evt);
+            }
+        });
+
+        btnUser.setText("User");
+        btnUser.setEnabled(false);
+        btnUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnUserMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnCollection)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnVocab)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnFlashcard)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSentence)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnProject)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnTask)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnCollection)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 29, Short.MAX_VALUE)
+                        .addComponent(btnVocab)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 29, Short.MAX_VALUE)
+                        .addComponent(btnFlashcard)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                        .addComponent(btnSentence)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 29, Short.MAX_VALUE)
+                        .addComponent(btnProject)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 29, Short.MAX_VALUE)
+                        .addComponent(btnTask))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnPolicy)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnProfile)
+                        .addGap(18, 18, Short.MAX_VALUE)
+                        .addComponent(btnAudit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnUser)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRole)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -260,7 +328,14 @@ public class CpnProfile extends javax.swing.JPanel {
                     .addComponent(btnProject)
                     .addComponent(btnTask)
                     .addComponent(btnVocab))
-                .addContainerGap(7, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnPolicy)
+                    .addComponent(btnProfile)
+                    .addComponent(btnAudit)
+                    .addComponent(btnRole)
+                    .addComponent(btnUser))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         btnCreateTableSpace.setText("Tạo tablespace");
@@ -286,14 +361,6 @@ public class CpnProfile extends javax.swing.JPanel {
             }
         });
 
-        btnViewAudit.setText("Xem Audit");
-        btnViewAudit.setEnabled(false);
-        btnViewAudit.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnViewAuditMouseClicked(evt);
-            }
-        });
-
         btnAddDatafile.setText("Thêm datafile");
         btnAddDatafile.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -315,15 +382,13 @@ public class CpnProfile extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnCreateTableSpace)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAddDatafile)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAddProfile)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnViewAudit)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnViewSession)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnKillSession)
                 .addContainerGap())
         );
@@ -335,7 +400,6 @@ public class CpnProfile extends javax.swing.JPanel {
                     .addComponent(btnCreateTableSpace)
                     .addComponent(btnKillSession)
                     .addComponent(btnViewSession)
-                    .addComponent(btnViewAudit)
                     .addComponent(btnAddDatafile)
                     .addComponent(btnAddProfile))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -347,6 +411,9 @@ public class CpnProfile extends javax.swing.JPanel {
         jTableSystem.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTableSystemMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTableSystemMousePressed(evt);
             }
         });
         jScrollPane3.setViewportView(jTableSystem);
@@ -364,8 +431,8 @@ public class CpnProfile extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         listSystems.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -388,7 +455,7 @@ public class CpnProfile extends javax.swing.JPanel {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -418,10 +485,10 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -468,7 +535,7 @@ public class CpnProfile extends javax.swing.JPanel {
         if (systems[listSystems.getSelectedIndex()] == "SESSION") {
             //int row = jTableSystem.getSelectedRow();
             if (!sid.isEmpty()) {
-                
+
                 ViewSession vsession = new ViewSession(sid.toString());
                 vsession.setVisible(true);
                 vsession.setLocationRelativeTo(null);
@@ -482,16 +549,6 @@ public class CpnProfile extends javax.swing.JPanel {
         createTablespace.setVisible(true);
         createTablespace.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnCreateTableSpaceMouseClicked
-
-    private void btnViewAuditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnViewAuditMouseClicked
-        // TODO add your handling code here:
-        if (systems[listSystems.getSelectedIndex()] == "POLICY") {
-            int row = jTableSystem.getSelectedRow();
-            if (row != -1) {
-                
-            }
-        }
-    }//GEN-LAST:event_btnViewAuditMouseClicked
 
     private void btnCollectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCollectionMouseClicked
         // TODO add your handling code here:
@@ -544,26 +601,84 @@ public class CpnProfile extends javax.swing.JPanel {
 
     private void btnAddProfileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddProfileMouseClicked
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_btnAddProfileMouseClicked
+
+    private void btnSignoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignoutMouseClicked
+        // TODO add your handling code here:
+        if (DBConnection.getConn() != null) {
+            Object[] values = {
+                DBConnection.getUsername().toUpperCase()
+            };
+            try {
+                DBConnectionDAO.CallProcedureNoParameter("signout", values);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            DBConnection.closeConnection();
+        }
+//        try {
+//            Account.deleteSessionDevice();
+//        } catch (IOException ex) {
+//            Logger.getLogger(CpnProfile.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        System.exit(0);
+        
+    }//GEN-LAST:event_btnSignoutMouseClicked
+
+    private void btnRoleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRoleMouseClicked
+        // TODO add your handling code here:
+        mgnRole.main(systems);
+    }//GEN-LAST:event_btnRoleMouseClicked
+
+    private void jTableSystemMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableSystemMousePressed
+        // TODO add your handling code here:
+        int selectedRow = jTableSystem.getSelectedRow();
+        if(evt.getClickCount() == 2
+                && selectedRow != -1)
+        {
+            switch(system){
+                case "USERS":
+                    String username = jTableSystem.getValueAt(selectedRow, 1).toString();
+                    User user = new User(username);
+                    user.setVisible(true);
+                    user.setLocationRelativeTo(null);
+                    break;
+                case "PROFILES":
+                    mgnProfile.main(systems);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }//GEN-LAST:event_jTableSystemMousePressed
+
+    private void btnUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUserMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnUserMouseClicked
+
+    private void btnAuditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAuditMouseClicked
+        // TODO add your handling code here:
+        mgnAudit.main(systems);
+    }//GEN-LAST:event_btnAuditMouseClicked
 
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();
 //        jTableSystem.setModel(sga);
 //    }
     private void LoadDataTableModel(DefaultTableModel model) {
-        if(model.getColumnCount() < 10){
+        if (model.getColumnCount() < 10) {
             jTableSystem.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-        }else{
+        } else {
             jTableSystem.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         }
         jTableSystem.setModel(model);
     }
-
+    
 //    public void LoadDataModel(String system) {
 //        jTableSystem.setModel(SystemDAO.loadInfoSystem(system));
 //    }
-
 //    public void LoadPGA() {
 //        DefaultTableModel pga = SystemDAO.loadInfoSystem();
 //        jTableSystem.setModel(pga);
@@ -612,14 +727,19 @@ public class CpnProfile extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddDatafile;
     private javax.swing.JButton btnAddProfile;
+    private javax.swing.JButton btnAudit;
     private javax.swing.JButton btnCollection;
     private javax.swing.JButton btnCreateTableSpace;
     private javax.swing.JButton btnFlashcard;
     private javax.swing.JButton btnKillSession;
+    private javax.swing.JButton btnPolicy;
+    private javax.swing.JButton btnProfile;
     private javax.swing.JButton btnProject;
+    private javax.swing.JButton btnRole;
     private javax.swing.JButton btnSentence;
+    private javax.swing.JButton btnSignout;
     private javax.swing.JButton btnTask;
-    private javax.swing.JButton btnViewAudit;
+    private javax.swing.JButton btnUser;
     private javax.swing.JButton btnViewSession;
     private javax.swing.JButton btnVocab;
     private javax.swing.JButton jButton7;

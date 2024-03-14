@@ -4,26 +4,25 @@ IS
     list_users SYS_REFCURSOR;
 BEGIN
     OPEN list_users FOR
-    SELECT username, password, account_status, expiry_date, profile, last_login FROM dba_users;
+    SELECT user_id, username, password, account_status, expiry_date, profile, last_login FROM dba_users;
     RETURN list_users;
 END;
-
 /
 
-CREATE OR REPLACE FUNCTION get_last_login (p_username VARCHAR2) RETURN TIMESTAMP
+CREATE OR REPLACE FUNCTION get_last_login RETURN TIMESTAMP
 IS
     date_last_login TIMESTAMP;
 BEGIN
     SELECT
         last_login INTO date_last_login
     FROM dba_users
-    where username = p_username;
+    where username = user;
     RETURN date_last_login;
 END;
 /
-
+GRANT SELECT ON dba_users TO PANDA_USER_ROLE;
 GRANT EXECUTE ON PANDA.GET_LAST_LOGIN TO PANDA_USER_ROLE;
-
+/
 
 CREATE OR REPLACE FUNCTION get_policies (p_owner IN VARCHAR2)
 RETURN SYS_REFCURSOR IS

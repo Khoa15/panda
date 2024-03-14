@@ -5,6 +5,7 @@
 package dao;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import model.Account;
 import model.DBConnection;
 
@@ -40,15 +41,19 @@ public class AccountDAO {
     public static boolean add(Account account) {
         try {
             Object[] values = new Object[]{
+                account.getAvatar(),
                 account.getUsername(),
                 account.getFullname(),
                 account.getPassword()
             };
-            int res = DBConnectionDAO.Update("AddAccount", values);
+            DBConnection.openConnection();
+            int res = DBConnectionDAO.Update("Add_Account", values);
             return res > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }finally{
+            DBConnection.closeConnection();
         }
     }
     
@@ -79,4 +84,5 @@ public class AccountDAO {
             return null;
         }
     }
+
 }

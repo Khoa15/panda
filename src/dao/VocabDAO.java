@@ -24,7 +24,7 @@ public class VocabDAO {
             Object[] values = {
                 DBConnection.getUsername()
             };
-            ResultSet rs = DBConnectionDAO.Load("SelectVocabs");
+            ResultSet rs = DBConnectionDAO.CallFunction("Select_Vocab");
             while (rs.next()) {
                 vocabs.add(setVocab(rs));
             }

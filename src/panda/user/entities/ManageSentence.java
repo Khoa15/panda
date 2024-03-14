@@ -5,6 +5,7 @@
 package panda.user.entities;
 
 import dao.ProjectDAO;
+import dao.SentenceDAO;
 
 /**
  *
@@ -17,7 +18,7 @@ public class ManageSentence extends javax.swing.JFrame {
      */
     public ManageSentence() {
         initComponents();
-       jTableProject.setModel(ProjectDAO.getDataTable());
+       jTableProject.setModel(SentenceDAO.getDataTable());
     }
 
     /**

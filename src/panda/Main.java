@@ -8,6 +8,8 @@ import java.awt.Component;
 import java.security.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import panda.user.CpnMain;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -214,8 +216,12 @@ public class Main extends javax.swing.JFrame  {
     }//GEN-LAST:event_btnNavHomeMouseClicked
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        // TODO add your handling code here:
-        Panda.exit(evt);
+        try {
+            // TODO add your handling code here:
+            Panda.exit(evt);
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_formWindowClosing
 
     /**
