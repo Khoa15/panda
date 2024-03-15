@@ -455,7 +455,7 @@ public class CpnProfile extends javax.swing.JPanel {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -622,7 +622,6 @@ public class CpnProfile extends javax.swing.JPanel {
 //        } catch (IOException ex) {
 //            Logger.getLogger(CpnProfile.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-        System.exit(0);
         
     }//GEN-LAST:event_btnSignoutMouseClicked
 

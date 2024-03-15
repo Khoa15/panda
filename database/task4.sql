@@ -10,6 +10,20 @@ select * from role_tab_privs where role = 'PANDA_USER_ROLE' OR role = 'PANDA_REG
 select * from role_tab_privs order by role;
 SELECT * FROM all_procedures WHERE OWNER='PANDA' ORDER BY OBJECT_NAME;
 select * from all_tables WHERE OWNER='PANDA';
+SELECT a.* From PANDA.ACCOUNT a
+INNER JOIN dba_users d
+ON a.username = d.username
+WHERE a.username = user;
+SELECT * FROM ACCOUNT;
+--DROP USER PANDA_USER_TEST;
+
+SELECT du.profile, acc.*
+FROM dba_users du
+LEFT JOIN PANDA.ACCOUNT acc ON acc.username = du.username
+WHERE du.username = 'PANDA';
+
+select * from dba_users;
+
 CREATE OR REPLACE FUNCTION get_dba_tab_privs RETURN SYS_REFCURSOR
 IS
     list_tab_privs SYS_REFCURSOR;
@@ -132,10 +146,13 @@ CREATE OR REPLACE PROCEDURE ADD_ACCOUNT_PROFILE (
     p_fullname NVARCHAR2,
     p_password VARCHAR2,
     p_profile_name varchar2,
-    p_lock INT
+    p_tablespace VARCHAR2,
+    p_lock CHAR
 )
 IS
 BEGIN
+    INSERT INTO ACCOUNT (avatar, username, fullname) VALUES
+    (null, p_username, p_fullname);
     EXECUTE IMMEDIATE 'CREATE USER '
              || p_username
              || ' IDENTIFIED BY '
@@ -143,7 +160,7 @@ BEGIN
     EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CONNECT TO ' || p_username;
     EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' PROFILE ' || p_profile_name;
     EXECUTE IMMEDIATE 'GRANT PANDA_USER_ROLE TO ' || p_username;
-    IF p_lock = 1 THEN
+    IF p_lock = '1' THEN
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' ACCOUNT LOCK';
     END IF;
     COMMIT;
@@ -154,15 +171,15 @@ EXCEPTION
 END ADD_ACCOUNT_PROFILE;
 /
 
-CREATE OR REPLACE FUNCTION GET_ALL_PROFILES RETURN SYS_REFCURSOR
-IS
-    c_profile SYS_REFCURSOR;
-BEGIN
-    OPEN c_profile FOR
-    SELECT * FROM dba_profiles ORDER BY PROFILE;
-    RETURN c_profile;
-END;
-/
+--CREATE OR REPLACE FUNCTION GET_ALL_PROFILES RETURN SYS_REFCURSOR
+--IS
+--    c_profile SYS_REFCURSOR;
+--BEGIN
+--    OPEN c_profile FOR
+--    SELECT * FROM dba_profiles ORDER BY PROFILE;
+--    RETURN c_profile;
+--END;
+--/
 
 CREATE OR REPLACE FUNCTION GET_PROFILE (p_profile IN VARCHAR2) RETURN SYS_REFCURSOR
 IS
@@ -218,6 +235,20 @@ begin
 end;
 /
 
+CREATE OR REPLACE FUNCTION get_user(
+    p_user IN VARCHAR2
+) RETURN SYS_REFCURSOR
+AS
+    result_user SYS_REFCURSOR;
+BEGIN
+    OPEN result_user FOR
+    SELECT du.profile, du.DEFAULT_TABLESPACE, acc.*
+    FROM dba_users du
+    LEFT JOIN PANDA.ACCOUNT acc ON acc.username = du.username
+    WHERE du.username = p_user;
+    RETURN result_user;
+END;
+/
 CREATE OR REPLACE PROCEDURE update_profile (
     p_profile_name IN VARCHAR2,
     p_resource_name IN VARCHAR2 DEFAULT NULL,
@@ -280,7 +311,7 @@ CREATE OR REPLACE FUNCTION get_all_profiles RETURN SYS_REFCURSOR IS
 BEGIN
     OPEN profiles_cursor FOR
         SELECT profile, resource_name, resource_type, limit
-        FROM dba_profiles;
+        FROM dba_profiles order by profile;
     RETURN profiles_cursor;
 END get_all_profiles;
 /

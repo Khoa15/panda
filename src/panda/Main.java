@@ -31,6 +31,9 @@ public class Main extends javax.swing.JFrame  {
      */
     public Main() {
         initComponents();
+        DBConnection dbconnection = new DBConnection();
+        dbconnection.start();
+        
         pnMain.add(new CpnMain());
         LocalDateTime lastLoginTimestamp = DBConnection.getLastLogin();
 

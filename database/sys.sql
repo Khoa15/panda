@@ -65,7 +65,7 @@ ALTER SESSION SET current_schema = panda;
 CREATE TABLE account (
     avatar BLOB,
     username VARCHAR2(100) NOT NULL,
-    fullname NVARCHAR2(100) NOT NULL,
+    fullname NVARCHAR2(100),
     CONSTRAINT pk_account PRIMARY KEY ( username )
 );
 

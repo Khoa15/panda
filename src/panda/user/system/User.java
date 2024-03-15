@@ -23,19 +23,29 @@ public class User extends javax.swing.JFrame {
      */
     ArrayList<Object[]> Users;
     ArrayList<String> profiles;
+    ArrayList<String> tablespaces;
     String profile;
-    public User() {
-        initComponents();
-        loadListUser();
-        //cbBoxListProfiles
-        
-    }
-    
+    String currentUsername;
     public User(String username) {
         initComponents();
+        jPanel5.setVisible(false);
         loadListProfiles();
+        loadListTablespaces();
         loadListUser(username);        
     }
+    
+    private void loadListTablespaces(){
+        try{
+            tablespaces = SystemDAO.LoadTableSpaceName();
+            for(String tablespace : tablespaces){
+                cbBoxTablespaces.addItem(tablespace);
+            }
+            //cbBoxTablespaces
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
     private void loadListProfiles(){
         try{
             profiles = SystemDAO.loadListProfiles();
@@ -99,7 +109,7 @@ public class User extends javax.swing.JFrame {
         cbInsert = new javax.swing.JCheckBox();
         jPanel5 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        txtFieldFullname = new javax.swing.JTextField();
+        cbBoxTablespaces = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -161,7 +171,7 @@ public class User extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtFieldPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         cbLock.setText("Lock this user");
@@ -222,7 +232,7 @@ public class User extends javax.swing.JFrame {
 
         cbInsert.setText("Insert");
 
-        jLabel4.setText("Fullname");
+        jLabel4.setText("Tablespace");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -231,8 +241,8 @@ public class User extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(txtFieldFullname)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbBoxTablespaces, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -241,8 +251,8 @@ public class User extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtFieldFullname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cbBoxTablespaces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -252,6 +262,7 @@ public class User extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cbBoxListUsers, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -263,8 +274,7 @@ public class User extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSave)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancel))
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnCancel)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -275,10 +285,10 @@ public class User extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -296,8 +306,18 @@ public class User extends javax.swing.JFrame {
     private void cbBoxListUsersItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbBoxListUsersItemStateChanged
         // TODO add your handling code here:
         String username = cbBoxListUsers.getSelectedItem().toString();
-        txtFieldUsername.setText(username);
-        cbBoxListProfiles.setSelectedItem(profile);
+        if(!username.equals(currentUsername)){
+            Account user;
+            try {
+                user = SystemDAO.getUser(username);
+                currentUsername = username;
+                txtFieldUsername.setText(username);
+                cbBoxListProfiles.setSelectedItem(user.profile);
+                cbBoxTablespaces.setSelectedItem(user.tablespace);
+            } catch (Exception ex) {
+                JOptionPane.showConfirmDialog(this, ex.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
+            }
+        }
         
     }//GEN-LAST:event_cbBoxListUsersItemStateChanged
 
@@ -311,19 +331,20 @@ public class User extends javax.swing.JFrame {
         String username = txtFieldUsername.getText();
         String password = txtFieldPassword.getText();
         String profile = cbBoxListProfiles.getSelectedItem().toString();
+        String tablespace = cbBoxTablespaces.getSelectedItem().toString();
         boolean lock = cbLock.isSelected();
         if(cbInsert.isSelected()){
             try{
-                SystemDAO.insertUser(username, password, profile, lock);
-                               JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+                SystemDAO.insertUser(username, password, profile, tablespace, lock);
+                cbBoxListUsers.addItem(username);
+                JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
  
             }catch(Exception e){
                                JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);   
- 
             }
         }else{
             try{
-                SystemDAO.saveUser(username, password, profile, lock);
+                SystemDAO.saveUser(username, password, profile, tablespace, lock);
                 JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
             }catch(Exception e){
                 JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);   
@@ -384,9 +405,9 @@ public class User extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                User u = new User();
-                u.setVisible(true);
-                u.setLocationRelativeTo(null);
+//                User u = new User();
+//                u.setVisible(true);
+//                u.setLocationRelativeTo(null);
             }
         });
     }
@@ -396,6 +417,7 @@ public class User extends javax.swing.JFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox<String> cbBoxListProfiles;
     private javax.swing.JComboBox<String> cbBoxListUsers;
+    private javax.swing.JComboBox<String> cbBoxTablespaces;
     private javax.swing.JCheckBox cbInsert;
     private javax.swing.JCheckBox cbLock;
     private javax.swing.JLabel jLabel1;
@@ -407,7 +429,6 @@ public class User extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JTextField txtFieldFullname;
     private javax.swing.JTextField txtFieldPassword;
     private javax.swing.JTextField txtFieldUsername;
     // End of variables declaration//GEN-END:variables

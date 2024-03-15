@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class Account {
+    public String profile;
+    public String tablespace;
     private byte[] avatar;
-
+    
     public byte[] getAvatar() {
         return avatar;
     }

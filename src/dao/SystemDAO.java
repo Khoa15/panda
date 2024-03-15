@@ -27,6 +27,22 @@ import oracle.jdbc.OracleTypes;
  * @author Khoa
  */
 public class SystemDAO {
+    public static Account getUser(String username) throws Exception{
+        Account user = new Account();
+        try{
+            ResultSet rs = (ResultSet)DBConnectionDAO.CallFunction("get_user", username);
+            while(rs.next()){
+                user.profile = rs.getString(1);
+                user.tablespace = rs.getString(2);
+                user.setAvatar(rs.getBytes(3));
+                user.setUsername(rs.getString(4));
+                user.setFullname(rs.getString(5));
+            }
+        }catch(Exception e){
+            throw e;
+        }
+        return user;
+    }
     public static boolean deleteProfile(String profile){
         try{
             Object[] values =  new Object[] {profile};
@@ -91,7 +107,7 @@ public class SystemDAO {
         return null;
     }
 
-    public static boolean insertUser(String username, String password, String profile, boolean isLock) throws Exception{
+    public static boolean insertUser(String username, String password, String profile, String tablespace, boolean isLock) throws Exception{
         try{
             int lock = (isLock) ? 1 : 0;
             Object[] values = new Object[]{
@@ -99,6 +115,7 @@ public class SystemDAO {
                 "",
                 password,
                 profile,
+                tablespace,
                 lock
             };
             DBConnectionDAO.CallProcedureNoParameterOut("ADD_ACCOUNT_PROFILE", values);
@@ -108,7 +125,7 @@ public class SystemDAO {
         return true;
     }
     
-    public static boolean saveUser(String username, String password, String profile, boolean isLock) throws Exception {
+    public static boolean saveUser(String username, String password, String profile, String tablespace, boolean isLock) throws Exception {
         try {
             int cpass = (password.isEmpty() || password == null) ? 0 : 1;
             int lock = (isLock) ? 1 : 0;
@@ -117,6 +134,7 @@ public class SystemDAO {
                 password,
                 cpass,
                 profile,
+                tablespace,
                 lock
             };
             DBConnectionDAO.CallProcedureNoParameterOut("modify_user_profile", values);

@@ -26,8 +26,6 @@ public class AccountDAO {
             if (DBConnection.openConnection(account.getUsername(), account.getPassword()) != null) {
                 DBConnection.setUsername(account.getUsername());
                 DBConnection.setPassword(account.getPassword());
-                DBConnection dbconnection = new DBConnection();
-                dbconnection.start();
                 return true;
             }
             return false;
