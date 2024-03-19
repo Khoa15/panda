@@ -10,6 +10,8 @@ import java.sql.SQLType;
 import java.sql.Types;
 import java.sql.Statement;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 import oracle.jdbc.OracleTypes;
@@ -18,7 +20,7 @@ public class DBConnectionDAO {
 
     public DBConnectionDAO() {
     }
-    
+
     public static ResultSet ExecuteSelectQuery(String query) {
         try {
             Connection con = DBConnection.getConn();
@@ -42,10 +44,11 @@ public class DBConnectionDAO {
     }
 
     public static ResultSet Load(String storedProcedure) {
+        CallableStatement callStatement = null;
         try {
             String call = "{call PANDA." + storedProcedure + "(?)}";
             Connection con = DBConnection.getConn();
-            CallableStatement callStatement = con.prepareCall(call);
+            callStatement = con.prepareCall(call);
             //Connection con = DBConnection.openConnection();
             callStatement.registerOutParameter(1, OracleTypes.CURSOR);
             callStatement.execute();
@@ -53,17 +56,16 @@ public class DBConnectionDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
-        }finally{
-            
         }
     }
 
     public static ResultSet Load(String storedProcedure, Object id) {
+        CallableStatement callStatement = null;
         try {
             String call = "{call PANDA." + storedProcedure + "(?, ?)}";
             //Connection con = DBConnection.openConnection();
             Connection con = DBConnection.getConn();
-            CallableStatement callStatement = con.prepareCall(call);
+            callStatement = con.prepareCall(call);
             callStatement.setObject(1, id);
             callStatement.registerOutParameter(2, OracleTypes.CURSOR);
             callStatement.execute();
@@ -75,9 +77,10 @@ public class DBConnectionDAO {
     }
 
     public static ResultSet Load(String storedProcedure, Object[] values) {
+        CallableStatement callStatement = null;
         try {
             values = add(values, null);
-            CallableStatement callStatement = setCallable(storedProcedure, values, false);
+            callStatement = setCallable(storedProcedure, values, false);
             callStatement.registerOutParameter(values.length + 1, OracleTypes.CURSOR);
             callStatement.execute();
             return (ResultSet) callStatement.getObject(values.length + 1);
@@ -89,8 +92,9 @@ public class DBConnectionDAO {
     }
 
     public static int Update(String storedProcedure, Object[] values) {
+        CallableStatement callStatement = null;
         try {
-            CallableStatement callStatement = setCallable(storedProcedure, values, false);
+            callStatement = setCallable(storedProcedure, values, false);
             Object rs = callStatement.execute();
             return 0;
 
@@ -99,52 +103,74 @@ public class DBConnectionDAO {
             return -1;
         }
     }
+
     public static boolean CallProcedureNoParameter(String procedure, Object[] values) throws Exception {
+        CallableStatement callStatement = null;
         try {
-            CallableStatement callStatement = setCallable(procedure, values, false);
+            callStatement = setCallable(procedure, values, false);
             Object x = callStatement.execute();
             return true;
         } catch (Exception e) {
             throw e;
         }
     }
+
     public static ResultSet CallProcedure(String procedure, Object[] values) {
+        CallableStatement callStatement = null;
+        ResultSet resultSet = null;
         try {
             values = add(values, null);
-            CallableStatement callStatement = setCallable(procedure, values, false);
+            callStatement = setCallable(procedure, values, false);
             callStatement.registerOutParameter(values.length + 1, OracleTypes.CURSOR);
             callStatement.execute();
-            return (ResultSet) callStatement.getObject(values.length + 1);
+            resultSet = (ResultSet) callStatement.getObject(values.length + 1);
         } catch (Exception e) {
             return null;
         }
+        return resultSet;
     }
-    
-    public static boolean CallProcedureNoParameterOut(String procedure, Object[] values) throws Exception{
-        try{
-            CallableStatement callStatement = setCallable(procedure, values, false);
+
+    public static boolean CallProcedureNoParameterOut(String procedure, Object[] values) throws Exception {
+        CallableStatement callStatement = null;
+        try {
+            callStatement = setCallable(procedure, values, false);
             callStatement.execute();
             return true;
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
     }
 
     public static ResultSet CallFunction(String function) {
+        CallableStatement callStatement = null;
         try {
-            CallableStatement callStatement = DBConnection.getConn().prepareCall("{? = call PANDA." + function + "}");
+            callStatement = DBConnection.getConn().prepareCall("{? = call PANDA." + function + "}");
             callStatement.registerOutParameter(1, OracleTypes.CURSOR);
             callStatement.execute();
-            return (ResultSet) callStatement.getObject(1);
+            ResultSet rs = (ResultSet) callStatement.getObject(1);
+            return rs;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-    public static ResultSet CallFunction(String function, Object value) {
+    public static ResultSet CallFunction(String function, Object[] values) {
+        CallableStatement callStatement = null;
         try {
-            CallableStatement callStatement = DBConnection.getConn().prepareCall("{? = call PANDA." + function + "(?)}");
+            callStatement = setCallable(function, values, true);
+            callStatement.registerOutParameter(1, OracleTypes.CURSOR);
+            callStatement.execute();
+            return (ResultSet) callStatement.getObject(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static ResultSet CallFunction(String function, Object value) {
+        CallableStatement callStatement = null;
+        try {
+            callStatement = DBConnection.getConn().prepareCall("{? = call PANDA." + function + "(?)}");
             callStatement.setObject(2, value);
             callStatement.registerOutParameter(1, OracleTypes.CURSOR);
             callStatement.execute();
@@ -154,10 +180,12 @@ public class DBConnectionDAO {
             return null;
         }
     }
-    public static Object CallFunctionWithOutValues(String function, Object type){
+
+    public static Object CallFunctionWithOutValues(String function, Object type) {
+        CallableStatement callStatement = null;
         try {
-            CallableStatement callStatement = DBConnection.getConn().prepareCall("{? = call PANDA." + function + "}");
-            callStatement.registerOutParameter(1, (int)type);
+            callStatement = DBConnection.getConn().prepareCall("{? = call PANDA." + function + "}");
+            callStatement.registerOutParameter(1, (int) type);
 
             callStatement.execute();
             return (Object) callStatement.getObject(1);
@@ -166,10 +194,12 @@ public class DBConnectionDAO {
             return null;
         }
     }
+
     public static Object CallFunction(String function, Object[] values, Object type) {
+        CallableStatement callStatement = null;
         try {
-            CallableStatement callStatement = setCallable(function, values, true);
-            callStatement.registerOutParameter(1, (int)type);
+            callStatement = setCallable(function, values, true);
+            callStatement.registerOutParameter(1, (int) type);
 
             callStatement.execute();
             return (Object) callStatement.getObject(1);
@@ -205,9 +235,9 @@ public class DBConnectionDAO {
             int length = values.length + i;
             for (; i < length; i++) {
                 Object value = values[i - ((isFunction) ? 1 : 0)];
-                if(value instanceof Boolean){
+                if (value instanceof Boolean) {
                     callStatement.setBoolean(i + 1, ((Boolean) value));
-                }else{
+                } else {
                     callStatement.setObject(i + 1, value);
                 }
             }

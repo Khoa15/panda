@@ -1,29 +1,8 @@
 -- Task 4
 alter session set current_schema=panda;
-select * from dba_sys_privs where grantee='PANDA' ORDER BY GRANTEE;
-
-select * from dba_tab_privs where grantee='PANDA' OR grantee='PANDA_REGISTER' OR grantee='PANDA_USER_ROLE' order by grantee;
-
-select * from dba_roles order by role;
-select * from dba_role_privs order by grantee;
-select * from role_tab_privs where role = 'PANDA_USER_ROLE' OR role = 'PANDA_REGISTER';
-select * from role_tab_privs order by role;
-SELECT * FROM all_procedures WHERE OWNER='PANDA' ORDER BY OBJECT_NAME;
-select * from all_tables WHERE OWNER='PANDA';
-SELECT a.* From PANDA.ACCOUNT a
-INNER JOIN dba_users d
-ON a.username = d.username
-WHERE a.username = user;
-SELECT * FROM ACCOUNT;
---DROP USER PANDA_USER_TEST;
-
-SELECT du.profile, acc.*
-FROM dba_users du
-LEFT JOIN PANDA.ACCOUNT acc ON acc.username = du.username
-WHERE du.username = 'PANDA';
-
-select * from dba_users;
-
+-- Role user about system
+--GRANT SELECT ON role_tab_privs TO PANDA;
+--GRANT SELECT ON all_objects TO PANDA;
 CREATE OR REPLACE FUNCTION get_dba_tab_privs RETURN SYS_REFCURSOR
 IS
     list_tab_privs SYS_REFCURSOR;
@@ -39,7 +18,7 @@ IS
     list_procedures SYS_REFCURSOR;
 BEGIN
     OPEN list_procedures FOR
-    SELECT * FROM all_procedures WHERE OWNER='PANDA' ORDER BY OBJECT_NAME;
+    SELECT object_name FROM all_procedures WHERE OWNER='PANDA' ORDER BY OBJECT_NAME;
     RETURN list_procedures;
 END;
 /
@@ -49,7 +28,7 @@ IS
     list_tables SYS_REFCURSOR;
 BEGIN
     OPEN list_tables FOR
-    SELECT * FROM all_tables WHERE OWNER='PANDA' ORDER BY TABLE_NAME;
+    SELECT table_name FROM all_tables WHERE OWNER='PANDA' ORDER BY TABLE_NAME;
     RETURN list_tables;
 END;
 /
@@ -75,6 +54,120 @@ END;
 --    RETURN list_role_privs;
 --END;
 --/
+--CREATE OR REPLACE FUNCTION get_insert_sys_privs (
+--    p_grantee varchar
+--)
+--RETURN SYS_REFCURSOR
+--IS
+--    list_sys_privs SYS_REFCURSOR;
+--BEGIN
+--    OPEN list_sys_privs FOR
+--        SELECT privilege
+--        FROM dba_sys_privs
+--        MINUS
+--        SELECT privilege
+--        FROM dba_sys_privs
+--        WHERE grantee = p_grantee ORDER BY PRIVILEGE;
+--    RETURN list_sys_privs;
+--END;
+--/
+
+CREATE OR REPLACE FUNCTION get_insert_sys_privs
+(
+    p_grantee VARCHAR
+)
+RETURN SYS_REFCURSOR
+IS
+    list_sys_privs SYS_REFCURSOR;
+BEGIN
+    OPEN list_sys_privs FOR
+    SELECT privilege
+    FROM dba_sys_privs 
+    
+    MINUS
+    
+    SELECT privilege
+    FROM dba_sys_privs 
+    WHERE grantee = p_grantee;
+
+    RETURN list_sys_privs;
+END;
+/
+CREATE OR REPLACE FUNCTION get_sys_privs
+(
+    p_grantee VARCHAR
+)
+RETURN SYS_REFCURSOR
+IS
+    list_sys_privs SYS_REFCURSOR;
+BEGIN
+    OPEN list_sys_privs FOR
+    SELECT privilege, admin_option, common, inherited FROM dba_sys_privs WHERE grantee = p_grantee;
+    RETURN list_sys_privs;
+END;
+/
+CREATE OR REPLACE FUNCTION get_role_others
+(
+    p_role VARCHAR,
+    p_insert CHAR
+)
+RETURN SYS_REFCURSOR
+IS
+    list_role_others SYS_REFCURSOR;
+BEGIN
+
+    IF p_insert = 'Y' THEN
+        OPEN list_role_others FOR
+        SELECT OBJECT_NAME, OBJECT_TYPE 
+        FROM all_objects 
+        WHERE OWNER = 'PANDA' 
+        AND (OBJECT_TYPE = 'PROCEDURE' OR OBJECT_TYPE='FUNCTION' OR OBJECT_TYPE='TABLE') 
+        AND OBJECT_NAME NOT IN (
+            SELECT TABLE_NAME 
+            FROM dba_tab_privs 
+            WHERE grantee = p_role
+        )
+        ORDER BY OBJECT_TYPE;
+    ELSE 
+        OPEN list_role_others FOR
+        SELECT TABLE_NAME, type, privilege
+        FROM dba_tab_privs 
+        WHERE grantee = p_role;
+    END IF;
+    RETURN list_role_others;
+END;
+/
+CREATE OR REPLACE FUNCTION get_insert_granted_roles
+(
+    p_grantee VARCHAR
+)
+RETURN SYS_REFCURSOR
+IS
+    list_granted_roles SYS_REFCURSOR;
+BEGIN
+    
+    OPEN list_granted_roles FOR
+    SELECT role FROM dba_roles
+    MINUS
+    SELECT granted_role
+    from dba_role_privs WHERE grantee=p_grantee order by role;
+    RETURN list_granted_roles;
+END;
+/
+CREATE OR REPLACE FUNCTION get_granted_roles
+(
+    p_grantee VARCHAR
+)
+RETURN SYS_REFCURSOR
+IS
+    list_granted_roles SYS_REFCURSOR;
+BEGIN
+    
+    OPEN list_granted_roles FOR
+    select granted_role, admin_option, delegate_option, default_role, common, inherited from dba_role_privs WHERE grantee=p_grantee order by granted_role;
+    RETURN list_granted_roles;
+END ;
+/
 
 CREATE OR REPLACE FUNCTION get_list_users RETURN SYS_REFCURSOR
 IS
@@ -96,12 +189,308 @@ BEGIN
 END;
 /
 
+
+
 CREATE OR REPLACE PROCEDURE CREATE_PROFILE (p_profile IN VARCHAR2, p_resource_name IN VARCHAR2, p_limit IN VARCHAR2)
 IS
 BEGIN
     EXECUTE IMMEDIATE 'CREATE PROFILE ' || p_profile || ' LIMIT ' || p_resource_name || ' ' || p_limit;
 END;
 /
+
+CREATE OR REPLACE FUNCTION get_users_privs RETURN SYS_REFCURSOR
+IS
+    list_users SYS_REFCURSOR;
+BEGIN
+    OPEN list_users FOR
+    SELECT username FROM dba_users order by username;
+    RETURN list_users;
+END;
+/
+CREATE OR REPLACE FUNCTION get_roles
+RETURN SYS_REFCURSOR
+IS
+    list_tab_privs SYS_REFCURSOR;
+BEGIN
+    OPEN list_tab_privs FOR
+    select role from dba_roles order by role;--role_tab_privs
+    RETURN list_tab_privs;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION get_role_tab_privs (p_role VARCHAR2)
+RETURN SYS_REFCURSOR
+IS
+    list_tab_privs SYS_REFCURSOR;
+BEGIN
+    OPEN list_tab_privs FOR
+    select table_name, column_name, privilege, inherited from role_tab_privs WHERE role = p_role order by table_name;
+    RETURN list_tab_privs;
+END;
+/
+CREATE OR REPLACE FUNCTION get_role_tab_privs_privs (
+    p_role VARCHAR2,
+    p_table_name VARCHAR2
+)
+RETURN SYS_REFCURSOR
+IS
+    list_tab_privs_privs SYS_REFCURSOR;
+BEGIN
+    OPEN list_tab_privs_privs FOR
+    SELECT privilege FROM dba_tab_privs WHERE grantee = p_role AND TABLE_NAME = p_table_name;
+    RETURN list_tab_privs_privs;
+END;
+/
+select * from role_tab_privs where role = 'PANDA_USER_ROLE';
+GRANT UPDATE ON COLLECTION TO PANDA_USER_ROLE;
+--CREATE OR REPLACE FUNCTION get_role_tab_privs 
+
+CREATE OR REPLACE FUNCTION get_procedures_functions_tables (p_role VARCHAR2) RETURN SYS_REFCURSOR
+IS
+    list_objects SYS_REFCURSOR;
+BEGIN
+    OPEN list_objects FOR
+    SELECT OBJECT_NAME, OBJECT_TYPE 
+    FROM all_objects 
+    WHERE OWNER = 'PANDA' 
+    AND (OBJECT_TYPE = 'PROCEDURE' OR OBJECT_TYPE='FUNCTION' OR OBJECT_TYPE='TABLE') 
+    AND OBJECT_NAME NOT IN (
+        SELECT TABLE_NAME 
+        FROM role_tab_privs 
+        WHERE ROLE = p_role
+    )
+    ORDER BY OBJECT_TYPE;
+    RETURN list_objects;
+END;
+/
+
+--CREATE OR REPLACE FUNCTION get_role_sys_miss_privs (p_role varchar2)
+--RETURN SYS_REFCURSOR
+--IS
+--    list_sys_privs SYS_REFCURSOR;
+--BEGIN
+--    OPEN list_sys_privs FOR
+--        SELECT ROLE
+--        FROM dba_roles
+--        WHERE role NOT IN (
+--            SELECT granted_role
+--            FROM dba_role_privs--dba_sys_privs
+--            WHERE grantee = p_role
+--        ) ORDER BY ROLE;
+--    RETURN list_sys_privs;
+--END;
+--/
+--
+--CREATE OR REPLACE FUNCTION get_role_sys_privs (p_role varchar2)
+--RETURN SYS_REFCURSOR
+--IS
+--    list_sys_privs SYS_REFCURSOR;
+--BEGIN
+--    OPEN list_sys_privs FOR
+--            SELECT granted_role
+--            FROM dba_role_privs--dba_sys_privs
+--            WHERE grantee = p_role ORDER BY granted_role;
+--    RETURN list_sys_privs;
+--END;
+--/
+
+CREATE OR REPLACE PROCEDURE revoke_role (
+    p_grantee VARCHAR, 
+    p_object VARCHAR,
+    p_privilege VARCHAR
+)
+IS
+    v_has VARCHAR2(100);
+BEGIN
+    SELECT COALESCE(MAX(CASE WHEN table_name = p_object THEN 'Y' ELSE 'N' END), 'N') INTO v_has
+            FROM dba_tab_privs 
+            WHERE grantee = p_grantee
+            and table_name = p_object;
+
+    IF v_has = 'Y' THEN
+        EXECUTE IMMEDIATE 'REVOKE ' || p_privilege || ' ON ' || p_object || ' FROM ' || p_grantee;
+    ELSE
+        EXECUTE IMMEDIATE 'REVOKE ' || p_object || ' FROM ' || p_grantee;
+    END IF;
+END;
+/
+
+
+
+CREATE OR REPLACE PROCEDURE update_role_privs (
+    p_role VARCHAR2,
+    p_object VARCHAR2,
+    p_execute CHAR,
+    p_select CHAR,
+    p_update CHAR,
+    p_delete CHAR,
+    p_sys_priv CHAR
+)
+IS
+    v_has_execute CHAR(1) := 'N';
+    v_has_select CHAR(1) := 'N';
+    v_has_update CHAR(1) := 'N';
+    v_has_delete CHAR(1) := 'N';
+    v_has_sys_priv CHAR(1) := 'N';
+BEGIN
+    BEGIN
+    
+        SELECT COALESCE(MAX(CASE WHEN GRANTED_ROLE = p_object THEN 'Y' ELSE 'N' END), 'N')
+        INTO v_has_sys_priv
+        FROM dba_role_privs
+        WHERE dba_role_privs.grantee = p_role;
+    
+        SELECT COALESCE(MAX(CASE WHEN privilege = p_object THEN 'Y' ELSE 'N' END), 'N')
+        INTO v_has_sys_priv
+        FROM dba_sys_privs
+        WHERE grantee = p_role;
+    
+        -- Ki?m tra quy?n EXECUTE
+        SELECT COALESCE(MAX(CASE WHEN privilege = 'EXECUTE' THEN 'Y' ELSE 'N' END), 'N')
+        INTO v_has_execute
+        FROM dba_tab_privs
+        WHERE table_name = p_object
+        AND privilege = 'EXECUTE'
+        AND grantee = p_role;
+        --SELECT * FROM role_tab_privs WHERE table_name ='COLLECTION' AND role_tab_privs.ROLE = 'PANDA_USER_ROLE';
+
+        -- Ki?m tra quy?n SELECT
+        SELECT COALESCE(MAX(CASE WHEN privilege = 'SELECT' THEN 'Y' ELSE 'N' END), 'N')
+        INTO v_has_select
+        FROM dba_tab_privs
+        WHERE table_name = p_object
+        AND privilege = 'SELECT'
+        AND grantee = p_role;
+
+        -- Ki?m tra quy?n UPDATE
+        SELECT COALESCE(MAX(CASE WHEN privilege = 'UPDATE' THEN 'Y' ELSE 'N' END), 'N')
+        INTO v_has_update
+        FROM dba_tab_privs
+        WHERE table_name = p_object
+        AND privilege = 'UPDATE'
+        AND grantee = p_role;
+
+        -- Ki?m tra quy?n DELETE
+        SELECT COALESCE(MAX(CASE WHEN privilege = 'DELETE' THEN 'Y' ELSE 'N' END), 'N')
+        INTO v_has_delete
+        FROM dba_tab_privs
+        WHERE table_name = p_object
+        AND privilege = 'DELETE'
+        AND grantee = p_role;
+
+        -- Thu h?i quy?n n?u c?n
+        IF p_execute = 'N' AND v_has_execute = 'Y' THEN
+            EXECUTE IMMEDIATE 'REVOKE EXECUTE ON ' || p_object || ' FROM ' || p_role;
+        END IF;
+
+        IF p_select = 'N' AND v_has_select = 'Y' THEN
+            EXECUTE IMMEDIATE 'REVOKE SELECT ON ' || p_object || ' FROM ' || p_role;
+        END IF;
+
+        IF p_update = 'N' AND v_has_update = 'Y' THEN
+            EXECUTE IMMEDIATE 'REVOKE UPDATE ON ' || p_object || ' FROM ' || p_role;
+        END IF;
+
+        IF p_delete = 'N' AND v_has_delete = 'Y' THEN
+            EXECUTE IMMEDIATE 'REVOKE DELETE ON ' || p_object || ' FROM ' || p_role;
+        END IF;
+    
+        IF p_sys_priv = 'N' AND v_has_sys_priv = 'Y' THEN
+            EXECUTE IMMEDIATE 'REVOKE ' || p_object || ' FROM ' || p_role;
+        END IF;
+
+        -- C?p quy?n n?u c?n
+        IF p_execute = 'Y' AND v_has_execute = 'N' THEN
+            EXECUTE IMMEDIATE 'GRANT EXECUTE ON ' || p_object || ' TO ' || p_role;
+        END IF;
+
+        IF p_select = 'Y' AND v_has_select = 'N' THEN
+            EXECUTE IMMEDIATE 'GRANT SELECT ON ' || p_object || ' TO ' || p_role;
+        END IF;
+
+        IF p_update = 'Y' AND v_has_update = 'N' THEN
+            EXECUTE IMMEDIATE 'GRANT UPDATE ON ' || p_object || ' TO ' || p_role;
+        END IF;
+
+        IF p_delete = 'Y' AND v_has_delete = 'N' THEN
+            EXECUTE IMMEDIATE 'GRANT DELETE ON ' || p_object || ' TO ' || p_role;
+        END IF;
+
+        IF p_sys_priv = 'Y' AND v_has_sys_priv = 'N' THEN
+            EXECUTE IMMEDIATE 'GRANT ' || p_object || ' to ' || p_role;
+        END IF;
+        
+    EXCEPTION
+        WHEN OTHERS THEN
+            RAISE;
+    END;
+END;
+/
+--EXEC update_role_privs('PANDA_USER_ROLE', 'COLLECTION', 'N', 'Y', 'N', 'N');
+--SELECT * FROM role_tab_privs WHERE TABLE_NAME = 'COLLECTION';
+
+
+
+
+
+
+
+CREATE OR REPLACE PROCEDURE insert_role_privs (
+    p_role VARCHAR2,
+    p_object VARCHAR2,
+    p_execute CHAR,
+    p_select CHAR,
+    p_update CHAR,
+    p_delete CHAR,
+    p_sys_priv CHAR
+)
+IS
+BEGIN
+    -- T?o vai trò m?i
+    EXECUTE IMMEDIATE 'CREATE ROLE ' || p_role;
+
+    -- C?p quy?n trên ??i t??ng n?u c?n
+    IF p_execute = 'Y' THEN
+        EXECUTE IMMEDIATE 'GRANT EXECUTE ON ' || p_object || ' TO ' || p_role;
+    END IF;
+
+    IF p_select = 'Y' THEN
+        EXECUTE IMMEDIATE 'GRANT SELECT ON ' || p_object || ' TO ' || p_role;
+    END IF;
+
+    IF p_update = 'Y' THEN
+        EXECUTE IMMEDIATE 'GRANT UPDATE ON ' || p_object || ' TO ' || p_role;
+    END IF;
+
+    IF p_delete = 'Y' THEN
+        EXECUTE IMMEDIATE 'GRANT DELETE ON ' || p_object || ' TO ' || p_role;
+    END IF;
+
+    -- C?p quy?n h? th?ng n?u c?n
+    IF p_sys_priv = 'Y' THEN
+        EXECUTE IMMEDIATE 'GRANT ' || p_object || ' TO ' || p_role;
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END;
+/
+
+--EXEC insert_role_privs('PANDA_ROLE_TEST', null, null, null, null, null);
+
+CREATE OR REPLACE PROCEDURE delete_role_privs(
+    p_role VARCHAR
+) IS
+BEGIN
+    EXECUTE IMMEDIATE 'DROP ROLE ' || p_role;
+END;
+/
+
+
+
+
 
 ------------ PHUC
 CREATE OR REPLACE PROCEDURE Resources_profile 
@@ -192,24 +581,44 @@ END;
 /
 
 CREATE OR REPLACE PROCEDURE modify_user_profile (
-            p_username IN VARCHAR2,
-            p_password IN VARCHAR2,
-            isChangePassword IN INT,
-            p_profile_name IN VARCHAR2,
-            isLock IN INT
+    p_username IN VARCHAR2,
+    p_password IN VARCHAR2,
+    p_profile_name IN VARCHAR2,
+    p_tablespace_name IN VARCHAR2,
+    p_lock IN CHAR
 )
 IS
+    v_need_password_update BOOLEAN := FALSE;
+    v_need_lock_account BOOLEAN := FALSE;
 BEGIN
-    EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' PROFILE ' || p_profile_name;
-    
-    IF isChangePassword = 1 THEN
+    IF p_password IS NOT NULL AND LENGTH(TRIM(p_password)) > 0 THEN
+        v_need_password_update := TRUE;
+    END IF;
+
+    IF p_profile_name IS NOT NULL AND LENGTH(TRIM(p_profile_name)) > 0 THEN
+        EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' PROFILE ' || p_profile_name;
+    END IF;
+
+    IF p_tablespace_name IS NOT NULL AND LENGTH(TRIM(p_tablespace_name)) > 0 THEN
+        EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' DEFAULT TABLESPACE ' || p_tablespace_name;
+    END IF;
+
+    IF p_lock = '1' THEN
+        v_need_lock_account := TRUE;
+    END IF;
+
+    IF v_need_password_update THEN
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' IDENTIFIED BY ' || p_password;
     END IF;
-    IF isLock = 1 THEN
+
+    IF v_need_lock_account THEN
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' ACCOUNT LOCK';
     END IF;
 END modify_user_profile;
 /
+
+
+
 
 -- xoa profile
 CREATE OR REPLACE PROCEDURE DROP_PROFILE(nameProfile in varchar2)

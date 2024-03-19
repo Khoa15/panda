@@ -4,7 +4,7 @@ IS
     list_users SYS_REFCURSOR;
 BEGIN
     OPEN list_users FOR
-    SELECT user_id, username, password, account_status, expiry_date, profile, last_login FROM dba_users;
+    SELECT user_id, username, account_status, expiry_date, profile, last_login FROM dba_users;
     RETURN list_users;
 END;
 /

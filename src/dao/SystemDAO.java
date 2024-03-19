@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.table.TableModel;
 import model.Account;
 import model.Profile;
 import oracle.jdbc.OracleTypes;
@@ -27,63 +28,112 @@ import oracle.jdbc.OracleTypes;
  * @author Khoa
  */
 public class SystemDAO {
-    public static Account getUser(String username) throws Exception{
-        Account user = new Account();
+    
+    public static ArrayList<String> getListPrivsOf(String procedure, String object){
+        ArrayList<String> privs = new ArrayList<>();
         try{
-            ResultSet rs = (ResultSet)DBConnectionDAO.CallFunction("get_user", username);
+            Object[] values = new Object[]{
+                procedure,
+                object
+            };
+            ResultSet rs = DBConnectionDAO.CallFunction("get_role_tab_privs_privs", values);
             while(rs.next()){
+                privs.add(rs.getString(1));
+            }
+            rs.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return privs;
+    }
+    public static ArrayList<String> getListProcedures(){
+        ArrayList<String> procedures = new ArrayList<>();
+        try{
+            ResultSet rs = DBConnectionDAO.CallFunction("get_panda_procedures");
+            while(rs.next()){
+                procedures.add(rs.getString(1));
+            }
+            rs.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return procedures;
+    }
+    public static ArrayList<String> getListTables() {
+        ArrayList<String> tables = new ArrayList<>();
+        try{
+            ResultSet rs = DBConnectionDAO.CallFunction("get_panda_tables");
+            while(rs.next()){
+                tables.add(rs.getString(1));
+            }
+            rs.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return tables;
+    }
+    public static Account getUser(String username) throws Exception {
+        Account user = new Account();
+        try {
+            ResultSet rs = (ResultSet) DBConnectionDAO.CallFunction("get_user", username);
+            while (rs.next()) {
                 user.profile = rs.getString(1);
                 user.tablespace = rs.getString(2);
                 user.setAvatar(rs.getBytes(3));
                 user.setUsername(rs.getString(4));
                 user.setFullname(rs.getString(5));
             }
-        }catch(Exception e){
+            rs.close();
+        } catch (Exception e) {
             throw e;
         }
         return user;
     }
-    public static boolean deleteProfile(String profile){
-        try{
-            Object[] values =  new Object[] {profile};
+
+    public static boolean deleteProfile(String profile) {
+        try {
+            Object[] values = new Object[]{profile};
             DBConnectionDAO.CallProcedureNoParameterOut("DROP_PROFILE", values);
             return true;
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
-    public static boolean insertProfile(Profile profile) throws Exception{
-        try{
+
+    public static boolean insertProfile(Profile profile) throws Exception {
+        try {
             Object[] values = new Object[]{
                 profile.profile,
                 profile.resource_name,
                 profile.limit
             };
             DBConnectionDAO.CallProcedureNoParameterOut("CREATE_PROFILE", values);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw e;
         }
         return true;
     }
-    public static boolean updateProfile(Profile profile){
-        try{
+
+    public static boolean updateProfile(Profile profile) {
+        try {
             Object[] values = new Object[]{
                 profile.profile,
                 profile.resource_name,
                 profile.limit
             };
             return DBConnectionDAO.CallProcedureNoParameterOut("update_profile", values);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
-    public static ListProfile getProfile(String profile){
+
+    public static ListProfile getProfile(String profile) {
         ListProfile listProfile = new ListProfile();
-        try{
-            ResultSet rs = (ResultSet)DBConnectionDAO.CallFunction("GET_PROFILE", profile);
-            while(rs.next()){
+        try {
+            ResultSet rs = (ResultSet) DBConnectionDAO.CallFunction("GET_PROFILE", profile);
+            while (rs.next()) {
                 Profile p = new Profile(
                         rs.getString(1),
                         rs.getString(2),
@@ -91,12 +141,14 @@ public class SystemDAO {
                 );
                 listProfile.profiles.add(p);
             }
+            rs.close();
             listProfile.profile = profile;
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return listProfile;
     }
+
     public static DefaultTableModel loadProfiles() {
         try {
             return setDefaultDataTableModel("get_all_profiles");
@@ -107,8 +159,8 @@ public class SystemDAO {
         return null;
     }
 
-    public static boolean insertUser(String username, String password, String profile, String tablespace, boolean isLock) throws Exception{
-        try{
+    public static boolean insertUser(String username, String password, String profile, String tablespace, boolean isLock) throws Exception {
+        try {
             int lock = (isLock) ? 1 : 0;
             Object[] values = new Object[]{
                 username,
@@ -119,12 +171,12 @@ public class SystemDAO {
                 lock
             };
             DBConnectionDAO.CallProcedureNoParameterOut("ADD_ACCOUNT_PROFILE", values);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw e;
         }
         return true;
     }
-    
+
     public static boolean saveUser(String username, String password, String profile, String tablespace, boolean isLock) throws Exception {
         try {
             int cpass = (password.isEmpty() || password == null) ? 0 : 1;
@@ -132,7 +184,6 @@ public class SystemDAO {
             Object[] values = new Object[]{
                 username,
                 password,
-                cpass,
                 profile,
                 tablespace,
                 lock
@@ -152,6 +203,7 @@ public class SystemDAO {
             while (rs.next()) {
                 profiles.add(rs.getString(1));// Profile
             }
+            rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -174,6 +226,7 @@ public class SystemDAO {
 
                 accounts.add(objs);
             }
+            rs.close();
         } catch (Exception e) {
             throw e;
         }
@@ -212,7 +265,16 @@ public class SystemDAO {
         } catch (Exception e) {
             throw e;
         }
+    }
 
+    public static DefaultTableModel LoadUsernames() {
+        DefaultTableModel model = new DefaultTableModel();
+        try {
+            model = setDefaultDataTableModel("get_users_privs");
+        } catch (Exception e) {
+
+        }
+        return model;
     }
 
     public static DefaultTableModel LoadUsers() {
@@ -333,6 +395,7 @@ public class SystemDAO {
             while (rs.next()) {
                 result.add(rs.getString("tablespace_name"));
             }
+            rs.close();
         } catch (Exception e) {
             //throw e;
         }
@@ -374,90 +437,16 @@ public class SystemDAO {
         }
     }
 
-    public static DefaultTableModel loadInfoSystem(String type) {
-        try {
-            String table;
-            switch (type) {
-                case "PGA":
-                    table = "v$pgastat";
-                    break;
-                case "PROCESS":
-                    table = "v$process";
-                    break;
-                case "INSTANCE":
-                    table = "v$instance";
-                    break;
-                case "DATABASE":
-                    table = "v$database";
-                    break;
-                case "DATAFILE":
-                    table = "v$datafile";
-                    break;
-                case "CONTROL FILES":
-                    table = "v$controlfile";
-                    break;
-                case "SPFILE":
-                    table = "v$spparameter";
-                    break;
-                case "SESSION":
-                    table = "v$session where type!='BACKGROUND'";
-                    break;
-                case "TABLESPACE":
-                    table = "dba_tablespaces";
-                    break;
-                default:
-                    table = "v$sgainfo";
-                    break;
-            }
-            ResultSet resultSet = DBConnectionDAO.ExecuteSelectQuery("SELECT * FROM " + table);
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-            DefaultTableModel tableModel = new DefaultTableModel(0, columnCount);
-
-            Vector<String> columnNames = new Vector<>();
-            for (int i = 1; i <= columnCount; i++) {
-                columnNames.add(metaData.getColumnName(i));
-            }
-            tableModel.setColumnIdentifiers(columnNames);
-
-            while (resultSet.next()) {
-                Object[] rowData = new Object[columnCount];
-                for (int i = 1; i <= columnCount; i++) {
-                    rowData[i - 1] = resultSet.getObject(i);
-                }
-                tableModel.addRow(rowData);
-            }
-
-            return tableModel;
-//            ResultSet resultSet = DBConnectionDAO.ExecuteSelectQuery("SELECT * FROM "+table);
-//            ResultSetMetaData metaData = resultSet.getMetaData();
-//            int columnCount = metaData.getColumnCount();
-//            DefaultTableModel tableModel = new DefaultTableModel(new Object[columnCount], 0);
-//
-//            while (resultSet.next()) {
-//                Object[] rowData = new Object[columnCount];
-//                for (int i = 1; i <= columnCount; i++) {
-//                    rowData[i - 1] = resultSet.getObject(i);
-//                }
-//                tableModel.addRow(rowData);
-//            }
-//
-//            return tableModel;
-            //jtable.setModel(tableModel);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+    
 
     public static boolean killSession(Object sid, Object serial) {
         try {
-            Connection connection = DBConnection.getConn();// Establish database connection
-
-            String sql = "ALTER SYSTEM KILL SESSION '" + sid + ", " + serial + "' IMMEDIATE";
-
-            return DBConnectionDAO.ExecuteScalarQuery(sql);
+            Object[] values = new Object[]{
+                sid,
+                serial
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("kill_session", values);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -479,7 +468,7 @@ public class SystemDAO {
                 }
                 tableModel.addRow(rowData);
             }
-
+            resultSet.close();
             return tableModel;
         } catch (Exception e) {
             e.printStackTrace();
@@ -508,7 +497,7 @@ public class SystemDAO {
                 }
                 tableModel.addRow(rowData);
             }
-
+            resultSet.close();
             return tableModel;
         } catch (Exception e) {
             return null;
@@ -534,7 +523,7 @@ public class SystemDAO {
                 }
                 tableModel.addRow(rowData);
             }
-
+            resultSet.close();
             return tableModel;
         } catch (Exception e) {
             return null;
@@ -567,6 +556,179 @@ public class SystemDAO {
             return null;
         }
     }
+
+    public static DefaultTableModel LoadUserPrivs(String username) {
+        DefaultTableModel model = new DefaultTableModel();
+        try {
+            model = setDefaultDataTableModel(DBConnectionDAO.CallFunction("get_user_tab_privs", username));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+    }
+    
+    public static DefaultTableModel LoadUsersName() {
+        DefaultTableModel model = new DefaultTableModel();
+        try {
+            model = setDefaultDataTableModel(DBConnectionDAO.CallFunction("get_users_privs"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+
+    }    
+
+    public static DefaultTableModel LoadRoleName() {
+        DefaultTableModel model = new DefaultTableModel();
+        try {
+            model = setDefaultDataTableModel(DBConnectionDAO.CallFunction("get_roles"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+
+    }
+
+    public static TableModel LoadRolePrivs(String role) {
+        DefaultTableModel model = new DefaultTableModel();
+        if(role == null || role.isEmpty()) return model;
+        try {
+            model = setDefaultDataTableModel(DBConnectionDAO.CallFunction("get_role_tab_privs", role));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+    }
+    
+    public static HashMap<String, String> getListObjects(){
+        HashMap<String, String> objects = new HashMap<>();
+        try{
+            Object[] values = new Object[]{
+                ""
+            };
+            ResultSet rs = DBConnectionDAO.CallFunction("get_procedures_functions_tables", values);
+            while(rs.next()){
+                objects.put(rs.getString(1), rs.getString(2));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return objects;
+    }
+
+    public static TableModel getProceduresAndTables(String role) {
+        DefaultTableModel model = new DefaultTableModel();
+        try {
+            //get_procedures_functions_tables
+            model = setDefaultDataTableModel(DBConnectionDAO.CallFunction("get_role_others", role));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+    }
+
+    public static void UpdateRolePrivs(String role, String object, String typeObject, boolean execute, boolean select, boolean update, boolean delete, boolean sys_priv) throws Exception {
+        try{
+            
+            Object[] values = new Object[]{
+                role,
+                object,
+                (execute) ? "Y": "N",
+                (select) ? "Y": "N",
+                (update) ? "Y": "N",
+                (delete) ? "Y": "N",
+                (sys_priv) ? "Y": "N"
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("update_role_privs", values);
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
+    public static void InsertRolePrivs(String role, String object, String typeObject, boolean execute, boolean select, boolean update, boolean delete, boolean sys_priv) throws Exception {
+        try{           
+            Object[] values = new Object[]{
+                role,
+                object,
+                (execute) ? "Y": "N",
+                (select) ? "Y": "N",
+                (update) ? "Y": "N",
+                (delete) ? "Y": "N",
+                (sys_priv) ? "Y": "N"
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("insert_role_privs", values);
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
+    public static void deleteRole(String currentRole) throws Exception {
+        try{           
+            Object[] values = new Object[]{
+                currentRole
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("delete_role_privs", values);
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
+    public static TableModel LoadRoleSysPrivs(String role, boolean insert) {
+        DefaultTableModel model = new DefaultTableModel();
+        try {
+            String procedure = "get_sys_privs";
+            if(insert){
+                procedure = "get_insert_sys_privs";
+            }
+            model = setDefaultDataTableModel(DBConnectionDAO.CallFunction(procedure, role));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+    }
+
+    public static void revokeRole(String grantee,String object_name, String role) throws Exception {
+        try{
+            Object[] values = new Object[]{
+                grantee,
+                object_name,
+                role
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("revoke_role", values);
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
+    public static TableModel LoadGrantedRoles(String currentRole, boolean insert) {
+        DefaultTableModel model = new DefaultTableModel();
+        try {
+            String procedure = "get_granted_roles";
+            if(insert){
+                procedure = "get_insert_granted_roles";
+            }
+            model = setDefaultDataTableModel(DBConnectionDAO.CallFunction(procedure, currentRole));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+    }
+
+    public static TableModel LoadOthersPrivs(String currentRole, boolean insert) {
+        DefaultTableModel model = new DefaultTableModel();
+        try {
+            Object[] values = new Object[]{
+                currentRole,
+                (insert) ? "Y":"N"
+            };
+            model = setDefaultDataTableModel(DBConnectionDAO.CallFunction("get_role_others", values));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+    }
+    
+    
 
     public SystemDAO() {
     }

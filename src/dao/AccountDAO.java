@@ -18,7 +18,7 @@ public class AccountDAO {
     public AccountDAO() {
     }
 
-    public static boolean signIn(Account account) {
+    public static boolean signIn(Account account) throws Exception {
         try {
             
             Object[] values = new Object[]{account.getUsername(), account.getPassword()};
@@ -30,7 +30,7 @@ public class AccountDAO {
             }
             return false;
         } catch (Exception e) {
-            return false;
+            throw e;
         } finally {
             //DBConnection.closeConnection();
         }

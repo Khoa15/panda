@@ -204,46 +204,43 @@ public class SignIn extends javax.swing.JFrame {
     private void signin() {
         setInput();
         Account account = new Account(email, password);
-        if (AccountDAO.signIn(account)) {
-            this.dispose();
-            Main m = new Main();
-            m.setVisible(true);
-//            if (cbBoxRememberDevice.isSelected()) {
-//                try {
-//                    String token = email +"|" + password;
-//                    Account.saveSessionDevice(token);
-//                } catch (IOException ex) {
-//                    Logger.getLogger(SignIn.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-        } else {
-            txtFieldEmail.setBorder(new LineBorder(Color.RED, 2));
-            txtFieldPassword.setBorder(new LineBorder(Color.RED, 2));
+        
+        try {
+            if (AccountDAO.signIn(account)) {
+                this.dispose();
+                Main m = new Main();
+                m.setVisible(true);
+            } else {
+                txtFieldEmail.setBorder(new LineBorder(Color.RED, 2));
+                txtFieldPassword.setBorder(new LineBorder(Color.RED, 2));
+            }
+        } catch (Exception ex) {
+            JOptionPane.showConfirmDialog(this, ex.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
         }
     }
     
-    public static boolean verifySessionDevice() throws FileNotFoundException, IOException{
-        File file_session = new File(Account.file_session());
-        boolean isCreated = file_session.exists();
-        if(isCreated){
-            FileInputStream file_session_read = new FileInputStream(file_session);
-            byte[] token = new byte[(int)file_session.length()];
-            if(token.length == 0) return false;
-            file_session_read.read(token, 0, token.length);
-            file_session_read.close();
-            String _token = token.toString();
-            String[] partToken = _token.split("|");
-            String e = partToken[0].trim();
-            String p = partToken[1].trim();
-            Account a = new Account();
-            a.setUsername(e);
-            a.setPassword(p);
-            if(AccountDAO.signIn(a)){
-                return true;
-            }
-        }
-        return false;
-    }
+//    public static boolean verifySessionDevice() throws FileNotFoundException, IOException{
+//        File file_session = new File(Account.file_session());
+//        boolean isCreated = file_session.exists();
+//        if(isCreated){
+//            FileInputStream file_session_read = new FileInputStream(file_session);
+//            byte[] token = new byte[(int)file_session.length()];
+//            if(token.length == 0) return false;
+//            file_session_read.read(token, 0, token.length);
+//            file_session_read.close();
+//            String _token = token.toString();
+//            String[] partToken = _token.split("|");
+//            String e = partToken[0].trim();
+//            String p = partToken[1].trim();
+//            Account a = new Account();
+//            a.setUsername(e);
+//            a.setPassword(p);
+//            if(AccountDAO.signIn(a)){
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     private void saveSession() throws IOException {
         String token = email + "|" + password;

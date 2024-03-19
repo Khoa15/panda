@@ -61,7 +61,7 @@ public class DBConnection extends Thread {
     public DBConnection() {
     }
 
-    public static Connection openConnection(String username, String password) {
+    public static Connection openConnection(String username, String password) throws Exception {
         try {
             if(con != null &&  con.isClosed() == false) closeConnection();
             DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
@@ -75,7 +75,7 @@ public class DBConnection extends Thread {
             }
             return con;
         } catch (Exception e) {
-            return null;
+            throw e;
         }
     }
 

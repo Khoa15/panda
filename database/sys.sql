@@ -231,7 +231,7 @@ BEGIN
              || ' IDENTIFIED BY '
              || p_password;
     EXECUTE IMMEDIATE v_sql;
-    v_sql := 'GRANT CREATE SESSION, CONNECT TO ' || p_username;    
+    v_sql := 'GRANT CREATE SESSION TO ' || p_username;    
     EXECUTE IMMEDIATE v_sql;
     -- tablespace quota, lock user
     INSERT INTO ACCOUNT (avatar, username, fullname)
