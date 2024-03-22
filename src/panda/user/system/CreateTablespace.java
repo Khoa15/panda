@@ -134,7 +134,7 @@ public class CreateTablespace extends javax.swing.JFrame {
             String location_datafile = datafile.getTxtLocation();
             String size_datafile = datafile.getTxtSize();
             if(location_datafile.isEmpty() || size_datafile.isEmpty()){
-                return;
+                continue;
             }
             location.add(location_datafile);
             size.add(size_datafile);

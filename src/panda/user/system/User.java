@@ -26,59 +26,59 @@ public class User extends javax.swing.JFrame {
     ArrayList<String> tablespaces;
     String profile;
     String currentUsername;
+
     public User(String username) {
         initComponents();
-        jPanel5.setVisible(false);
         loadListProfiles();
         loadListTablespaces();
-        loadListUser(username);        
+        loadListUser(username);
     }
-    
-    private void loadListTablespaces(){
-        try{
+
+    private void loadListTablespaces() {
+        try {
             tablespaces = SystemDAO.LoadTableSpaceName();
-            for(String tablespace : tablespaces){
+            for (String tablespace : tablespaces) {
                 cbBoxTablespaces.addItem(tablespace);
             }
             //cbBoxTablespaces
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-    private void loadListProfiles(){
-        try{
+
+    private void loadListProfiles() {
+        try {
             profiles = SystemDAO.loadListProfiles();
-            for(String profile : profiles){
+            for (String profile : profiles) {
                 cbBoxListProfiles.addItem(profile);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-    private void loadListUser(){
-        try{
+
+    private void loadListUser() {
+        try {
             Users = SystemDAO.loadListUsers();
-            for(Object[] user : Users){
-                cbBoxListUsers.addItem((String)user[1]);
+            for (Object[] user : Users) {
+                cbBoxListUsers.addItem((String) user[1]);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-    private void loadListUser(String username){
-        try{
+
+    private void loadListUser(String username) {
+        try {
             Users = SystemDAO.loadListUsers();
-            for(Object[] user : Users){
-                cbBoxListUsers.addItem((String)user[1]);
-                if(username.equals(user[1].toString())){
+            for (Object[] user : Users) {
+                cbBoxListUsers.addItem((String) user[1]);
+                if (username.equals(user[1].toString())) {
                     profile = (String) user[4];
                 }
             }
             cbBoxListUsers.setSelectedItem(username);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -101,15 +101,20 @@ public class User extends javax.swing.JFrame {
         txtFieldPassword = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         cbLock = new javax.swing.JCheckBox();
+        cbInsert = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         cbBoxListProfiles = new javax.swing.JComboBox<>();
         btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        cbInsert = new javax.swing.JCheckBox();
         jPanel5 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         cbBoxTablespaces = new javax.swing.JComboBox<>();
+        btnDelete = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        txtFieldQuota = new javax.swing.JTextField();
+        cbBoxTypeSizeQuota = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -161,7 +166,7 @@ public class User extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
-                .addComponent(txtFieldPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                .addComponent(txtFieldPassword)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -171,10 +176,12 @@ public class User extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtFieldPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         cbLock.setText("Lock this user");
+
+        cbInsert.setText("Insert");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -183,13 +190,17 @@ public class User extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(cbLock)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cbInsert)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cbLock)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbLock)
+                    .addComponent(cbInsert))
                 .addContainerGap(8, Short.MAX_VALUE))
         );
 
@@ -230,8 +241,6 @@ public class User extends javax.swing.JFrame {
             }
         });
 
-        cbInsert.setText("Insert");
-
         jLabel4.setText("Tablespace");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -252,7 +261,48 @@ public class User extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(cbBoxTablespaces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        btnDelete.setText("Delete");
+        btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnDeleteMouseClicked(evt);
+            }
+        });
+
+        jLabel5.setText("Quota");
+
+        txtFieldQuota.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFieldQuotaActionPerformed(evt);
+            }
+        });
+
+        cbBoxTypeSizeQuota.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MB", "KB" }));
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtFieldQuota, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cbBoxTypeSizeQuota, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtFieldQuota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbBoxTypeSizeQuota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -270,11 +320,12 @@ public class User extends javax.swing.JFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(cbInsert)
+                        .addComponent(btnDelete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSave)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancel)))
+                        .addComponent(btnCancel))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -288,15 +339,17 @@ public class User extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSave)
                     .addComponent(btnCancel)
-                    .addComponent(cbInsert))
+                    .addComponent(btnDelete))
                 .addContainerGap())
         );
 
@@ -306,7 +359,7 @@ public class User extends javax.swing.JFrame {
     private void cbBoxListUsersItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbBoxListUsersItemStateChanged
         // TODO add your handling code here:
         String username = cbBoxListUsers.getSelectedItem().toString();
-        if(!username.equals(currentUsername)){
+        if (!username.equals(currentUsername)) {
             Account user;
             try {
                 user = SystemDAO.getUser(username);
@@ -314,11 +367,11 @@ public class User extends javax.swing.JFrame {
                 txtFieldUsername.setText(username);
                 cbBoxListProfiles.setSelectedItem(user.profile);
                 cbBoxTablespaces.setSelectedItem(user.tablespace);
+                txtFieldQuota.setText(SystemDAO.getQuotaOfUser(username));
             } catch (Exception ex) {
                 JOptionPane.showConfirmDialog(this, ex.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
             }
         }
-        
     }//GEN-LAST:event_cbBoxListUsersItemStateChanged
 
     private void btnCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMouseClicked
@@ -331,49 +384,67 @@ public class User extends javax.swing.JFrame {
         String username = txtFieldUsername.getText();
         String password = txtFieldPassword.getText();
         String profile = cbBoxListProfiles.getSelectedItem().toString();
+        String quota = null;
+        if(!txtFieldQuota.getText().isEmpty()){
+            quota = txtFieldQuota.getText() + cbBoxTypeSizeQuota.getSelectedItem().toString().substring(0, 1);
+        }
         String tablespace = cbBoxTablespaces.getSelectedItem().toString();
         boolean lock = cbLock.isSelected();
-        if(cbInsert.isSelected()){
-            try{
-                SystemDAO.insertUser(username, password, profile, tablespace, lock);
+        try {
+            if (cbInsert.isSelected()) {
+                SystemDAO.insertUser(username, password, profile, tablespace, quota, lock);
                 cbBoxListUsers.addItem(username);
-                JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
- 
-            }catch(Exception e){
-                               JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);   
+            } else {
+                SystemDAO.saveUser(username, password, profile, tablespace, quota, lock);
             }
-        }else{
-            try{
-                SystemDAO.saveUser(username, password, profile, tablespace, lock);
-                JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
-            }catch(Exception e){
-                JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);   
-            }
+            JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
         }
     }//GEN-LAST:event_btnSaveMouseClicked
 
     private void txtFieldUsernameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFieldUsernameKeyReleased
         // TODO add your handling code here:
-        
-        if(!checkInsert()){
+
+        if (!checkInsert()) {
             cbBoxListUsers.setSelectedItem(txtFieldUsername.getText());
         }
-        
+
     }//GEN-LAST:event_txtFieldUsernameKeyReleased
 
     private void txtFieldUsernameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFieldUsernameKeyTyped
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFieldUsernameKeyTyped
-    private boolean checkInsert(){
+
+    private void btnDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseClicked
+        // TODO add your handling code here:
+        int option = JOptionPane.showConfirmDialog(this, "Xác nhận xóa!", "Thông báo!", JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            try {
+                SystemDAO.removeUser(txtFieldUsername.getText());
+                JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+                cbBoxListUsers.removeAllItems();
+                loadListUser();
+            } catch (Exception ex) {
+                JOptionPane.showConfirmDialog(this, ex.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
+            }
+        }
+    }//GEN-LAST:event_btnDeleteMouseClicked
+
+    private void txtFieldQuotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldQuotaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFieldQuotaActionPerformed
+    private boolean checkInsert() {
         boolean flag = true;
-        for(Object[] user : Users){
-            if(user[1].toString().equals(txtFieldUsername.getText())){
+        for (Object[] user : Users) {
+            if (user[1].toString().equals(txtFieldUsername.getText())) {
                 flag = false;
             }
         }
         cbInsert.setSelected(flag);
         return flag;
     }
+
     /**
      * @param args the command line arguments
      */
@@ -414,22 +485,27 @@ public class User extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox<String> cbBoxListProfiles;
     private javax.swing.JComboBox<String> cbBoxListUsers;
     private javax.swing.JComboBox<String> cbBoxTablespaces;
+    private javax.swing.JComboBox<String> cbBoxTypeSizeQuota;
     private javax.swing.JCheckBox cbInsert;
     private javax.swing.JCheckBox cbLock;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JTextField txtFieldPassword;
+    private javax.swing.JTextField txtFieldQuota;
     private javax.swing.JTextField txtFieldUsername;
     // End of variables declaration//GEN-END:variables
 }

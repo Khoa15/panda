@@ -38,9 +38,10 @@ IS
     Datafile_info SYS_REFCURSOR;
 BEGIN
     OPEN Datafile_info FOR
-    select creation_change#, foreign_creation_time, name, con_id from v$datafile; 
+    select file_name, tablespace_name, bytes, maxbytes, status from dba_data_files order by tablespace_name;
     RETURN Datafile_info;
 END;
+
 /
 --
 create or replace FUNCTION GetInstanceInfo RETURN SYS_REFCURSOR
@@ -245,4 +246,32 @@ BEGIN
     v_sql := 'ALTER TABLESPACE ' || tablespace_name || ' ADD DATAFILE '''|| location_dt ||''' SIZE ' || size_dt ||'M';
     EXECUTE IMMEDIATE v_sql;
 END add_datafile;
+/
+
+CREATE OR REPLACE PROCEDURE delete_tablespace(
+    p_tablespace VARCHAR
+)
+IS
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLESPACE ' || p_tablespace || ' including contents and datafiles';
+END;
+/
+
+CREATE OR REPLACE PROCEDURE delete_datafile(
+    p_path_datafile VARCHAR
+)
+IS
+    v_tablespace VARCHAR(1000);
+BEGIN
+    --EXECUTE IMMEDIATE 'ALTER DATABASE DATAFILE ''' || p_path_datafile || ''' OFFLINE DROP';
+    BEGIN
+        SELECT tablespace_name into v_tablespace
+        FROM dba_data_files WHERE file_name = p_path_datafile;
+        
+        EXECUTE IMMEDIATE 'ALTER TABLESPACE ' || v_tablespace || ' DROP DATAFILE ''' || p_path_datafile || '''';
+    EXCEPTION
+        WHEN OTHERS THEN
+            RAISE;
+    END;
+END;
 /

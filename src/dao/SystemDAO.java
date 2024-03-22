@@ -159,7 +159,7 @@ public class SystemDAO {
         return null;
     }
 
-    public static boolean insertUser(String username, String password, String profile, String tablespace, boolean isLock) throws Exception {
+    public static boolean insertUser(String username, String password, String profile, String tablespace, String quota, boolean isLock) throws Exception {
         try {
             int lock = (isLock) ? 1 : 0;
             Object[] values = new Object[]{
@@ -168,6 +168,7 @@ public class SystemDAO {
                 password,
                 profile,
                 tablespace,
+                quota,
                 lock
             };
             DBConnectionDAO.CallProcedureNoParameterOut("ADD_ACCOUNT_PROFILE", values);
@@ -177,7 +178,7 @@ public class SystemDAO {
         return true;
     }
 
-    public static boolean saveUser(String username, String password, String profile, String tablespace, boolean isLock) throws Exception {
+    public static boolean saveUser(String username, String password, String profile, String tablespace, String quota, boolean isLock) throws Exception {
         try {
             int cpass = (password.isEmpty() || password == null) ? 0 : 1;
             int lock = (isLock) ? 1 : 0;
@@ -186,6 +187,7 @@ public class SystemDAO {
                 password,
                 profile,
                 tablespace,
+                quota,
                 lock
             };
             DBConnectionDAO.CallProcedureNoParameterOut("modify_user_profile", values);
@@ -402,21 +404,21 @@ public class SystemDAO {
         return result;
     }
 
-    public static DefaultTableModel LoadDataFiles() {
-        try {
-
-            ResultSet rs = DBConnectionDAO.ExecuteSelectQuery("SELECT file_id, file_name, tablespace_name from dba_data_files");
-            return setDefaultDataTableModel(rs);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    public static DefaultTableModel LoadDataFiles() {
+//        try {
+//
+//            ResultSet rs = DBConnectionDAO.ExecuteSelectQuery("SELECT file_id, file_name, tablespace_name from dba_data_files");
+//            return setDefaultDataTableModel(rs);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     public static DefaultTableModel LoadPolicy() {
         try {
-            DefaultTableModel tmp = setDefaultDataTableModel("get_policy_in_user");
+            DefaultTableModel tmp = setDefaultDataTableModel("get_policies");//get_policy_in_user");
 
             return tmp;
 
@@ -726,6 +728,57 @@ public class SystemDAO {
             e.printStackTrace();
         }
         return model;
+    }
+
+    public static void removeUser(String username) throws Exception {
+        try{
+            Object[] values = new Object[]{
+                username
+            };
+            DBConnectionDAO.CallProcedureNoParameter("remove_user", values);
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
+    public static String getQuotaOfUser(String username) {
+        String quota = null;
+        try{
+            Object[] values = new Object[]{
+                username
+            };
+            ResultSet rs = (ResultSet)DBConnectionDAO.CallProcedure("get_quota_user", values);
+            if(rs == null) return quota;
+            while(rs.next()){
+                quota = rs.getString(8);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return quota;
+    }
+
+    public static void deleteTablespace(String tablespace) throws Exception {
+        try{
+            Object[] values = new Object[]{
+                tablespace
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("delete_tablespace", values);
+            
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
+    public static void deleteDatafile(String pathDatafile) throws Exception {
+        try{
+            Object[] values = new Object[]{
+                pathDatafile
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("delete_datafile", values);
+        }catch(Exception e){
+            throw e;
+        }
     }
     
     

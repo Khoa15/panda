@@ -1,10 +1,71 @@
 alter session set current_schema=panda;
+GRANT SELECT ON dba_ts_quotas TO PANDA;
+GRANT SELECT ON dba_data_files TO PANDA;
+GRANT SELECT ON dba_policies TO PANDA;
+GRANT EXECUTE ON DBMS_FGA TO PANDA;
+CREATE OR REPLACE FUNCTION get_policies RETURN SYS_REFCURSOR
+IS
+    list_policies SYS_REFCURSOR;
+BEGIN
+    OPEN list_policies FOR
+        select * from dba_policies ORDER BY policy_group;
+    RETURN list_policies;
+END;
+/
+SELECT * FROM  all_objects;
+CREATE OR REPLACE PROCEDURE insert_policy
+(
+    p_object_name VARCHAR,
+    p_policy_name VARCHAR,
+    p_audit_condition VARCHAR,
+    p_audit_column VARCHAR,
+    p_handler_schema VARCHAR,
+    p_handler_module VARCHAR,
+    p_enable BOOLEAN,
+    p_statement_types VARCHAR
+)
+IS
+BEGIN
+    BEGIN
+        DBMS_FGA.ADD_POLICY(
+            object_schema    => 'PANDA', 
+            object_name      => p_object_name,
+            policy_name      => p_policy_name,
+            audit_condition  => p_audit_condition,
+            audit_column     => p_audit_column,
+            handler_schema   => p_handler_schema,
+            handler_module   => p_handler_module,
+            enable           => p_enable,
+            statement_types  => p_statement_types
+        );
+        EXCEPTION
+            WHEN OTHERS THEN
+                RAISE;
+    END;
+END;
+/
+
 CREATE OR REPLACE FUNCTION get_all_users RETURN SYS_REFCURSOR
 IS
     list_users SYS_REFCURSOR;
 BEGIN
     OPEN list_users FOR
-    SELECT user_id, username, account_status, expiry_date, profile, last_login FROM dba_users;
+    --SELECT user_id, username, account_status, expiry_date, profile, last_login FROM dba_users;
+    SELECT
+                        u.user_id,
+                          u.username,
+                          u.account_status,
+                          u.profile,
+                          u.last_login,
+                          u.default_tablespace,
+                          q.tablespace_name,
+                          q.max_bytes   AS quota_size,
+                          d.file_name,
+                          d.bytes       AS datafile_size
+                      FROM
+                          dba_users        u
+                          LEFT JOIN dba_ts_quotas    q ON u.username = q.username
+                          LEFT JOIN dba_data_files   d ON u.default_tablespace = d.tablespace_name;   
     RETURN list_users;
 END;
 /
@@ -83,3 +144,29 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE FUNCTION get_quota_user(
+    p_user IN VARCHAR
+) RETURN SYS_REFCURSOR
+IS
+    quotas SYS_REFCURSOR;
+BEGIN
+    OPEN quotas FOR
+                    SELECT
+                        u.user_id,
+                          u.username,
+                          u.account_status,
+                          u.profile,
+                          u.last_login,
+                          u.default_tablespace,
+                          q.tablespace_name,
+                          q.max_bytes   AS quota_size,
+                          d.file_name,
+                          d.bytes       AS datafile_size
+                      FROM
+                          dba_users        u
+                          LEFT JOIN dba_ts_quotas    q ON u.username = q.username
+                          LEFT JOIN dba_data_files   d ON u.default_tablespace = d.tablespace_name
+                    WHERE u.username = p_user;
+    RETURN quotas;
+END;
+/

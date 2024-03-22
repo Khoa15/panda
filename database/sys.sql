@@ -64,6 +64,7 @@ ALTER SESSION SET current_schema = panda;
 
 CREATE TABLE account (
     avatar BLOB,
+    ring_tone BLOB,
     username VARCHAR2(100) NOT NULL,
     fullname NVARCHAR2(100),
     CONSTRAINT pk_account PRIMARY KEY ( username )
@@ -234,6 +235,10 @@ BEGIN
     v_sql := 'GRANT CREATE SESSION TO ' || p_username;    
     EXECUTE IMMEDIATE v_sql;
     -- tablespace quota, lock user
+    
+    v_sql := 'CREATE TABLESPACE ' || p_username || ' TBS datafile ' || 'D:\' || p_username || '.dbf size 100m AUTOEXTEND OFF DEFAULT STORAGE (MAXEXTENTS UNLIMITED) QUOTA 10MB ON ' || p_username ;
+    EXECUTE IMMEDIATE v_sql;
+    
     INSERT INTO ACCOUNT (avatar, username, fullname)
     VALUES (p_avatar, up_username, p_fullname);
     BEGIN

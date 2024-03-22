@@ -3,6 +3,20 @@ alter session set current_schema=panda;
 -- Role user about system
 --GRANT SELECT ON role_tab_privs TO PANDA;
 --GRANT SELECT ON all_objects TO PANDA;
+CREATE OR REPLACE PROCEDURE remove_user(
+    p_user VARCHAR
+)
+IS
+BEGIN
+    BEGIN
+        EXECUTE IMMEDIATE 'DROP USER ' || p_user || ' CASCADE';
+    EXCEPTION
+        WHEN OTHERS THEN
+            RAISE;
+    END;
+END;
+/
+
 CREATE OR REPLACE FUNCTION get_dba_tab_privs RETURN SYS_REFCURSOR
 IS
     list_tab_privs SYS_REFCURSOR;
@@ -32,45 +46,6 @@ BEGIN
     RETURN list_tables;
 END;
 /
---
---CREATE OR REPLACE FUNCTION get_dba_tab_privs RETURN SYS_REFCURSOR
---IS
---    list_tab_privs SYS_REFCURSOR;
---BEGIN
---    OPEN list_tab_privs FOR
---    select * from dba_tab_privs order by grantee;
---
---    RETURN list_tab_privs;
---END;
---/
---
---CREATE OR REPLACE FUNCTION get_dba_role_privs RETURN SYS_REFCURSOR
---IS
---    list_role_privs SYS_REFCURSOR;
---BEGIN
---    OPEN list_role_privs FOR
---    select * from dba_role_privs order by grantee;
---
---    RETURN list_role_privs;
---END;
---/
---CREATE OR REPLACE FUNCTION get_insert_sys_privs (
---    p_grantee varchar
---)
---RETURN SYS_REFCURSOR
---IS
---    list_sys_privs SYS_REFCURSOR;
---BEGIN
---    OPEN list_sys_privs FOR
---        SELECT privilege
---        FROM dba_sys_privs
---        MINUS
---        SELECT privilege
---        FROM dba_sys_privs
---        WHERE grantee = p_grantee ORDER BY PRIVILEGE;
---    RETURN list_sys_privs;
---END;
---/
 
 CREATE OR REPLACE FUNCTION get_insert_sys_privs
 (
@@ -265,36 +240,6 @@ BEGIN
 END;
 /
 
---CREATE OR REPLACE FUNCTION get_role_sys_miss_privs (p_role varchar2)
---RETURN SYS_REFCURSOR
---IS
---    list_sys_privs SYS_REFCURSOR;
---BEGIN
---    OPEN list_sys_privs FOR
---        SELECT ROLE
---        FROM dba_roles
---        WHERE role NOT IN (
---            SELECT granted_role
---            FROM dba_role_privs--dba_sys_privs
---            WHERE grantee = p_role
---        ) ORDER BY ROLE;
---    RETURN list_sys_privs;
---END;
---/
---
---CREATE OR REPLACE FUNCTION get_role_sys_privs (p_role varchar2)
---RETURN SYS_REFCURSOR
---IS
---    list_sys_privs SYS_REFCURSOR;
---BEGIN
---    OPEN list_sys_privs FOR
---            SELECT granted_role
---            FROM dba_role_privs--dba_sys_privs
---            WHERE grantee = p_role ORDER BY granted_role;
---    RETURN list_sys_privs;
---END;
---/
-
 CREATE OR REPLACE PROCEDURE revoke_role (
     p_grantee VARCHAR, 
     p_object VARCHAR,
@@ -346,16 +291,13 @@ BEGIN
         FROM dba_sys_privs
         WHERE grantee = p_role;
     
-        -- Ki?m tra quy?n EXECUTE
         SELECT COALESCE(MAX(CASE WHEN privilege = 'EXECUTE' THEN 'Y' ELSE 'N' END), 'N')
         INTO v_has_execute
         FROM dba_tab_privs
         WHERE table_name = p_object
         AND privilege = 'EXECUTE'
         AND grantee = p_role;
-        --SELECT * FROM role_tab_privs WHERE table_name ='COLLECTION' AND role_tab_privs.ROLE = 'PANDA_USER_ROLE';
 
-        -- Ki?m tra quy?n SELECT
         SELECT COALESCE(MAX(CASE WHEN privilege = 'SELECT' THEN 'Y' ELSE 'N' END), 'N')
         INTO v_has_select
         FROM dba_tab_privs
@@ -363,7 +305,6 @@ BEGIN
         AND privilege = 'SELECT'
         AND grantee = p_role;
 
-        -- Ki?m tra quy?n UPDATE
         SELECT COALESCE(MAX(CASE WHEN privilege = 'UPDATE' THEN 'Y' ELSE 'N' END), 'N')
         INTO v_has_update
         FROM dba_tab_privs
@@ -371,7 +312,6 @@ BEGIN
         AND privilege = 'UPDATE'
         AND grantee = p_role;
 
-        -- Ki?m tra quy?n DELETE
         SELECT COALESCE(MAX(CASE WHEN privilege = 'DELETE' THEN 'Y' ELSE 'N' END), 'N')
         INTO v_has_delete
         FROM dba_tab_privs
@@ -379,7 +319,6 @@ BEGIN
         AND privilege = 'DELETE'
         AND grantee = p_role;
 
-        -- Thu h?i quy?n n?u c?n
         IF p_execute = 'N' AND v_has_execute = 'Y' THEN
             EXECUTE IMMEDIATE 'REVOKE EXECUTE ON ' || p_object || ' FROM ' || p_role;
         END IF;
@@ -400,7 +339,6 @@ BEGIN
             EXECUTE IMMEDIATE 'REVOKE ' || p_object || ' FROM ' || p_role;
         END IF;
 
-        -- C?p quy?n n?u c?n
         IF p_execute = 'Y' AND v_has_execute = 'N' THEN
             EXECUTE IMMEDIATE 'GRANT EXECUTE ON ' || p_object || ' TO ' || p_role;
         END IF;
@@ -427,14 +365,6 @@ BEGIN
     END;
 END;
 /
---EXEC update_role_privs('PANDA_USER_ROLE', 'COLLECTION', 'N', 'Y', 'N', 'N');
---SELECT * FROM role_tab_privs WHERE TABLE_NAME = 'COLLECTION';
-
-
-
-
-
-
 
 CREATE OR REPLACE PROCEDURE insert_role_privs (
     p_role VARCHAR2,
@@ -447,10 +377,8 @@ CREATE OR REPLACE PROCEDURE insert_role_privs (
 )
 IS
 BEGIN
-    -- T?o vai trò m?i
     EXECUTE IMMEDIATE 'CREATE ROLE ' || p_role;
 
-    -- C?p quy?n trên ??i t??ng n?u c?n
     IF p_execute = 'Y' THEN
         EXECUTE IMMEDIATE 'GRANT EXECUTE ON ' || p_object || ' TO ' || p_role;
     END IF;
@@ -467,7 +395,6 @@ BEGIN
         EXECUTE IMMEDIATE 'GRANT DELETE ON ' || p_object || ' TO ' || p_role;
     END IF;
 
-    -- C?p quy?n h? th?ng n?u c?n
     IF p_sys_priv = 'Y' THEN
         EXECUTE IMMEDIATE 'GRANT ' || p_object || ' TO ' || p_role;
     END IF;
@@ -478,8 +405,6 @@ EXCEPTION
 END;
 /
 
---EXEC insert_role_privs('PANDA_ROLE_TEST', null, null, null, null, null);
-
 CREATE OR REPLACE PROCEDURE delete_role_privs(
     p_role VARCHAR
 ) IS
@@ -487,7 +412,6 @@ BEGIN
     EXECUTE IMMEDIATE 'DROP ROLE ' || p_role;
 END;
 /
-
 
 
 
@@ -536,27 +460,29 @@ CREATE OR REPLACE PROCEDURE ADD_ACCOUNT_PROFILE (
     p_password VARCHAR2,
     p_profile_name varchar2,
     p_tablespace VARCHAR2,
+    p_quota VARCHAR2,
     p_lock CHAR
 )
 IS
-BEGIN
-    INSERT INTO ACCOUNT (avatar, username, fullname) VALUES
-    (null, p_username, p_fullname);
-    EXECUTE IMMEDIATE 'CREATE USER '
-             || p_username
-             || ' IDENTIFIED BY '
-             || p_password;
-    EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CONNECT TO ' || p_username;
-    EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' PROFILE ' || p_profile_name;
-    EXECUTE IMMEDIATE 'GRANT PANDA_USER_ROLE TO ' || p_username;
-    IF p_lock = '1' THEN
-        EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' ACCOUNT LOCK';
-    END IF;
-    COMMIT;
-EXCEPTION
-    WHEN OTHERS THEN
-        ROLLBACK;
-        RAISE;
+    BEGIN
+        INSERT INTO ACCOUNT (avatar, username, fullname) VALUES
+        (null, p_username, p_fullname);
+        EXECUTE IMMEDIATE 'CREATE USER '
+                 || p_username
+                 || ' IDENTIFIED BY '
+                 || p_password;
+        EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CONNECT TO ' || p_username;
+        EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' PROFILE ' || p_profile_name;
+        EXECUTE IMMEDIATE 'GRANT PANDA_USER_ROLE TO ' || p_username;
+        EXECUTE IMMEDIATE 'CREATE TABLESPACE ' || p_username || ' TBS datafile ' || 'D:\' || p_username || '.dbf size 100m AUTOEXTEND OFF DEFAULT STORAGE (MAXEXTENTS UNLIMITED) QUOTA ' || p_quota || ' ON ' || p_username ;
+        IF p_lock = '1' THEN  
+            EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' ACCOUNT LOCK';
+        END IF;
+        COMMIT;
+    EXCEPTION
+        WHEN OTHERS THEN
+            ROLLBACK;
+            RAISE;
 END ADD_ACCOUNT_PROFILE;
 /
 
@@ -585,6 +511,7 @@ CREATE OR REPLACE PROCEDURE modify_user_profile (
     p_password IN VARCHAR2,
     p_profile_name IN VARCHAR2,
     p_tablespace_name IN VARCHAR2,
+    p_quota IN VARCHAR,
     p_lock IN CHAR
 )
 IS
@@ -602,6 +529,10 @@ BEGIN
     IF p_tablespace_name IS NOT NULL AND LENGTH(TRIM(p_tablespace_name)) > 0 THEN
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' DEFAULT TABLESPACE ' || p_tablespace_name;
     END IF;
+    
+    IF p_quota IS NOT NULL AND LENGTH(TRIM(p_quota)) > 0 THEN
+        EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' QUOTA ' || p_quota || ' ON ' || p_tablespace_name;
+    END IF;
 
     IF p_lock = '1' THEN
         v_need_lock_account := TRUE;
@@ -613,6 +544,8 @@ BEGIN
 
     IF v_need_lock_account THEN
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' ACCOUNT LOCK';
+    ELSE
+        EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' ACCOUNT UNLOCK';    
     END IF;
 END modify_user_profile;
 /

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import model.Account;
@@ -25,6 +26,7 @@ import panda.user.system.AddDatafile;
 import panda.user.system.CreateTablespace;
 import panda.user.system.User;
 import panda.user.system.mgnAudit;
+import panda.user.system.mgnPolicy;
 import panda.user.system.mgnProfile;
 import panda.user.system.mgnRole;
 /**
@@ -41,7 +43,7 @@ public class CpnProfile extends javax.swing.JPanel {
      */
     String[] systems = {
         "SGA", "PGA", "PROCESS", "INSTANCE", "DATABASE", "DATAFILE", "CONTROL FILES", "SPFILE",
-        "SESSION", "TABLESPACE", "DATAFILES", "POLICY", "AUDIT", "USERS", "PROFILES"
+        "SESSION", "TABLESPACES", "DATAFILES", "POLICIES", "AUDIT", "USERS", "PROFILES"
     };
     String system = "SGA";
     boolean isDialog = false;
@@ -50,9 +52,7 @@ public class CpnProfile extends javax.swing.JPanel {
         listSystems.setListData(systems);
         if (!"panda_user".equals(DBConnection.getUsername())) {
             LoadDataTableModel(SystemDAO.LoadSGA());
-
         }
-
     }
 
     public void reloadTable() {
@@ -84,13 +84,13 @@ public class CpnProfile extends javax.swing.JPanel {
             case "SESSION":
                 LoadDataTableModel(SystemDAO.LoadSession());
                 break;
-            case "TABLESPACE":
+            case "TABLESPACES":
                 LoadDataTableModel(SystemDAO.LoadTableSpace());
                 break;
             case "DATAFILES":
-                LoadDataTableModel(SystemDAO.LoadDataFiles());
+                LoadDataTableModel(SystemDAO.LoadDataFileInfo());//LoadDataFiles());
                 break;
-            case "POLICY":
+            case "POLICIES":
                 LoadDataTableModel(SystemDAO.LoadPolicy());
                 break;
             case "AUDIT":
@@ -143,11 +143,9 @@ public class CpnProfile extends javax.swing.JPanel {
         btnKillSession = new javax.swing.JButton();
         btnViewSession = new javax.swing.JButton();
         btnAddDatafile = new javax.swing.JButton();
-        btnAddProfile = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
+        btnRemove = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableSystem = new javax.swing.JTable();
-        jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listSystems = new javax.swing.JList<>();
 
@@ -259,6 +257,11 @@ public class CpnProfile extends javax.swing.JPanel {
         });
 
         btnPolicy.setText("Policy");
+        btnPolicy.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnPolicyMouseClicked(evt);
+            }
+        });
 
         btnProfile.setText("Profile");
         btnProfile.setEnabled(false);
@@ -279,7 +282,6 @@ public class CpnProfile extends javax.swing.JPanel {
         });
 
         btnUser.setText("User");
-        btnUser.setEnabled(false);
         btnUser.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnUserMouseClicked(evt);
@@ -295,15 +297,15 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnCollection)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 29, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 15, Short.MAX_VALUE)
                         .addComponent(btnVocab)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 29, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 15, Short.MAX_VALUE)
                         .addComponent(btnFlashcard)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                         .addComponent(btnSentence)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 29, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 15, Short.MAX_VALUE)
                         .addComponent(btnProject)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 29, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 15, Short.MAX_VALUE)
                         .addComponent(btnTask))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnPolicy)
@@ -368,10 +370,11 @@ public class CpnProfile extends javax.swing.JPanel {
             }
         });
 
-        btnAddProfile.setText("Thêm Profile");
-        btnAddProfile.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnRemove.setText("Xóa");
+        btnRemove.setEnabled(false);
+        btnRemove.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnAddProfileMouseClicked(evt);
+                btnRemoveMouseClicked(evt);
             }
         });
 
@@ -385,7 +388,7 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAddDatafile)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAddProfile)
+                .addComponent(btnRemove)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnViewSession)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -401,7 +404,7 @@ public class CpnProfile extends javax.swing.JPanel {
                     .addComponent(btnKillSession)
                     .addComponent(btnViewSession)
                     .addComponent(btnAddDatafile)
-                    .addComponent(btnAddProfile))
+                    .addComponent(btnRemove))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -418,46 +421,12 @@ public class CpnProfile extends javax.swing.JPanel {
         });
         jScrollPane3.setViewportView(jTableSystem);
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
         listSystems.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listSystemsMouseClicked(evt);
             }
         });
         jScrollPane2.setViewportView(listSystems);
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
-                .addContainerGap())
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -470,9 +439,9 @@ public class CpnProfile extends javax.swing.JPanel {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -485,33 +454,38 @@ public class CpnProfile extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void listSystemsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listSystemsMouseClicked
         // TODO add your handling code here:
         reloadTable();
-        if (systems[listSystems.getSelectedIndex()] != "SESSION") {
+        String sys_name = systems[listSystems.getSelectedIndex()];
+        if (sys_name != "SESSION") {
             btnViewSession.setEnabled(false);
             btnKillSession.setEnabled(false);
+        }else if(sys_name != "TABLESPACES" || sys_name != "DATAFILES"){
+            btnRemove.setEnabled(false);
         }
     }//GEN-LAST:event_listSystemsMouseClicked
 
     private void jTableSystemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableSystemMouseClicked
         // TODO add your handling code here:
-        if (systems[listSystems.getSelectedIndex()] == "SESSION") {
-            int row = jTableSystem.getSelectedRow();
+        int row = jTableSystem.getSelectedRow();
+        if(row == -1) return;
+        String sys_name = systems[listSystems.getSelectedIndex()];
+        if (sys_name == "SESSION") {
             sid = jTableSystem.getValueAt(row, 0).toString();
             serial = jTableSystem.getValueAt(row, 2).toString();
             addr = jTableSystem.getValueAt(row, 0).toString();
-            if (row != -1) {
                 btnViewSession.setEnabled(true);
                 btnKillSession.setEnabled(true);
-            }
+        }else if(sys_name == "TABLESPACES" || sys_name == "DATAFILES"){
+            btnRemove.setEnabled(true);
         }
         //sid, serial#
     }//GEN-LAST:event_jTableSystemMouseClicked
@@ -599,10 +573,24 @@ public class CpnProfile extends javax.swing.JPanel {
         datafile.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnAddDatafileMouseClicked
 
-    private void btnAddProfileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddProfileMouseClicked
+    private void btnRemoveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRemoveMouseClicked
         // TODO add your handling code here:
-
-    }//GEN-LAST:event_btnAddProfileMouseClicked
+        String sys = system;
+        String object = jTableSystem.getValueAt(jTableSystem.getSelectedRow(), 0).toString();
+        try{
+            switch(sys){
+                case "TABLESPACES":
+                    SystemDAO.deleteTablespace(object);
+                    break;
+                case "DATAFILES":
+                    SystemDAO.deleteDatafile(object);
+                    break;
+            }
+            JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+        }catch(Exception e){
+            JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
+        }
+    }//GEN-LAST:event_btnRemoveMouseClicked
 
     private void btnSignoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignoutMouseClicked
         // TODO add your handling code here:
@@ -662,70 +650,26 @@ public class CpnProfile extends javax.swing.JPanel {
         mgnAudit.main(systems);
     }//GEN-LAST:event_btnAuditMouseClicked
 
+    private void btnPolicyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPolicyMouseClicked
+        // TODO add your handling code here:
+        mgnPolicy.main(systems);
+    }//GEN-LAST:event_btnPolicyMouseClicked
+
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();
 //        jTableSystem.setModel(sga);
 //    }
     private void LoadDataTableModel(DefaultTableModel model) {
-        if (model.getColumnCount() < 10) {
+        if (model.getColumnCount() < 15) {
             jTableSystem.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         } else {
             jTableSystem.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         }
         jTableSystem.setModel(model);
     }
-    
-//    public void LoadDataModel(String system) {
-//        jTableSystem.setModel(SystemDAO.loadInfoSystem(system));
-//    }
-//    public void LoadPGA() {
-//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
-//        jTableSystem.setModel(pga);
-//    }
-//
-//    public void LoadProcess() {
-//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
-//        jTableSystem.setModel(pga);
-//    }
-//
-//    public void LoadInstance() {
-//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
-//        jTableSystem.setModel(pga);
-//    }
-//
-//    public void LoadDatabase() {
-//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
-//        jTableSystem.setModel(pga);
-//    }
-//
-//    public void LoadDatafile() {
-//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
-//        jTableSystem.setModel(pga);
-//    }
-//
-//    public void LoadControlFiles() {
-//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
-//        jTableSystem.setModel(pga);
-//    }
-//
-//    public void LoadSpfile() {
-//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
-//        jTableSystem.setModel(pga);
-//    }
-//
-//    public void LoadSession() {
-//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
-//        jTableSystem.setModel(pga);
-//    }
-//
-//    public void LoadTablespace() {
-//        DefaultTableModel pga = SystemDAO.loadInfoSystem();
-//        jTableSystem.setModel(pga);
-//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddDatafile;
-    private javax.swing.JButton btnAddProfile;
     private javax.swing.JButton btnAudit;
     private javax.swing.JButton btnCollection;
     private javax.swing.JButton btnCreateTableSpace;
@@ -734,6 +678,7 @@ public class CpnProfile extends javax.swing.JPanel {
     private javax.swing.JButton btnPolicy;
     private javax.swing.JButton btnProfile;
     private javax.swing.JButton btnProject;
+    private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnRole;
     private javax.swing.JButton btnSentence;
     private javax.swing.JButton btnSignout;
@@ -746,8 +691,6 @@ public class CpnProfile extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTableSystem;
