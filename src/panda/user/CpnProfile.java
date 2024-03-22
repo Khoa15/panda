@@ -660,12 +660,16 @@ public class CpnProfile extends javax.swing.JPanel {
 //        jTableSystem.setModel(sga);
 //    }
     private void LoadDataTableModel(DefaultTableModel model) {
-        if (model.getColumnCount() < 15) {
-            jTableSystem.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-        } else {
-            jTableSystem.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        try{
+            if (model.getColumnCount() < 15) {
+                jTableSystem.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+            } else {
+                jTableSystem.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            }
+            jTableSystem.setModel(model);
+        }catch(Exception e){
+            
         }
-        jTableSystem.setModel(model);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

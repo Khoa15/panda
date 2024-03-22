@@ -80,8 +80,8 @@ public class SystemDAO {
                 user.profile = rs.getString(1);
                 user.tablespace = rs.getString(2);
                 user.setAvatar(rs.getBytes(3));
-                user.setUsername(rs.getString(4));
-                user.setFullname(rs.getString(5));
+                user.setUsername(rs.getString(5));
+                user.setFullname(rs.getString(6));
             }
             rs.close();
         } catch (Exception e) {

@@ -1,5 +1,7 @@
 alter session set current_schema=panda;
 --- Task Week 2
+GRANT ALTER TABLESPACE TO PANDA;
+GRANT SELECT ON dba_data_files TO PANDA;
 CREATE OR REPLACE PROCEDURE kill_session (
     s_sid VARCHAR2,
     s_serial VARCHAR2

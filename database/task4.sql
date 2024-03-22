@@ -3,6 +3,68 @@ alter session set current_schema=panda;
 -- Role user about system
 --GRANT SELECT ON role_tab_privs TO PANDA;
 --GRANT SELECT ON all_objects TO PANDA;
+GRANT SELECT ON dba_role_privs TO PANDA;
+GRANT SELECT ON dba_roles TO PANDA;
+CREATE OR REPLACE PROCEDURE delete_all_data_user (
+    p_user VARCHAR
+)
+IS
+BEGIN
+    BEGIN
+        DELETE FROM sentence_vocab_typevocab WHERE word IN (
+            SELECT word FROM vocab_typevocab WHERE cid IN (
+                SELECT id FROM card WHERE id IN (
+                    SELECT card_id FROM collection_card WHERE collect_id IN (
+                        SELECT id FROM collection WHERE username = p_user
+                    )
+                )
+            )
+        );
+    
+        DELETE FROM collection_card WHERE collect_id IN (
+            SELECT id FROM collection WHERE username = p_user
+        );
+    
+        DELETE FROM vocab_typevocab WHERE cid IN (
+            SELECT id FROM card WHERE id IN (
+                SELECT card_id FROM collection_card WHERE collect_id IN (
+                    SELECT id FROM collection WHERE username = p_user
+                )
+            )
+        );
+    
+        DELETE FROM flashcard WHERE cid IN (
+            SELECT id FROM card WHERE id IN (
+                SELECT card_id FROM collection_card WHERE collect_id IN (
+                    SELECT id FROM collection WHERE username = p_user
+                )
+            )
+        );
+    
+        DELETE FROM card WHERE id IN (
+            SELECT card_id FROM collection_card WHERE collect_id IN (
+                SELECT id FROM collection WHERE username = p_user
+            )
+        );
+    
+        DELETE FROM collection WHERE username = p_user;
+    
+        DELETE FROM task WHERE pid IN (
+            SELECT id FROM project WHERE username = p_user
+        );
+    
+        DELETE FROM project WHERE username = p_user;
+    
+        DELETE FROM account WHERE username = p_user;
+    
+        COMMIT;
+    EXCEPTION
+        WHEN OTHERS THEN
+            ROLLBACK;
+            RAISE;
+    END;
+END;
+/
 CREATE OR REPLACE PROCEDURE remove_user(
     p_user VARCHAR
 )
@@ -10,13 +72,13 @@ IS
 BEGIN
     BEGIN
         EXECUTE IMMEDIATE 'DROP USER ' || p_user || ' CASCADE';
+        delete_all_data_user(p_user);
     EXCEPTION
         WHEN OTHERS THEN
             RAISE;
     END;
 END;
 /
-
 CREATE OR REPLACE FUNCTION get_dba_tab_privs RETURN SYS_REFCURSOR
 IS
     list_tab_privs SYS_REFCURSOR;
@@ -474,7 +536,9 @@ IS
         EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CONNECT TO ' || p_username;
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' PROFILE ' || p_profile_name;
         EXECUTE IMMEDIATE 'GRANT PANDA_USER_ROLE TO ' || p_username;
-        EXECUTE IMMEDIATE 'CREATE TABLESPACE ' || p_username || ' TBS datafile ' || 'D:\' || p_username || '.dbf size 100m AUTOEXTEND OFF DEFAULT STORAGE (MAXEXTENTS UNLIMITED) QUOTA ' || p_quota || ' ON ' || p_username ;
+        EXECUTE IMMEDIATE 'CREATE TABLESPACE ' || p_username || ' datafile ''D:\' || p_username || '.dbf'' size 100m AUTOEXTEND OFF';
+
+        EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' QUOTA 10M ON ' || p_username || '';
         IF p_lock = '1' THEN  
             EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' ACCOUNT LOCK';
         END IF;

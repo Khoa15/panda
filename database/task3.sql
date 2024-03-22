@@ -12,7 +12,7 @@ BEGIN
     RETURN list_policies;
 END;
 /
-SELECT * FROM  all_objects;
+--SELECT * FROM  all_objects;
 CREATE OR REPLACE PROCEDURE insert_policy
 (
     p_object_name VARCHAR,

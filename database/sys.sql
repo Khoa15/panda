@@ -217,6 +217,7 @@ CREATE TABLE collection_card (
 
 CREATE OR REPLACE PROCEDURE add_account (
     p_avatar BLOB,
+    p_ring_tone BLOB,
     p_username VARCHAR2,
     p_fullname NVARCHAR2,
     p_password VARCHAR2
@@ -236,11 +237,14 @@ BEGIN
     EXECUTE IMMEDIATE v_sql;
     -- tablespace quota, lock user
     
-    v_sql := 'CREATE TABLESPACE ' || p_username || ' TBS datafile ' || 'D:\' || p_username || '.dbf size 100m AUTOEXTEND OFF DEFAULT STORAGE (MAXEXTENTS UNLIMITED) QUOTA 10MB ON ' || p_username ;
+    v_sql := 'CREATE TABLESPACE ' || p_username || ' datafile ''D:\' || p_username || '.dbf'' size 100m AUTOEXTEND OFF';-- QUOTA 10MB ON ' || p_username ;
     EXECUTE IMMEDIATE v_sql;
     
-    INSERT INTO ACCOUNT (avatar, username, fullname)
-    VALUES (p_avatar, up_username, p_fullname);
+    v_sql := 'ALTER USER ' || p_username || ' QUOTA 10M ON ' || p_username || '';
+    EXECUTE IMMEDIATE v_sql;
+    
+    INSERT INTO ACCOUNT (avatar, ring_tone, username, fullname)
+    VALUES (p_avatar, p_ring_tone, up_username, p_fullname);
     BEGIN
         INSERT INTO project (username, name, description, priority, created_at, updated_at)
         VALUES (up_username, 'Inboxes', null, 0, SYSTIMESTAMP, SYSTIMESTAMP)
@@ -841,7 +845,7 @@ END;
 /
 
 --CREATE USER panda_user IDENTIFIED BY panda_user;
-call add_account(null, 'panda_user', 'PANDA USER', 'panda_user');
+call add_account(null, null, 'panda_user', 'PANDA USER', 'panda_user');
 /
 
 GRANT PANDA_USER_ROLE TO panda_user;
@@ -916,6 +920,7 @@ INSERT INTO flashcard (cid, front, back) VALUES (1, 'Oracle database là gì?', 'O
 INSERT INTO flashcard (cid, front, back) VALUES (2, 'Các phiên b?n oracle', 'Enterprise edition, standard edition, express edition, oracle lite');
 INSERT INTO flashcard (cid, front, back) VALUES (3, 'Express edition dùng cho h? ?i?u hành nào?', 'Linux và windows');
 INSERT INTO flashcard (cid, front, back) VALUES (4, 'Machine learning có t? phiên b?n nào c?a oracle?', '18c');
+
 
 
 INSERT INTO collection_card (collect_id, card_id) VALUES (1, 1);
