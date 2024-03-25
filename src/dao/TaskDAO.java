@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Timestamp;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
@@ -30,16 +31,51 @@ public class TaskDAO {
         }
     }
 
+    public static void add(Task task) throws Exception {
+        try{
+            Object[] values = new Object[]{
+                task.getProject().getId(),
+                task.getDescription(),
+                task.getIsDone(),
+                0,// type_date
+                task.getIsFullDay(),
+                task.getTypeLoop(),
+                task.getDoneAfterNDays(),
+                task.getPriority(),
+                task.getCreatedAt(),
+                task.getUpdatedAt(),
+                task.getStartedAt(),
+                task.getEndedAt()
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("add_task", values);
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
+    public static Task get(String taskDescription) throws Exception {
+        try{
+            ResultSet rs = DBConnectionDAO.CallFunction("select_task_by_description", taskDescription);
+            if(rs == null){
+                throw new IllegalStateException("Task not found!");
+            }
+            return setTask(rs);
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
     public TaskDAO() {
     }
 
     public static ArrayList<Task> load() {
         try {
             tasks.clear();
-            ResultSet rs = DBConnectionDAO.Load(null);
+            ResultSet rs = DBConnectionDAO.CallFunction("select_tasks");
+            if(rs == null) return tasks;
             while (rs.next()) {
-                if(rs.getRow() == 0) continue;
-                tasks.add(setTask(rs));
+                Task t = setTask(rs);
+                tasks.add(t);
             }
             return tasks;
         } catch (Exception e) {
@@ -108,8 +144,8 @@ public class TaskDAO {
         try {
             tasks.clear();
             ResultSet rs = DBConnectionDAO.CallFunction("Select_Inboxes");
+            if(rs == null) return tasks;
             while (rs.next()) {
-                if(rs.getRow() == 0) continue;
                 tasks.add(setTask(rs));
             }
             return tasks;
@@ -121,14 +157,26 @@ public class TaskDAO {
         }
     }
 
-    public static int update(Task project) {
+    public static void update(Task task) throws Exception {
         try {
-            return DBConnectionDAO.Update("Update_Task", null);
+            Object[] values = new Object[]{
+                task.getId(),
+                task.getProject().getId(),
+                task.getDescription(),
+                task.getIsDone(),
+                0,// type_date
+                task.getIsFullDay(),
+                task.getTypeLoop(),
+                task.getDoneAfterNDays(),
+                task.getPriority(),
+                task.getCreatedAt(),
+                task.getUpdatedAt(),
+                task.getStartedAt(),
+                task.getEndedAt()
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("Update_Task", values);
         } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        } finally {
-            //DBConnection.closeConnection();
+            throw e;
         }
     }
 
@@ -184,7 +232,19 @@ public class TaskDAO {
     private static Task setTask(ResultSet rs) {
         try {
             Task task = new Task();
+            task.setId(rs.getInt("id"));
+            task.setProject(rs.getInt("pid"));
             task.setDescription(rs.getNString("description"));
+            task.setDone(rs.getBoolean("done"));
+            task.setFullDay(rs.getBoolean("is_full_day"));
+            task.setTypeLoop((short)rs.getInt("type_loop"));
+            task.setDoneAfterNDays(rs.getInt("done_after_n_days"));
+            task.setPriority(rs.getByte("priority"));
+            
+            task.setCreatedAt(rs.getTimestamp("created_at"));
+            task.setUpdatedAt(rs.getTimestamp("updated_at"));
+            task.setStartedAt(rs.getTimestamp("started_at"));
+            task.setEndedAt(rs.getTimestamp("ended_at"));
             return task;
         } catch (Exception e) {
             e.printStackTrace();

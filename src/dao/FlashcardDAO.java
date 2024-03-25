@@ -15,17 +15,16 @@ public class FlashcardDAO {
     
     public FlashcardDAO(){}
     
-    public static boolean add(Flashcard flashcard, int collection_id){
+    public static boolean add(Flashcard flashcard, int collection_id) throws Exception{
         try{
             Object values [] = new Object[] {
                 flashcard.getFront(),
                 flashcard.getBack(),
                 collection_id,
             };
-            return DBConnectionDAO.Update("AddFlashcard", values) > 0;
+            return DBConnectionDAO.CallProcedureNoParameter("add_flashcard", values);
         }catch(Exception e){
-            e.printStackTrace();
-            return false;
+            throw e;
         }finally{
             //DBConnection.closeConnection();
         }

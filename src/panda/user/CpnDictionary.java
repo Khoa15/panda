@@ -158,7 +158,7 @@ public class CpnDictionary extends javax.swing.JPanel {
                 v.getWord(),
                 v.getPartOfSpeech(),
                 v.getMeaning(),
-                v.getSentence()
+                v.getSentence().getOrigin()
             };
             model.addRow(data);
         }

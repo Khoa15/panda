@@ -7,6 +7,7 @@ package panda.user;
 import dao.TaskDAO;
 import java.util.ArrayList;
 import model.Task;
+import panda.project.AddProject;
 
 /**
  *
@@ -225,11 +226,13 @@ public class CpnProject extends javax.swing.JPanel {
     private void btnCreateProjectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCreateProjectMouseClicked
         // TODO add your handling code here:
         //Open Frame
+        AddProject.main(new String[]{});
     }//GEN-LAST:event_btnCreateProjectMouseClicked
 
     private void btnAddTaskMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddTaskMouseClicked
         // TODO add your handling code here:
         // Open Frame and add detail Task
+        FrameTask.main(new String[0]);
     }//GEN-LAST:event_btnAddTaskMouseClicked
 
 

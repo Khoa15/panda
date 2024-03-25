@@ -19,7 +19,9 @@ public class CardDAO {
     public static ArrayList<Card> load(int collectionId) {
         try {
             cards.clear();
-            Object[] values = new Object[]{collectionId};
+            Object[] values = new Object[]{
+                collectionId
+            };
             ResultSet rs = (ResultSet)DBConnectionDAO.CallFunction("Select_Cards", values, OracleTypes.CURSOR);
             while (rs.next()) {
                 cards.add(setCard(rs));

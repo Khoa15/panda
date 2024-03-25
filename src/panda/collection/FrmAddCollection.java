@@ -5,6 +5,7 @@
 package panda.collection;
 
 import dao.CollectionDAO;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import model.Collection;
 import panda.user.CpnCollection;
@@ -95,11 +96,12 @@ public class FrmAddCollection extends javax.swing.JFrame {
     private void btnAddCollectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddCollectionMouseClicked
         // TODO add your handling code here:
         Collection c = new Collection(txtFieldCollectionName.getText());
-        if(CollectionDAO.add(c)){
-            lbNotify.setText("Successfully!");
+        try{
+            CollectionDAO.add(c);
             cpnCollection.addCollection(c);
-        }else{
-            lbNotify.setText("Failure!");
+            JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+        }catch(Exception e){
+            JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
         }
     }//GEN-LAST:event_btnAddCollectionMouseClicked
 

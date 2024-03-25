@@ -65,6 +65,8 @@ BEGIN
     END;
 END;
 /
+
+EXECUTE delete_tablespace('PANDA_USER');
 CREATE OR REPLACE PROCEDURE remove_user(
     p_user VARCHAR
 )
@@ -72,7 +74,8 @@ IS
 BEGIN
     BEGIN
         EXECUTE IMMEDIATE 'DROP USER ' || p_user || ' CASCADE';
-        delete_all_data_user(p_user);
+        BEGIN delete_tablespace(p_user); END;
+        BEGIN delete_all_data_user(p_user); END;
     EXCEPTION
         WHEN OTHERS THEN
             RAISE;
@@ -533,7 +536,7 @@ IS
                  || p_username
                  || ' IDENTIFIED BY '
                  || p_password;
-        EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CONNECT TO ' || p_username;
+        EXECUTE IMMEDIATE 'GRANT CREATE SESSION TO ' || p_username;
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' PROFILE ' || p_profile_name;
         EXECUTE IMMEDIATE 'GRANT PANDA_USER_ROLE TO ' || p_username;
         EXECUTE IMMEDIATE 'CREATE TABLESPACE ' || p_username || ' datafile ''D:\' || p_username || '.dbf'' size 100m AUTOEXTEND OFF';

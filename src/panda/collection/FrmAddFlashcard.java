@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -51,14 +52,21 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
     private boolean isFlashcard = true;
     private ArrayList<CpnExampleVocab> cpnExampleVocabArr;
     private DefaultTableModel tbModel;
+    private final int width = 835;
+
+    private void setSize() {
+        if (cbBoxType.getSelectedIndex() == 0) {
+            this.setSize(width, 450);
+        } else {
+            this.setSize(width, 700);
+        }
+    }
 
     public FrmAddFlashcard() {
         initComponents();
         listCollections = CollectionDAO.load();
-        pnVocab.setVisible(true);
-        //cbBoxCollection;
-        //tbFlashcard
-        //cbBoxPOS
+        pnVocab.setVisible(false);
+        setSize();
 
         for (Collection c : listCollections) {
             cbBoxCollection.addItem(c.getName());
@@ -70,77 +78,8 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
         }
         tbModel = (DefaultTableModel) tbCard.getModel();
         cpnExampleVocabArr = new ArrayList<CpnExampleVocab>();
-//        cpnExampleVocabArr.add(new CpnExampleVocab());
-//        cpnExampleVocabArr.add(new CpnExampleVocab());
-//        cpnExampleVocabArr.add(new CpnExampleVocab());
-//        cpnExampleVocabArr.add(new CpnExampleVocab());
-//        for(int i = 0; i < cpnExampleVocabArr.size(); i++){
-//            jPanel9.add(cpnExampleVocabArr.get(i));
-//        }
     }
 
-//    private boolean initSample() {
-//        try {
-//            JPanel pnSentenceX = new JPanel();
-//            JPanel pnBoxSampleX = new JPanel();
-//            JButton btnDeleteSentenceX = new JButton("Delete");
-//            JButton btnSaveSampleX = new JButton("Save");
-//            JTextField jTextFieldX3 = new JTextField("Translated sample language");
-//            JTextField jTextFieldX2 = new JTextField("Origin sample language");
-//
-//            javax.swing.GroupLayout pnSentenceLayout = new javax.swing.GroupLayout(pnSentenceX);
-//            pnSentenceX.setLayout(pnSentenceLayout);
-//            pnSentenceLayout.setHorizontalGroup(
-//                    pnSentenceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//                            .addGroup(pnSentenceLayout.createSequentialGroup()
-//                                    .addGap(18, 18, 18)
-//                                    .addGroup(pnSentenceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//                                            .addComponent(jTextFieldX3, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
-//                                            .addComponent(jTextFieldX2))
-//                                    .addContainerGap())
-//            );
-//            pnSentenceLayout.setVerticalGroup(
-//                    pnSentenceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//                            .addGroup(pnSentenceLayout.createSequentialGroup()
-//                                    .addGap(4, 4, 4)
-//                                    .addComponent(jTextFieldX2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-//                                    .addComponent(jTextFieldX3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-//            );
-//
-//            javax.swing.GroupLayout pnBoxSampleLayout = new javax.swing.GroupLayout(pnBoxSampleX);
-//            pnBoxSampleX.setLayout(pnBoxSampleLayout);
-//            pnBoxSampleLayout.setHorizontalGroup(
-//                    pnBoxSampleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//                            .addGroup(pnBoxSampleLayout.createSequentialGroup()
-//                                    .addContainerGap()
-//                                    .addComponent(pnSentenceX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-//                                    .addGroup(pnBoxSampleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//                                            .addComponent(btnDeleteSentenceX, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                                            .addComponent(btnSaveSampleX, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
-//                                    .addGap(20, 20, 20))
-//            );
-//            pnBoxSampleLayout.setVerticalGroup(
-//                    pnBoxSampleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//                            .addGroup(pnBoxSampleLayout.createSequentialGroup()
-//                                    .addContainerGap()
-//                                    .addGroup(pnBoxSampleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-//                                            .addComponent(pnSentenceX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                                            .addGroup(pnBoxSampleLayout.createSequentialGroup()
-//                                                    .addComponent(btnSaveSampleX)
-//                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-//                                                    .addComponent(btnDeleteSentenceX)))
-//                                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-//            );
-//
-//            jPanel9.add(pnBoxSampleX);
-//            return true;
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -164,6 +103,7 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
         txtAreaFront = new javax.swing.JTextArea();
         btnSave = new javax.swing.JButton();
         lbNotify = new javax.swing.JLabel();
+        cbBoxInsert = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbCard = new javax.swing.JTable();
@@ -286,6 +226,8 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
             }
         });
 
+        cbBoxInsert.setText("Insert");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -297,8 +239,13 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(lbNotify, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                                .addComponent(lbNotify, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(cbBoxInsert)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSave)
                         .addGap(8, 8, 8)))
@@ -316,7 +263,8 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSave)
-                    .addComponent(lbNotify))
+                    .addComponent(lbNotify)
+                    .addComponent(cbBoxInsert))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
@@ -351,7 +299,7 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(cbBoxCollection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -512,52 +460,61 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
         } else {
             isFlashcard = true;
         }
+        setSize();
     }//GEN-LAST:event_cbBoxTypeItemStateChanged
 
     private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
         // TODO add your handling code here:
         String front = txtAreaFront.getText();
         String back = txtAreaBack.getText();
+        int collection_id = listCollections.get(cbBoxCollection.getSelectedIndex() - 1).getId();
+        
         cbBoxType.getSelectedIndex();
-        //cbBoxPOS.getSelectedIndex();
         txtFieldIPA.getText();
+        try {
 
-        if (isFlashcard) {
-            Flashcard flashcard = new Flashcard();
-            flashcard.setFront(front);
-            flashcard.setBack(back);
-            if (FlashcardDAO.add(flashcard, idCollectionSelected)) {
+            if (isFlashcard) {
+                Flashcard flashcard = new Flashcard();
+                flashcard.setFront(front);
+                flashcard.setBack(back);
+                FlashcardDAO.add(flashcard, idCollectionSelected);
                 lbNotify.setText("Successfully!");
                 addRow(setDataRowTable(flashcard));
+//                if () {
+//                } else {
+//                    lbNotify.setText("Failed!");
+//                }
             } else {
-                lbNotify.setText("Failed!");
-            }
-        } else {
-            String ipa = txtFieldIPA.getText();
+                String ipa = txtFieldIPA.getText();
 
-            Vocab v = new Vocab();
-            v.setWord(front);
-            v.setMeaning(back);
-            v.setIpa(ipa);
-            v.setSentence(convertToExampleArr());
-            boolean isSavedVocab = false;
-            for (Component c : pnCheckboxPOS.getComponents()) {
-                if (c instanceof JCheckBox) {
-                    JCheckBox d = (JCheckBox) c;
-                    if (d.isSelected()) {
-                        v.setPartOfSpeech(d.getText());
-                        if (VocabDAO.add(v)) {
-                            addRow(setDataRowTable(v));
-                            isSavedVocab = true;
+                Vocab v = new Vocab();
+                v.setWord(front);
+                v.setMeaning(back);
+                v.setIpa(ipa);
+                //v.setSentence(convertToExampleArr());
+                boolean isSavedVocab = false;
+                for (Component c : pnCheckboxPOS.getComponents()) {
+                    if (c instanceof JCheckBox) {
+                        JCheckBox d = (JCheckBox) c;
+                        if (d.isSelected()) {
+                            v.setPartOfSpeech(d.getText());
+                            if (VocabDAO.add(v)) {
+                                addRow(setDataRowTable(v));
+                                isSavedVocab = true;
+                            }
                         }
                     }
                 }
+                SentenceDAO.add(convertToExampleArr(), v);
+//                if (isSavedVocab && (SentenceDAO.add(v) || v.getSentence().isEmpty())) {
+//                    lbNotify.setText("Successfully");
+//                }
             }
-
-            if (isSavedVocab && (SentenceDAO.add(v) || v.getSentence().isEmpty())) {
-                lbNotify.setText("Successfully");
-            }
+            JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
         }
+
     }//GEN-LAST:event_btnSaveMouseClicked
 
     private void addRow(Object[] data) {
@@ -586,7 +543,8 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
         if (index == -1) {
             loadJTable(null);
         } else if (index != iCollectionSelected) {
-            iCollectionSelected = cbBoxCollection.getSelectedIndex() - 1;
+            
+            iCollectionSelected = evt.getStateChange() - 1;
             idCollectionSelected = listCollections.get(iCollectionSelected).getId();
             ArrayList<Card> cards = CardDAO.load(listCollections.get(iCollectionSelected).getId());
             loadJTable(cards);
@@ -617,11 +575,11 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
                     "<div class=\\\"def ddef_d db\\\">(?:\\\\s+.*?|([^<]+))(?:\\\\s+.*?|</a>)?"
             );
             Matcher matcher = pagePattern.matcher(html);
-            String meaning= "";
+            String meaning = "";
             if (matcher.find()) {
                 meaning = matcher.group();
             }
-            int a = 1+1;
+            int a = 1 + 1;
 
 //                Pattern pattern = Pattern.compile("(?:[^<]+|<(?![/a]|/?a[^>]*>))+?");
 //                matcher = pattern.matcher(html);
@@ -721,6 +679,7 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
     private javax.swing.JButton btnAddSample;
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox<String> cbBoxCollection;
+    private javax.swing.JCheckBox cbBoxInsert;
     private javax.swing.JComboBox<String> cbBoxSort;
     private javax.swing.JComboBox<String> cbBoxType;
     private javax.swing.JCheckBox ckBoxAddVocabInSample;

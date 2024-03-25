@@ -66,6 +66,7 @@ public class CpnCollection extends javax.swing.JPanel {
         return (int) Math.ceil((double) n / columns);
     }
     private  void load(){
+        pnListCollections.removeAll();
         collections = CollectionDAO.loadWithAnalysis();
         for(Collection c : collections){
             if(c == null) continue;
@@ -77,15 +78,14 @@ public class CpnCollection extends javax.swing.JPanel {
     
     private void reload(){
         pnListCollections.removeAll();
-        load();
         pnListCollections.revalidate();
         pnListCollections.repaint();
+        load();
     }
     
     public void btnDeleteCollection(Collection c){
         if(CollectionDAO.delete(c)){
             reload();
-            //SwingUtilities.invokeLater(this::reload);
         }
     }
 
@@ -338,12 +338,13 @@ public class CpnCollection extends javax.swing.JPanel {
 
     private void btnAddFlashcardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddFlashcardMouseClicked
         // TODO add your handling code here:
-        if(getIsFrmAddFlashcardOpen() == false){
-            setIsFrmAddFlashcardOpen(true);
             FrmAddFlashcard addFlashcard = new FrmAddFlashcard();
             addFlashcard.setLocationRelativeTo(null);
             addFlashcard.setVisible(true);
-        }
+//        if(getIsFrmAddFlashcardOpen() == false){
+//            setIsFrmAddFlashcardOpen(true);
+//            //FrmAddFlashcard.main(new String[] {});
+//        }
     }//GEN-LAST:event_btnAddFlashcardMouseClicked
 
 

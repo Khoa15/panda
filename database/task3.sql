@@ -13,7 +13,7 @@ BEGIN
 END;
 /
 --SELECT * FROM  all_objects;
-CREATE OR REPLACE PROCEDURE insert_policy
+CREATE OR REPLACE PROCEDURE add_policy
 (
     p_object_name VARCHAR,
     p_policy_name VARCHAR,
@@ -21,12 +21,18 @@ CREATE OR REPLACE PROCEDURE insert_policy
     p_audit_column VARCHAR,
     p_handler_schema VARCHAR,
     p_handler_module VARCHAR,
-    p_enable BOOLEAN,
+    p_enable CHAR,
     p_statement_types VARCHAR
 )
 IS
+    v_enable BOOLEAN;
 BEGIN
     BEGIN
+        IF p_enable = '1' THEN
+            v_enable := true;
+        ELSE
+            v_enable := false;
+        END IF;
         DBMS_FGA.ADD_POLICY(
             object_schema    => 'PANDA', 
             object_name      => p_object_name,
@@ -35,7 +41,7 @@ BEGIN
             audit_column     => p_audit_column,
             handler_schema   => p_handler_schema,
             handler_module   => p_handler_module,
-            enable           => p_enable,
+            enable           => v_enable,
             statement_types  => p_statement_types
         );
         EXCEPTION
@@ -85,20 +91,20 @@ GRANT SELECT ON dba_users TO PANDA_USER_ROLE;
 GRANT EXECUTE ON PANDA.GET_LAST_LOGIN TO PANDA_USER_ROLE;
 /
 
-CREATE OR REPLACE FUNCTION get_policies (p_owner IN VARCHAR2)
-RETURN SYS_REFCURSOR IS
-    c_policy SYS_REFCURSOR;
-BEGIN
-
-    OPEN c_policy FOR SELECT
-                                object_owner, policy_name, function
-                            FROM
-                                all_policies
-                                WHERE object_owner = UPPER(p_owner);
-
-    RETURN c_policy;
-END;
-/
+--CREATE OR REPLACE FUNCTION get_policies (p_owner IN VARCHAR2)
+--RETURN SYS_REFCURSOR IS
+--    c_policy SYS_REFCURSOR;
+--BEGIN
+--
+--    OPEN c_policy FOR SELECT
+--                                object_owner, policy_name, function
+--                            FROM
+--                                all_policies
+--                                WHERE object_owner = UPPER(p_owner);
+--
+--    RETURN c_policy;
+--END;
+--/
 CREATE OR REPLACE FUNCTION vpd_account_access_policy (
     schema_name IN VARCHAR2,
     table_name IN VARCHAR2
@@ -130,19 +136,19 @@ END;
 
 /
 
-CREATE OR REPLACE FUNCTION get_policies(p_owner IN VARCHAR2)
-RETURN SYS_REFCURSOR
-IS
-    policies_cursor SYS_REFCURSOR;
-BEGIN
-    OPEN policies_cursor FOR
-        SELECT object_owner, policy_name, function
-        FROM all_policies
-        WHERE object_owner = UPPER(p_owner);
-
-    RETURN policies_cursor;
-END;
-/
+--CREATE OR REPLACE FUNCTION get_policies(p_owner IN VARCHAR2)
+--RETURN SYS_REFCURSOR
+--IS
+--    policies_cursor SYS_REFCURSOR;
+--BEGIN
+--    OPEN policies_cursor FOR
+--        SELECT object_owner, policy_name, function
+--        FROM all_policies
+--        WHERE object_owner = UPPER(p_owner);
+--
+--    RETURN policies_cursor;
+--END;
+--/
 
 CREATE OR REPLACE FUNCTION get_quota_user(
     p_user IN VARCHAR

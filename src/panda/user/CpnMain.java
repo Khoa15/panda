@@ -320,7 +320,6 @@ public class CpnMain extends javax.swing.JPanel {
     private void AddInbox() {
         String inbox = txtFieldInbox.getText();
         if (TaskDAO.insertInbox(inbox)) {
-            // true
             loadInboxes();
         }
     }

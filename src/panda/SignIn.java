@@ -28,7 +28,7 @@ import model.DBConnection;
  */
 public class SignIn extends javax.swing.JFrame {
 
-    private String email;
+    private String username;
     private String password;
 
     /**
@@ -36,8 +36,8 @@ public class SignIn extends javax.swing.JFrame {
      */
     public SignIn() {
         initComponents();
-        txtFieldEmail.setText("panda");
-        txtFieldPassword.setText("panda");
+        txtFieldEmail.setText("panda_user");
+        txtFieldPassword.setText("panda_user");
         
         cbBoxRememberDevice.setVisible(false);
     }
@@ -69,7 +69,7 @@ public class SignIn extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Email:");
+        jLabel1.setText("Username:");
 
         txtFieldEmail.setNextFocusableComponent(txtFieldPassword);
 
@@ -186,7 +186,7 @@ public class SignIn extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void setInput() {
-        email = txtFieldEmail.getText();
+        username = txtFieldEmail.getText();
         password = new String(txtFieldPassword.getPassword());
     }
     private void btnSignUpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignUpMouseClicked
@@ -203,7 +203,7 @@ public class SignIn extends javax.swing.JFrame {
 
     private void signin() {
         setInput();
-        Account account = new Account(email, password);
+        Account account = new Account(username, password);
         
         try {
             if (AccountDAO.signIn(account)) {
@@ -219,31 +219,8 @@ public class SignIn extends javax.swing.JFrame {
         }
     }
     
-//    public static boolean verifySessionDevice() throws FileNotFoundException, IOException{
-//        File file_session = new File(Account.file_session());
-//        boolean isCreated = file_session.exists();
-//        if(isCreated){
-//            FileInputStream file_session_read = new FileInputStream(file_session);
-//            byte[] token = new byte[(int)file_session.length()];
-//            if(token.length == 0) return false;
-//            file_session_read.read(token, 0, token.length);
-//            file_session_read.close();
-//            String _token = token.toString();
-//            String[] partToken = _token.split("|");
-//            String e = partToken[0].trim();
-//            String p = partToken[1].trim();
-//            Account a = new Account();
-//            a.setUsername(e);
-//            a.setPassword(p);
-//            if(AccountDAO.signIn(a)){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
     private void saveSession() throws IOException {
-        String token = email + "|" + password;
+        String token = username + "|" + password;
         Account.saveSessionDevice(token);
     }
 

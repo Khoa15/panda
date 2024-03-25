@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
+import model.Sentence;
 
 public class VocabDAO {
 
@@ -19,8 +20,8 @@ public class VocabDAO {
     }
 
     public static ArrayList<Vocab> load() {
+        vocabs.clear();
         try {
-            vocabs.clear();
             Object[] values = {
                 DBConnection.getUsername()
             };
@@ -28,13 +29,12 @@ public class VocabDAO {
             while (rs.next()) {
                 vocabs.add(setVocab(rs));
             }
-            return vocabs;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         } finally {
             //DBConnection.closeConnection();
         }
+        return vocabs;
     }
 
     public static DefaultTableModel getDataTable(){
@@ -108,7 +108,7 @@ public class VocabDAO {
         }
     }
 
-    public static boolean add(Vocab v) {
+    public static boolean add(Vocab v) throws Exception {
         try {
             Object[] values = new Object[]{
                 v.getWord(),
@@ -117,9 +117,10 @@ public class VocabDAO {
                 v.getAudio(),
                 v.getIpa()
             };
-            return DBConnectionDAO.Update("AddVocab", values) > 0;
+            DBConnectionDAO.CallProcedureNoParameterOut("add_vocab", values);
+            return  true;
         } catch (Exception e) {
-            return false;
+            throw e;
         } finally {
             //DBConnection.closeConnection();
         }
@@ -151,10 +152,13 @@ public class VocabDAO {
     private static Vocab setVocab(ResultSet rs) {
         try {
             Vocab vc = new Vocab();
-            vc.setId(rs.getInt("id"));
-            vc.setWord(rs.getString("front"));
-            vc.setMeaning(rs.getString("back"));
-
+            //vc.setId(rs.getInt("id"));
+            vc.setWord(rs.getString("word"));
+            vc.setMeaning(rs.getString("meaning"));
+            vc.setPartOfSpeech(rs.getString("pos"));
+            Sentence sentence = new Sentence();
+            sentence.setOrigin(rs.getString("origin"));
+            vc.setSentence(sentence);
             return vc;
         } catch (SQLException e) {
             e.printStackTrace();

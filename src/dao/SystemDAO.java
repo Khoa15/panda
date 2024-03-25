@@ -780,6 +780,52 @@ public class SystemDAO {
             throw e;
         }
     }
+
+    public static void AddPolicy(String Policy,
+            String ObjectName,
+            String AuditCondition,
+            String AuditColumn,
+            String HandlerSchema,
+            String HandlerModule,
+            boolean enable,
+            boolean delete,
+            boolean select,
+            boolean update
+    ) throws Exception {
+        try{
+            StringBuilder statement = new StringBuilder();
+            if (delete) {
+                statement.append("DELETE");
+            }
+
+            if (select) {
+                if (statement.length() > 0) {
+                    statement.append(", ");
+                }
+                statement.append("SELECT");
+            }
+
+            if (update) {
+                if (statement.length() > 0) {
+                    statement.append(", ");
+                }
+                statement.append("UPDATE");
+            }
+            Object[] values = new Object[]{
+                Policy,
+                ObjectName,
+                AuditCondition,
+                AuditColumn,
+                HandlerSchema,
+                HandlerModule,
+                (enable) ? "1" : "0",
+                statement.toString()
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("add_policy", values);
+        }catch(Exception e){
+            throw e;
+        }
+    }
     
     
 

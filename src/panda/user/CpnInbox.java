@@ -24,6 +24,19 @@ public class CpnInbox extends javax.swing.JPanel {
         initComponents();
         model = (DefaultTableModel) tableInbox.getModel();
         tasks = TaskDAO.load();
+        initData();
+    }
+    
+    private void initData(){
+        model.setRowCount(0);
+        for(Task t: tasks){
+            Object[] row = new Object[]{
+                t.getDescription(),
+                t.getPriority(),
+                t.getStrIsDone()
+            };
+            model.addRow(row);
+        }
     }
 
     /**
@@ -41,13 +54,13 @@ public class CpnInbox extends javax.swing.JPanel {
 
         tableInbox.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Project", "Content", "Priority", "Is done?"
+                "Content", "Priority", "Is done?"
             }
         ));
         jScrollPane1.setViewportView(tableInbox);

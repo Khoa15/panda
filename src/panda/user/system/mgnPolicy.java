@@ -5,6 +5,7 @@
 package panda.user.system;
 
 import dao.SystemDAO;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,6 +19,7 @@ public class mgnPolicy extends javax.swing.JFrame {
     public mgnPolicy() {
         initComponents();
         initPolicies();
+        cbBoxInsert.setSelected(true);
     }
     
     private void initPolicies(){
@@ -51,10 +53,13 @@ public class mgnPolicy extends javax.swing.JFrame {
         btnDelete = new javax.swing.JButton();
         cbBoxInsert = new javax.swing.JCheckBox();
         cbBoxEnable = new javax.swing.JCheckBox();
+        cbBoxSelect = new javax.swing.JCheckBox();
+        cbBoxUpdate = new javax.swing.JCheckBox();
+        cbBoxDelete = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbPolicies = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Policy");
 
@@ -88,6 +93,12 @@ public class mgnPolicy extends javax.swing.JFrame {
 
         cbBoxEnable.setText("Enable");
 
+        cbBoxSelect.setText("Select");
+
+        cbBoxUpdate.setText("Update");
+
+        cbBoxDelete.setText("Delete");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -111,7 +122,12 @@ public class mgnPolicy extends javax.swing.JFrame {
                             .addComponent(jLabel5)
                             .addComponent(txtFieldHandlerSchema)
                             .addComponent(txtHandlerModule, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(128, 128, 128))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbBoxSelect)
+                            .addComponent(cbBoxUpdate)
+                            .addComponent(cbBoxDelete))
+                        .addGap(31, 31, 31))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(cbBoxEnable)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -144,11 +160,17 @@ public class mgnPolicy extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFieldAuditColumn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtFieldAuditColumn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbBoxSelect))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFieldHandlerSchema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(cbBoxUpdate))
+                        .addGap(8, 8, 8)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtFieldHandlerSchema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbBoxDelete))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -187,7 +209,7 @@ public class mgnPolicy extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -201,6 +223,32 @@ public class mgnPolicy extends javax.swing.JFrame {
 
     private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
         // TODO add your handling code here:
+        String Policy = txtFieldPolicy.getText();
+        String ObjectName = txtFieldObjectName.getText();
+        String AuditCondition = txtFieldAuditCondition.getText();
+        String AuditColumn = txtFieldAuditColumn.getText();
+        String HandlerSchema = txtFieldHandlerSchema.getText();
+        String HandlerModule = txtHandlerModule.getText();
+        boolean isEnable = cbBoxEnable.isSelected();
+        boolean isDelete = cbBoxDelete.isSelected();
+        boolean isSelect = cbBoxDelete.isSelected();
+        boolean isUpdate = cbBoxDelete.isSelected();
+        try{
+            SystemDAO.AddPolicy(Policy,
+                    ObjectName,
+                    AuditCondition,
+                    AuditColumn,
+                    HandlerSchema,
+                    HandlerModule,
+                    isEnable,
+                    isDelete,
+                    isSelect,
+                    isUpdate
+            );
+            JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+        }catch(Exception e){
+            JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
+        }
         initPolicies();
     }//GEN-LAST:event_btnSaveMouseClicked
 
@@ -250,8 +298,11 @@ public class mgnPolicy extends javax.swing.JFrame {
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnSave;
+    private javax.swing.JCheckBox cbBoxDelete;
     private javax.swing.JCheckBox cbBoxEnable;
     private javax.swing.JCheckBox cbBoxInsert;
+    private javax.swing.JCheckBox cbBoxSelect;
+    private javax.swing.JCheckBox cbBoxUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

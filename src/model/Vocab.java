@@ -19,7 +19,7 @@ public class Vocab extends Card {
     private String audio;
     private String image;
     private String video;
-    private ArrayList<Sentence> sentence;
+    private Sentence sentence;
     public static final ArrayList<String> partofspeeches = new ArrayList<>(Arrays.asList(
             "noun",
             "pronoun",
@@ -110,11 +110,11 @@ public class Vocab extends Card {
         this.video = video;
     }
 
-    public ArrayList<Sentence> getSentence() {
+    public Sentence getSentence() {
         return sentence;
     }
 
-    public void setSentence(ArrayList<Sentence> sentence) {
+    public void setSentence(Sentence sentence) {
         this.sentence = sentence;
     }
 }

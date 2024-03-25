@@ -91,7 +91,7 @@ public class DBConnectionDAO {
         }
     }
 
-    public static int Update(String storedProcedure, Object[] values) {
+    public static int Update(String storedProcedure, Object[] values) throws Exception {
         CallableStatement callStatement = null;
         try {
             callStatement = setCallable(storedProcedure, values, false);
@@ -99,8 +99,7 @@ public class DBConnectionDAO {
             return 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return -1;
+            throw e;
         }
     }
 

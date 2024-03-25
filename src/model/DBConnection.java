@@ -21,7 +21,6 @@ public class DBConnection extends Thread {
             } catch (SQLException ex) {
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println("Connection is alive");
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {

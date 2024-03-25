@@ -43,7 +43,7 @@ public class CollectionDAO {
         }
     }
     
-    public static boolean add(Collection c){
+    public static boolean add(Collection c) throws Exception {
         try{
             Object[] values = new Object[] {
                 c.getName()
@@ -51,23 +51,23 @@ public class CollectionDAO {
             
             return DBConnectionDAO.Update("Add_Collection", values) > 0;
         }catch(Exception e){
-            e.printStackTrace();
-            return false;
+            throw e;
         }
     }
     
-    public static boolean delete(Collection c){
+    public static boolean delete(Collection c) {
         try{
             Object[] values = {
                 c.getName()
             };
-            int res = DBConnectionDAO.Update("Delete_Collection", values);
-            return res > 0;
+            DBConnectionDAO.CallProcedureNoParameterOut("Delete_Collection", values);
+            return true;
         }catch(Exception e){
-            return false;
+            e.printStackTrace();
         }finally{
             //DBConnection.closeConnection();
         }
+        return false;
     }
     
     private static Collection setCollection(ResultSet rs){

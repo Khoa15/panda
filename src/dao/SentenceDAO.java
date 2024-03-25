@@ -6,6 +6,7 @@ package dao;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
@@ -21,10 +22,10 @@ public class SentenceDAO {
     
     public SentenceDAO(){}
     
-    public static boolean add(Vocab v){
+    public static boolean add(ArrayList<Sentence> sentences, Vocab v) throws Exception {
         try{
             int r = 0;
-            for(Sentence s : v.getSentence()){
+            for(Sentence s : sentences){
                 Object[] values = new Object[]{
                     s.getOrigin(),
                     s.getTranslated(),
@@ -36,7 +37,7 @@ public class SentenceDAO {
             }
             return r > 0;
         }catch(Exception e){
-            return false;
+            throw e;
         }finally{
             //DBConnection.closeConnection();
         }
