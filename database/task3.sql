@@ -135,7 +135,23 @@ BEGIN
     RETURN list_users;
 END;
 /
+CREATE OR REPLACE TRIGGER project_before_insert_trigger
+BEFORE INSERT ON project
+FOR EACH ROW
+DECLARE
+    daily_count NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO daily_count
+    FROM project
+    WHERE username = :NEW.username
+    AND TRUNC(created_at) = TRUNC(SYSDATE);
 
+    IF daily_count >= 3 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Hey! That''s too much adding now.');
+    END IF;
+END;
+/
 CREATE OR REPLACE FUNCTION get_last_login RETURN TIMESTAMP
 IS
     date_last_login TIMESTAMP;

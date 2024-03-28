@@ -65,6 +65,25 @@ public class TaskDAO {
         }
     }
 
+    public static ArrayList<Task> load(String key) {
+        try{
+            tasks.clear();
+            Object[] values = new Object[]{
+                key
+            };
+            ResultSet rs = DBConnectionDAO.CallFunction("search_tasks", values);
+            if(rs == null) return tasks;
+            while (rs.next()) {
+                Task t = setTask(rs);
+                tasks.add(t);
+            }
+            return tasks;
+        }catch(Exception e){
+            
+        }
+        return null;
+    }
+
     public TaskDAO() {
     }
 
