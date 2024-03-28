@@ -30,6 +30,14 @@ public class TaskBLL {
             throw e;
         }
     }
+
+    public static void delete(int id) throws Exception {
+        try{
+            TaskDAO.delete(id);
+        }catch(Exception e){
+            throw e;
+        }
+    }
     private ArrayList<Task> listTasks = new ArrayList<Task>();
     public TaskBLL(){}
     

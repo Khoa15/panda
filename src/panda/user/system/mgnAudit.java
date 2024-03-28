@@ -4,6 +4,11 @@
  */
 package panda.user.system;
 
+import dao.SystemDAO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Khoa
@@ -11,10 +16,16 @@ package panda.user.system;
 public class mgnAudit extends javax.swing.JFrame {
 
     /**
-     * Creates new form mgnAudit
+     * Creates new form mgnPolicy
      */
     public mgnAudit() {
         initComponents();
+        initPolicies();
+        cbBoxInsert.setSelected(true);
+    }
+    
+    private void initPolicies(){
+        tbPolicies.setModel(SystemDAO.LoadPolicy());
     }
 
     /**
@@ -26,21 +37,269 @@ public class mgnAudit extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        txtFieldPolicy = new javax.swing.JTextField();
+        txtFieldObjectName = new javax.swing.JTextField();
+        txtFieldAuditCondition = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtFieldAuditColumn = new javax.swing.JTextField();
+        btnCancel = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        cbBoxInsert = new javax.swing.JCheckBox();
+        cbBoxEnable = new javax.swing.JCheckBox();
+        cbBoxSelect = new javax.swing.JCheckBox();
+        cbBoxUpdate = new javax.swing.JCheckBox();
+        cbBoxDelete = new javax.swing.JCheckBox();
+        cbBoxAuditInsert = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbPolicies = new javax.swing.JTable();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jLabel1.setText("Policy");
+
+        jLabel2.setText("Object name");
+
+        jLabel3.setText("Audit condition");
+
+        jLabel4.setText("Audit column");
+
+        btnCancel.setText("Cancel");
+
+        btnSave.setText("Save");
+        btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSaveMouseClicked(evt);
+            }
+        });
+
+        btnDelete.setText("Delete");
+        btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnDeleteMouseClicked(evt);
+            }
+        });
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        cbBoxInsert.setText("Insert Mode");
+
+        cbBoxEnable.setText("Enable");
+
+        cbBoxSelect.setText("Select");
+
+        cbBoxUpdate.setText("Update");
+
+        cbBoxDelete.setText("Delete");
+
+        cbBoxAuditInsert.setText("Insert");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel3)
+                            .addComponent(txtFieldPolicy, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                            .addComponent(jLabel2)
+                            .addComponent(txtFieldObjectName)
+                            .addComponent(txtFieldAuditCondition))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(txtFieldAuditColumn, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbBoxEnable)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cbBoxUpdate)
+                                    .addComponent(cbBoxSelect))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cbBoxAuditInsert)
+                                    .addComponent(cbBoxDelete))))
+                        .addGap(104, 104, 104))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(cbBoxInsert)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDelete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancel)
+                        .addContainerGap())))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtFieldPolicy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtFieldObjectName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtFieldAuditCondition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtFieldAuditColumn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cbBoxSelect)
+                            .addComponent(cbBoxAuditInsert))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cbBoxUpdate)
+                            .addComponent(cbBoxDelete))
+                        .addGap(32, 32, 32)
+                        .addComponent(cbBoxEnable)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCancel)
+                    .addComponent(btnSave)
+                    .addComponent(btnDelete)
+                    .addComponent(cbBoxInsert))
+                .addContainerGap())
+        );
+
+        tbPolicies.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbPoliciesMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbPolicies);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tbPoliciesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbPoliciesMouseClicked
+        // TODO add your handling code here:
+        int row = tbPolicies.getSelectedRow();
+        if(row == -1) return;
+        String policyName = tbPolicies.getValueAt(row, 0).toString();
+        String objectName = tbPolicies.getValueAt(row, 1).toString();
+        String policyText = tbPolicies.getValueAt(row, 2).toString();
+        Object policyColumn = tbPolicies.getValueAt(row, 3);
+        
+        String select = tbPolicies.getValueAt(row, 5).toString();
+        String insert = tbPolicies.getValueAt(row, 6).toString();
+        String update = tbPolicies.getValueAt(row, 7).toString();
+        String delete = tbPolicies.getValueAt(row, 8).toString();
+        String enable = tbPolicies.getValueAt(row, 9).toString();
+        
+        txtFieldPolicy.setText(policyName);
+        txtFieldObjectName.setText(objectName);
+        txtFieldAuditCondition.setText(policyText);
+        txtFieldAuditColumn.setText((String) policyColumn);
+        cbBoxSelect.setSelected("YES".equals(select));
+        cbBoxUpdate.setSelected("YES".equals(update));
+        cbBoxDelete.setSelected("YES".equals(delete));
+        cbBoxAuditInsert.setSelected("YES".equals(insert));
+        cbBoxEnable.setSelected("YES".equals(enable));
+    }//GEN-LAST:event_tbPoliciesMouseClicked
+
+    private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
+        // TODO add your handling code here:
+        String Policy = txtFieldPolicy.getText();
+        String ObjectName = txtFieldObjectName.getText();
+        String AuditCondition = txtFieldAuditCondition.getText();
+        String AuditColumn = txtFieldAuditColumn.getText();
+        boolean isEnable = cbBoxEnable.isSelected();
+        boolean isDelete = cbBoxDelete.isSelected();
+        boolean isSelect = cbBoxDelete.isSelected();
+        boolean isInsert = cbBoxAuditInsert.isSelected();
+        boolean isUpdate = cbBoxDelete.isSelected();
+        boolean isInsertMode = cbBoxInsert.isSelected();
+        try{
+            if(isInsertMode){
+                SystemDAO.AddPolicy(Policy,
+                        ObjectName,
+                        AuditCondition,
+                        AuditColumn,
+                        isEnable,
+                        isDelete,
+                        isSelect,
+                        isUpdate,
+                        isInsert
+                );
+            }else{
+                SystemDAO.ModifyPolicy(Policy,
+                        ObjectName,
+                        AuditCondition,
+                        AuditColumn,
+                        isEnable,
+                        isDelete,
+                        isSelect,
+                        isUpdate,
+                        isInsert
+                        
+                );
+            }
+            JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+            initPolicies();
+        }catch(Exception e){
+            JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
+        }
+        initPolicies();
+    }//GEN-LAST:event_btnSaveMouseClicked
+
+    private void btnDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseClicked
+        // TODO add your handling code here:
+        initPolicies();
+    }//GEN-LAST:event_btnDeleteMouseClicked
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        try {
+            // TODO add your handling code here:
+            String policyName = txtFieldPolicy.getText();
+            String objectName = txtFieldObjectName.getText();
+            SystemDAO.deleteAudit(policyName, objectName);
+            JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+            initPolicies();
+        } catch (Exception ex) {
+            JOptionPane.showConfirmDialog(this, ex.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -68,17 +327,38 @@ public class mgnAudit extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(mgnAudit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                mgnAudit audit = new mgnAudit();
-                audit.setVisible(true);
-                audit.setLocationRelativeTo(null);
+                mgnAudit p = new mgnAudit();
+                p.setVisible(true);
+                p.setLocationRelativeTo(null);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JCheckBox cbBoxAuditInsert;
+    private javax.swing.JCheckBox cbBoxDelete;
+    private javax.swing.JCheckBox cbBoxEnable;
+    private javax.swing.JCheckBox cbBoxInsert;
+    private javax.swing.JCheckBox cbBoxSelect;
+    private javax.swing.JCheckBox cbBoxUpdate;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tbPolicies;
+    private javax.swing.JTextField txtFieldAuditColumn;
+    private javax.swing.JTextField txtFieldAuditCondition;
+    private javax.swing.JTextField txtFieldObjectName;
+    private javax.swing.JTextField txtFieldPolicy;
     // End of variables declaration//GEN-END:variables
 }

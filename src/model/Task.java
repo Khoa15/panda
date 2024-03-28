@@ -101,4 +101,12 @@ public class Task extends BaseClass {
     public String getPairIdName(){
         return super.getPairIdName() + ", " + this.description;
     }
+    
+    /**
+     *
+     */
+    @Override
+    public String toString(){
+        return this.getPairIdName();
+    }
 }

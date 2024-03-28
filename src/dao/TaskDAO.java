@@ -21,8 +21,8 @@ public class TaskDAO {
             Object[] values ={
                 inbox
             };
-            
-            return DBConnectionDAO.Update("Insert_Inbox", values) > 0;
+            DBConnectionDAO.CallProcedureNoParameter("Insert_Inbox", values);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -180,15 +180,14 @@ public class TaskDAO {
         }
     }
 
-    public static int delete(int id) {
+    public static int delete(int id) throws Exception {
         try {
-
-            return DBConnectionDAO.Update("Delete_Task", null);
+            Object[] values = new Object[]{
+                id
+            };
+            return DBConnectionDAO.Update("Delete_Task", values);
         } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        } finally {
-            //DBConnection.closeConnection();
+            throw e;
         }
     }
     

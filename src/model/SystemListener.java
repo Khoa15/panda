@@ -11,7 +11,6 @@ package model;
 public class SystemListener extends Thread {
     public void run(){
         while (true) {
-            System.out.println("Listenning");
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {

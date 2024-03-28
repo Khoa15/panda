@@ -35,14 +35,14 @@ public class Main extends javax.swing.JFrame  {
         dbconnection.start();
         
         pnMain.add(new CpnMain());
-        LocalDateTime lastLoginTimestamp = DBConnection.getLastLogin();
+        try{
+            LocalDateTime lastLoginTimestamp = DBConnection.getLastLogin();
 
-        // Using DateTimeFormatter for formatting
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedLastLogin = lastLoginTimestamp.format(formatter);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedLastLogin = lastLoginTimestamp.format(formatter);
 
-        // Set the title with the formatted timestamp
-        setTitle("Hello: " + DBConnection.getUsername() + ", Last login: " + formattedLastLogin);
+            setTitle("Hello: " + DBConnection.getUsername() + ", Last login: " + formattedLastLogin);
+        }catch(Exception e){}
     } 
 
 

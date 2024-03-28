@@ -36,8 +36,10 @@ public class SignIn extends javax.swing.JFrame {
      */
     public SignIn() {
         initComponents();
-        txtFieldEmail.setText("panda_user");
-        txtFieldPassword.setText("panda_user");
+//        txtFieldEmail.setText("panda_user");
+//        txtFieldPassword.setText("panda_user");
+        txtFieldEmail.setText("panda");
+        txtFieldPassword.setText("panda");
         
         cbBoxRememberDevice.setVisible(false);
     }

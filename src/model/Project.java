@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Project extends BaseClass {
-
+    private int taskDone;
     private String name;
     private ArrayList<Task> tasks = new ArrayList<>();
 
@@ -44,6 +44,15 @@ public class Project extends BaseClass {
 
     public ArrayList<Task> getTasks() {
         return tasks;
+    }
+    
+    public Task findTask(String pairIdName){
+        for(Task t : tasks){
+            if(t.getPairIdName().equals(pairIdName)){
+                return t;
+            }
+        }
+        return null;
     }
 
     public void setTasks(ArrayList<Task> tasks) {

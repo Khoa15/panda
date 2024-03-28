@@ -52,7 +52,7 @@ public class DBConnection extends Thread {
     private final static String syspass = "panda_register";
     private static String username = "";
     private static String password = "";
-    private static LocalDateTime last_login;
+    private static LocalDateTime last_login = null;
     private static String database = "orcl";
     private static String url = "jdbc:oracle:thin:@localhost:1521/" + database + "?current_schema=panda";
     private static Connection con;
@@ -65,8 +65,12 @@ public class DBConnection extends Thread {
             if(con != null &&  con.isClosed() == false) closeConnection();
             DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
             con = DriverManager.getConnection(url, normalize(username), password);
-            Timestamp last_login = (Timestamp)DBConnectionDAO.CallFunctionWithOutValues("get_last_login", Types.TIMESTAMP);
-            DBConnection.last_login = last_login.toLocalDateTime();
+            try{
+                Timestamp last_login = (Timestamp)DBConnectionDAO.CallFunctionWithOutValues("get_last_login", Types.TIMESTAMP);
+                DBConnection.last_login = last_login.toLocalDateTime();
+            }catch(Exception e){
+                
+            }
             if (con != null) {
                 System.out.println("Connected");
             } else {

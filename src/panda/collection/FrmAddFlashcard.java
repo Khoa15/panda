@@ -544,7 +544,7 @@ public class FrmAddFlashcard extends javax.swing.JFrame {
             loadJTable(null);
         } else if (index != iCollectionSelected) {
             
-            iCollectionSelected = evt.getStateChange() - 1;
+            iCollectionSelected = index;
             idCollectionSelected = listCollections.get(iCollectionSelected).getId();
             ArrayList<Card> cards = CardDAO.load(listCollections.get(iCollectionSelected).getId());
             loadJTable(cards);

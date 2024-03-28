@@ -36,21 +36,18 @@ public class CardDAO {
     }
     
     public static int[] loadAnalysisMemory(){
+        int[] memories = new int[10];
         try{
-            int[] memories = new int[10];
             ResultSet rs = DBConnectionDAO.CallFunction("Select_Cards_Analysis_Memory");
             while(rs.next()){
                 int m = rs.getInt("memory");
                 int c = rs.getInt("count");
                 memories[m] = c;
             }
-            return memories;
         }catch(Exception e){
             e.printStackTrace();
-            return null;
-        }finally{
-            //DBConnection.closeConnection();
         }
+        return memories;
     }
 
 //    public static ArrayList<Card> load(Object id) {

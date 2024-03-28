@@ -4,17 +4,23 @@
  */
 package panda.project;
 
+import model.Project;
+
 /**
  *
  * @author Khoa
  */
-public class CpnProject extends javax.swing.JPanel {
+public class CpnChildProject extends javax.swing.JPanel {
 
     /**
      * Creates new form CpnProject
      */
-    public CpnProject() {
+    public CpnChildProject(Project project) {
         initComponents();
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(project.getName()));
+        //jList2.setListData((String[]) project.getTasks().toArray());
+        jLabel15.setText(String.valueOf(project.getPriority()));
+        
     }
 
     /**
@@ -39,7 +45,7 @@ public class CpnProject extends javax.swing.JPanel {
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Project A"));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jLabel1.setText("Deadline: ");
 
@@ -87,7 +93,7 @@ public class CpnProject extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel13)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

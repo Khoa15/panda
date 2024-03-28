@@ -16,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import model.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Clob;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.table.TableModel;
@@ -418,7 +419,7 @@ public class SystemDAO {
 
     public static DefaultTableModel LoadPolicy() {
         try {
-            DefaultTableModel tmp = setDefaultDataTableModel("get_policies");//get_policy_in_user");
+            DefaultTableModel tmp = setDefaultDataTableModel("get_audit_policies");//get_policy_in_user");
 
             return tmp;
 
@@ -430,8 +431,8 @@ public class SystemDAO {
 
     public static DefaultTableModel LoadAudit() {
         try {
-            ResultSet rs = DBConnectionDAO.ExecuteSelectQuery("SELECT * FROM DBA_AUDIT_TRAIL");
-            return setDefaultDataTableModel(rs);
+            //ResultSet rs = DBConnectionDAO.ExecuteSelectQuery("SELECT * FROM DBA_AUDIT_TRAIL");
+            return setDefaultDataTableModel("get_audit_trail");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -495,7 +496,12 @@ public class SystemDAO {
                 Object[] rowData = new Object[columnCount];
                 int i = 1;
                 for (; i <= columnCount; i++) {
-                    rowData[i - 1] = resultSet.getObject(i);
+                    Object value = resultSet.getObject(i);
+                    if(value instanceof Clob){
+                        Clob clob = (Clob) value;
+                        value = clob.getSubString(1, (int) clob.length());
+                    } 
+                    rowData[i - 1] = value;
                 }
                 tableModel.addRow(rowData);
             }
@@ -629,7 +635,7 @@ public class SystemDAO {
         return model;
     }
 
-    public static void UpdateRolePrivs(String role, String object, String typeObject, boolean execute, boolean select, boolean update, boolean delete, boolean sys_priv) throws Exception {
+    public static void UpdateRolePrivs(String role, String object, String typeObject, boolean execute, boolean select, boolean update, boolean delete, boolean sys_priv, boolean option) throws Exception {
         try{
             
             Object[] values = new Object[]{
@@ -639,7 +645,8 @@ public class SystemDAO {
                 (select) ? "Y": "N",
                 (update) ? "Y": "N",
                 (delete) ? "Y": "N",
-                (sys_priv) ? "Y": "N"
+                (sys_priv) ? "Y": "N",
+                (option) ? "Y" : "N"
             };
             DBConnectionDAO.CallProcedureNoParameterOut("update_role_privs", values);
         }catch(Exception e){
@@ -647,7 +654,7 @@ public class SystemDAO {
         }
     }
 
-    public static void InsertRolePrivs(String role, String object, String typeObject, boolean execute, boolean select, boolean update, boolean delete, boolean sys_priv) throws Exception {
+    public static void InsertRolePrivs(String role, String object, String typeObject, boolean execute, boolean select, boolean update, boolean delete, boolean sys_priv, boolean option) throws Exception {
         try{           
             Object[] values = new Object[]{
                 role,
@@ -656,7 +663,8 @@ public class SystemDAO {
                 (select) ? "Y": "N",
                 (update) ? "Y": "N",
                 (delete) ? "Y": "N",
-                (sys_priv) ? "Y": "N"
+                (sys_priv) ? "Y": "N",
+                (option) ? "Y" : "N"
             };
             DBConnectionDAO.CallProcedureNoParameterOut("insert_role_privs", values);
         }catch(Exception e){
@@ -785,15 +793,70 @@ public class SystemDAO {
             String ObjectName,
             String AuditCondition,
             String AuditColumn,
-            String HandlerSchema,
-            String HandlerModule,
             boolean enable,
             boolean delete,
             boolean select,
-            boolean update
+            boolean update,
+            boolean insert
     ) throws Exception {
         try{
-            StringBuilder statement = new StringBuilder();
+            String statement = getStatementType(delete, select, update, insert);
+            
+            
+            Object[] values = new Object[]{
+                (ObjectName.isEmpty()) ? null : ObjectName,
+                (Policy.isEmpty()) ? null : Policy,
+                (AuditCondition.isEmpty()) ? null : AuditCondition,
+                (AuditColumn.isEmpty()) ? null : AuditColumn,
+                (enable) ? "1" : "0",
+                (statement.isEmpty()) ? null : statement.toString()
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("add_policy", values);
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
+    public static void deleteAudit(String policyName, String objectName) throws Exception {
+        Object[] values = new Object[]{
+            objectName,
+            policyName
+        };
+        DBConnectionDAO.CallProcedureNoParameterOut("drop_audit_policy", values);
+    }
+
+    public static void ModifyPolicy(
+            String Policy, 
+            String ObjectName, 
+            String AuditCondition, 
+            String AuditColumn, 
+            boolean enable, 
+            boolean delete, 
+            boolean select, 
+            boolean update, 
+            boolean insert
+    ) throws Exception
+    {
+        String statement = getStatementType(delete, select, update, insert);
+        Object[] values = new Object[]{
+                (ObjectName.isEmpty()) ? null : ObjectName,
+                (Policy.isEmpty()) ? null : Policy,
+                (AuditCondition.isEmpty()) ? null : AuditCondition,
+                (AuditColumn.isEmpty()) ? null : AuditColumn,
+                (enable) ? "1" : "0",
+                (statement.isEmpty()) ? null : statement.toString()
+            };
+        DBConnectionDAO.CallProcedureNoParameterOut("modify_audit_policy", values);
+    }
+    
+    private static String getStatementType(
+            boolean delete, 
+            boolean select, 
+            boolean update, 
+            boolean insert
+    )
+    {
+        StringBuilder statement = new StringBuilder();
             if (delete) {
                 statement.append("DELETE");
             }
@@ -811,20 +874,14 @@ public class SystemDAO {
                 }
                 statement.append("UPDATE");
             }
-            Object[] values = new Object[]{
-                Policy,
-                ObjectName,
-                AuditCondition,
-                AuditColumn,
-                HandlerSchema,
-                HandlerModule,
-                (enable) ? "1" : "0",
-                statement.toString()
-            };
-            DBConnectionDAO.CallProcedureNoParameterOut("add_policy", values);
-        }catch(Exception e){
-            throw e;
-        }
+            
+            if (insert) {
+                if (statement.length() > 0) {
+                    statement.append(", ");
+                }
+                statement.append("INSERT");
+            }
+        return statement.toString();
     }
     
     

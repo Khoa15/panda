@@ -4,10 +4,13 @@
  */
 package panda.user;
 
+import bll.ProjectBLL;
 import dao.TaskDAO;
 import java.util.ArrayList;
+import model.Project;
 import model.Task;
 import panda.project.AddProject;
+import panda.project.CpnChildProject;
 
 /**
  *
@@ -22,6 +25,13 @@ public class CpnProject extends javax.swing.JPanel {
     public CpnProject() {
         initComponents();
         loadTasksToday();
+        initProjects();
+    }
+    private void initProjects(){
+        ArrayList<Project> projects = ProjectBLL.loadFull();
+        for(Project project : projects){
+            jPanel1.add(new CpnChildProject(project));            
+        }
     }
     // BLL
     private void loadTasksToday() {
@@ -58,6 +68,7 @@ public class CpnProject extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         listTasksToday = new javax.swing.JList<>();
@@ -142,7 +153,8 @@ public class CpnProject extends javax.swing.JPanel {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Projects"));
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
+        jScrollPane3.setViewportView(jPanel1);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -246,6 +258,7 @@ public class CpnProject extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel6;

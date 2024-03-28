@@ -98,6 +98,7 @@ public class mgnRole extends javax.swing.JFrame {
         rdBtnGrantedRoles = new javax.swing.JRadioButton();
         rdBtnSysPrivs = new javax.swing.JRadioButton();
         rdBtnOthers = new javax.swing.JRadioButton();
+        cbBoxOption = new javax.swing.JCheckBox();
         txtFieldUsername = new javax.swing.JTextField();
         cbUser = new javax.swing.JCheckBox();
         btnSearch = new javax.swing.JButton();
@@ -220,6 +221,8 @@ public class mgnRole extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        cbBoxOption.setText("With Grant Option");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -235,6 +238,8 @@ public class mgnRole extends javax.swing.JFrame {
                         .addComponent(cbBoxUpdate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbBoxDelete)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbBoxOption)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -273,7 +278,8 @@ public class mgnRole extends javax.swing.JFrame {
                     .addComponent(cbBoxExecute)
                     .addComponent(cbBoxSelect)
                     .addComponent(cbBoxUpdate)
-                    .addComponent(cbBoxDelete))
+                    .addComponent(cbBoxDelete)
+                    .addComponent(cbBoxOption))
                 .addGap(4, 4, 4)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -396,13 +402,15 @@ public class mgnRole extends javax.swing.JFrame {
         boolean select = cbBoxSelect.isSelected();
         boolean update = cbBoxUpdate.isSelected();
         boolean delete = cbBoxDelete.isSelected();
+        //String option = (cbBoxOption.isSelected()) ? "" : cbBoxOption.getText();
+        boolean option = cbBoxOption.isSelected();
         boolean sys_priv = (rdBtnGrantedRoles.isSelected() == true || rdBtnSysPrivs.isSelected() == true) && cbBoxInsert.isSelected() == true;
         String typeObject = getTypeObject(object);
         try {
             if (getIndexRole(role) != -1) {
-                SystemDAO.UpdateRolePrivs(role, object, typeObject, execute, select, update, delete, sys_priv);
+                SystemDAO.UpdateRolePrivs(role, object, typeObject, execute, select, update, delete, sys_priv, option);
             } else {
-                SystemDAO.InsertRolePrivs(role, object, typeObject, execute, select, update, delete, sys_priv);
+                SystemDAO.InsertRolePrivs(role, object, typeObject, execute, select, update, delete, sys_priv, option);
                 setRoleModel();
             }
 
@@ -497,18 +505,21 @@ public class mgnRole extends javax.swing.JFrame {
         // TODO add your handling code here:
         loadTypeRole();
         setAllDisabled();
+        cbBoxOption.setText("With Admin Option");
     }//GEN-LAST:event_rdBtnSysPrivsMouseClicked
 
     private void rdBtnOthersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rdBtnOthersMouseClicked
         // TODO add your handling code here:
         loadTypeRole();
         setAllEnabled();
+        cbBoxOption.setText("With Grant Option");
     }//GEN-LAST:event_rdBtnOthersMouseClicked
 
     private void rdBtnGrantedRolesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rdBtnGrantedRolesMouseClicked
         // TODO add your handling code here:
         loadTypeRole();
         setAllDisabled();
+        cbBoxOption.setText("With Grant Option");
     }//GEN-LAST:event_rdBtnGrantedRolesMouseClicked
 
     private void cbUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbUserMouseClicked
@@ -616,6 +627,7 @@ public class mgnRole extends javax.swing.JFrame {
     private javax.swing.JCheckBox cbBoxDelete;
     private javax.swing.JCheckBox cbBoxExecute;
     private javax.swing.JCheckBox cbBoxInsert;
+    private javax.swing.JCheckBox cbBoxOption;
     private javax.swing.JCheckBox cbBoxSelect;
     private javax.swing.JCheckBox cbBoxUpdate;
     private javax.swing.JCheckBox cbUser;

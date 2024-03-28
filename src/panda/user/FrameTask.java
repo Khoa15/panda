@@ -9,6 +9,8 @@ import bll.TaskBLL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -35,17 +37,17 @@ public class FrameTask extends javax.swing.JFrame {
     public FrameTask() {
         initComponents();
         initProjects();
-        projects = ProjectBLL.loadFull();
         initTree();
     }
     
     private void initTree(){
+        projects = ProjectBLL.loadFull();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
         for(int i = 0; i < projects.size(); i++){
             Project project = projects.get(i);
             DefaultMutableTreeNode p = new DefaultMutableTreeNode(project.getPairIdName());
             for(int j = 0; j < project.getTasks().size(); j++){
-                DefaultMutableTreeNode t = new DefaultMutableTreeNode(project.getTasks().get(j).getDescription());
+                DefaultMutableTreeNode t = new DefaultMutableTreeNode(project.getTasks().get(j).getPairIdName());
                 p.add(t);
             }
             root.add(p);
@@ -469,6 +471,7 @@ public class FrameTask extends javax.swing.JFrame {
             }
             
             JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+            initTree();
         }catch(Exception e){
             JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
         }
@@ -494,8 +497,8 @@ public class FrameTask extends javax.swing.JFrame {
             cbBoxProject.setSelectedItem(strCurrentNode);
         }else if(depth == 0){
             String parentName = parentNode.getUserObject().toString();
-            currentTask = ProjectBLL.find(parentName).getTasks().get(selectedNode.getChildCount());  
-            txtFieldTask.setText(strCurrentNode);
+            currentTask = ProjectBLL.find(parentName).findTask(selectedNode.getUserObject().toString());  
+            txtFieldTask.setText(currentTask.getDescription());
             cbBoxProject.setSelectedItem(parentName);
             cbInsert.setSelected(false);
         }
@@ -523,7 +526,13 @@ public class FrameTask extends javax.swing.JFrame {
         // TODO add your handling code here:
         int option = JOptionPane.showConfirmDialog(this, "Bạn muốn xóa \"" + currentTask.getDescription() + "\"?", "Thông báo", JOptionPane.YES_NO_OPTION);
         if(option == JOptionPane.YES_OPTION){
-            TaskBLL.delete(currentTask.getId());            
+            try {
+                TaskBLL.delete(currentTask.getId());
+                JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+                initTree();
+            } catch (Exception ex) {
+                JOptionPane.showConfirmDialog(this, ex.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
+            }
         }
     }//GEN-LAST:event_btnDeleteMouseClicked
     

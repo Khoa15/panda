@@ -271,10 +271,8 @@
         <Component class="javax.swing.JButton" name="btnPolicy">
           <Properties>
             <Property name="text" type="java.lang.String" value="Policy"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
-          <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnPolicyMouseClicked"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnProfile">
           <Properties>
@@ -285,7 +283,6 @@
         <Component class="javax.swing.JButton" name="btnAudit">
           <Properties>
             <Property name="text" type="java.lang.String" value="Audit"/>
-            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnAuditMouseClicked"/>
@@ -302,6 +299,7 @@
         <Component class="javax.swing.JButton" name="btnUser">
           <Properties>
             <Property name="text" type="java.lang.String" value="User"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnUserMouseClicked"/>

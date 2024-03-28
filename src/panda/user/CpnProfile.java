@@ -26,7 +26,7 @@ import panda.user.system.AddDatafile;
 import panda.user.system.CreateTablespace;
 import panda.user.system.User;
 import panda.user.system.mgnAudit;
-import panda.user.system.mgnPolicy;
+import panda.user.system.mgnAudit;
 import panda.user.system.mgnProfile;
 import panda.user.system.mgnRole;
 /**
@@ -257,17 +257,12 @@ public class CpnProfile extends javax.swing.JPanel {
         });
 
         btnPolicy.setText("Policy");
-        btnPolicy.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnPolicyMouseClicked(evt);
-            }
-        });
+        btnPolicy.setEnabled(false);
 
         btnProfile.setText("Profile");
         btnProfile.setEnabled(false);
 
         btnAudit.setText("Audit");
-        btnAudit.setEnabled(false);
         btnAudit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnAuditMouseClicked(evt);
@@ -282,6 +277,7 @@ public class CpnProfile extends javax.swing.JPanel {
         });
 
         btnUser.setText("User");
+        btnUser.setEnabled(false);
         btnUser.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnUserMouseClicked(evt);
@@ -649,11 +645,6 @@ public class CpnProfile extends javax.swing.JPanel {
         // TODO add your handling code here:
         mgnAudit.main(systems);
     }//GEN-LAST:event_btnAuditMouseClicked
-
-    private void btnPolicyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPolicyMouseClicked
-        // TODO add your handling code here:
-        mgnPolicy.main(systems);
-    }//GEN-LAST:event_btnPolicyMouseClicked
 
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();
