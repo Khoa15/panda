@@ -162,7 +162,7 @@ public class TaskDAO {
     public static ArrayList<Task> loadInboxes() {
         try {
             tasks.clear();
-            ResultSet rs = DBConnectionDAO.CallFunction("Select_Inboxes");
+            ResultSet rs = DBConnectionDAO.ExecuteSelectQuery("SELECT t.* FROM PANDA.TASK t"); //DBConnectionDAO.CallFunction("Select_Inboxes");
             if(rs == null) return tasks;
             while (rs.next()) {
                 tasks.add(setTask(rs));

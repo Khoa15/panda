@@ -182,10 +182,12 @@
                           <Component id="btnPolicy" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnProfile" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnAudit" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnUser" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="btnTestRole" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnRole" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -213,6 +215,7 @@
                       <Component id="btnAudit" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnRole" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnUser" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnTestRole" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -304,6 +307,11 @@
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnUserMouseClicked"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnTestRole">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Test Role"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

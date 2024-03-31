@@ -141,6 +141,7 @@ FOR EACH ROW
 DECLARE
     daily_count NUMBER;
 BEGIN
+//SGA (PACKAGE)
     SELECT COUNT(*)
     INTO daily_count
     FROM project

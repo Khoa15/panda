@@ -138,6 +138,7 @@ public class CpnProfile extends javax.swing.JPanel {
         btnAudit = new javax.swing.JButton();
         btnRole = new javax.swing.JButton();
         btnUser = new javax.swing.JButton();
+        btnTestRole = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         btnCreateTableSpace = new javax.swing.JButton();
         btnKillSession = new javax.swing.JButton();
@@ -284,6 +285,8 @@ public class CpnProfile extends javax.swing.JPanel {
             }
         });
 
+        btnTestRole.setText("Test Role");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -307,10 +310,12 @@ public class CpnProfile extends javax.swing.JPanel {
                         .addComponent(btnPolicy)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnProfile)
-                        .addGap(18, 18, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAudit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnUser)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnTestRole)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnRole)))
                 .addContainerGap())
@@ -332,7 +337,8 @@ public class CpnProfile extends javax.swing.JPanel {
                     .addComponent(btnProfile)
                     .addComponent(btnAudit)
                     .addComponent(btnRole)
-                    .addComponent(btnUser))
+                    .addComponent(btnUser)
+                    .addComponent(btnTestRole))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -678,6 +684,7 @@ public class CpnProfile extends javax.swing.JPanel {
     private javax.swing.JButton btnSentence;
     private javax.swing.JButton btnSignout;
     private javax.swing.JButton btnTask;
+    private javax.swing.JButton btnTestRole;
     private javax.swing.JButton btnUser;
     private javax.swing.JButton btnViewSession;
     private javax.swing.JButton btnVocab;

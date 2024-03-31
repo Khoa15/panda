@@ -23,7 +23,8 @@ public class CpnInbox extends javax.swing.JPanel {
     public CpnInbox() {
         initComponents();
         model = (DefaultTableModel) tableInbox.getModel();
-        tasks = TaskDAO.load();
+        //tasks = TaskDAO.load();
+        tasks = TaskDAO.loadInboxes();
         initData();
     }
     
