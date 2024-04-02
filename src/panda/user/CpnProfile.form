@@ -312,6 +312,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Test Role"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnTestRoleMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

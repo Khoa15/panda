@@ -286,6 +286,11 @@ public class CpnProfile extends javax.swing.JPanel {
         });
 
         btnTestRole.setText("Test Role");
+        btnTestRole.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnTestRoleMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -651,6 +656,11 @@ public class CpnProfile extends javax.swing.JPanel {
         // TODO add your handling code here:
         mgnAudit.main(systems);
     }//GEN-LAST:event_btnAuditMouseClicked
+
+    private void btnTestRoleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTestRoleMouseClicked
+        // TODO add your handling code here:
+        FrameTestRole.main(systems);
+    }//GEN-LAST:event_btnTestRoleMouseClicked
 
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();

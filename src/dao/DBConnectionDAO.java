@@ -36,7 +36,9 @@ public class DBConnectionDAO {
         try {
             Connection con = DBConnection.getConn();
             Statement statement = con.createStatement();
-            return statement.executeUpdate(query) > 0;
+            statement.executeUpdate(query);
+            con.commit();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -150,7 +152,7 @@ public class DBConnectionDAO {
             ResultSet rs = (ResultSet) callStatement.getObject(1);
             return rs;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }

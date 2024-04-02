@@ -112,44 +112,53 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="txtFieldRole" alignment="0" max="32767" attributes="0"/>
+                      <Component id="txtFieldObject" alignment="1" max="32767" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="cbBoxInsert" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="btnDelete" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="btnUpdate" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="cbBoxExecute" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cbBoxGrantExecute" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="33" max="32767" attributes="0"/>
                           <Component id="cbBoxSelect" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cbBoxGrantSelect" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="cbBoxUpdate" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cbBoxGrantUpdate" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="cbBoxDelete" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="cbBoxOption" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cbBoxGrantDelete" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cbBoxInsertPriv" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cbBoxGrantInsert" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtFieldRole" alignment="0" max="32767" attributes="0"/>
-                              <Component id="txtFieldObject" alignment="1" max="32767" attributes="0"/>
+                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="47" max="32767" attributes="0"/>
-                                  <Component id="cbBoxInsert" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="btnDelete" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="btnUpdate" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  <Component id="cbBoxGrantAdmin" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -157,7 +166,10 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbBoxGrantAdmin" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="txtFieldRole" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -170,7 +182,12 @@
                       <Component id="cbBoxSelect" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="cbBoxUpdate" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="cbBoxDelete" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cbBoxOption" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbBoxGrantInsert" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbBoxInsertPriv" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbBoxGrantDelete" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbBoxGrantUpdate" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbBoxGrantSelect" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbBoxGrantExecute" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="4" pref="4" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -253,7 +270,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="cbBoxInsert">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Insert"/>
+            <Property name="text" type="java.lang.String" value="Insert Mode"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="cbBoxInsertMouseClicked"/>
@@ -324,9 +341,39 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JCheckBox" name="cbBoxOption">
+        <Component class="javax.swing.JCheckBox" name="cbBoxGrantInsert">
           <Properties>
-            <Property name="text" type="java.lang.String" value="With Grant Option"/>
+            <Property name="text" type="java.lang.String" value="GRANT"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="cbBoxInsertPriv">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Insert"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="cbBoxGrantDelete">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="GRANT"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="cbBoxGrantUpdate">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="GRANT"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="cbBoxGrantSelect">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="GRANT"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="cbBoxGrantExecute">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="GRANT"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="cbBoxGrantAdmin">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="GRANT ADMIN"/>
           </Properties>
         </Component>
       </SubComponents>

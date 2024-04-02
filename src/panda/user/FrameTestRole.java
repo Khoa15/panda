@@ -4,6 +4,15 @@
  */
 package panda.user;
 
+import dao.DBConnectionDAO;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.DBConnection;
+
 /**
  *
  * @author Khoa
@@ -13,8 +22,28 @@ public class FrameTestRole extends javax.swing.JFrame {
     /**
      * Creates new form FrameTestRole
      */
+    DefaultTableModel model;
     public FrameTestRole() {
         initComponents();
+        model = (DefaultTableModel) jTable1.getModel();
+        loadData();
+    }
+    
+    private void loadData(){
+        model.setRowCount(0);
+        String sql = "SELECT ID,NAME FROM PANDA.PROJECT WHERE USERNAME = '"+DBConnection.getUsername().toUpperCase()+"'";
+        ResultSet rs = DBConnectionDAO.ExecuteSelectQuery(sql);
+        if(rs == null) return;
+        try {
+            while(rs.next()){
+                model.addRow(new Object[]{
+                    rs.getInt("ID"),
+                    rs.getNString("NAME")
+                });
+            }
+        } catch (SQLException ex) {
+            ex.getMessage();
+        }
     }
 
     /**
@@ -28,30 +57,34 @@ public class FrameTestRole extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        txtFieldTask = new javax.swing.JTextField();
+        txtFieldProject = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         btnCancel = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         cbBoxInsertMode = new javax.swing.JCheckBox();
-        cbBoxPriority = new javax.swing.JComboBox<>();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "NAME"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
-        jLabel1.setText("Task");
+        jLabel1.setText("Project");
 
         btnCancel.setText("Cancel");
 
@@ -63,10 +96,13 @@ public class FrameTestRole extends javax.swing.JFrame {
         });
 
         btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         cbBoxInsertMode.setText("Insert");
-
-        cbBoxPriority.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--Priority--", "Low", "Medium", "Large" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -75,14 +111,11 @@ public class FrameTestRole extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFieldTask, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbBoxPriority, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(txtFieldProject))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(cbBoxInsertMode)
@@ -99,9 +132,8 @@ public class FrameTestRole extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtFieldTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(cbBoxPriority, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFieldProject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
@@ -118,15 +150,51 @@ public class FrameTestRole extends javax.swing.JFrame {
 
     private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
         // TODO add your handling code here:
-        String task = txtFieldTask.getText();
-        int priority = cbBoxPriority.getSelectedIndex();
+        String project = txtFieldProject.getText();
+        String sql;
         try{
-            
+            if(cbBoxInsertMode.isSelected()){
+                sql = "INSERT INTO PANDA.PROJECT ( USERNAME, NAME ) VALUES ('"+DBConnection.getUsername()+"', '"+project+"')";
+            }else{
+                String id = getObject(0);
+                sql = "UPDATE PANDA.PROJECT SET NAME = '"+project+"' WHERE ID = "+id+" AND USERNAME = '"+DBConnection.getUsername()+"'";
+            }
+            DBConnectionDAO.ExecuteScalarQuery(sql);
+            JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo", JOptionPane.DEFAULT_OPTION);
+            loadData();
         }catch(Exception e){
-            
+            JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo", JOptionPane.DEFAULT_OPTION);
         }
     }//GEN-LAST:event_btnSaveMouseClicked
 
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        txtFieldProject.setText(getObject(1));
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+        String id = getObject(0);
+        try{
+            if(id == null){
+                throw new IllegalStateException("Select at least row!");
+            }
+            String sql = "DELETE FROM PANDA.PROJECT WHERE ID = "+id+" AND USERNAME = '"+DBConnection.getUsername()+"'";
+            DBConnectionDAO.ExecuteScalarQuery(sql);
+            JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
+            loadData();
+        }catch(Exception e){
+            JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+    private String getObject(int column){
+        String result = null;
+        int row = jTable1.getSelectedRow();
+        if(row != -1){
+            result = jTable1.getValueAt(row, column).toString();
+        }
+        return result;
+    }
     /**
      * @param args the command line arguments
      */
@@ -157,7 +225,9 @@ public class FrameTestRole extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrameTestRole().setVisible(true);
+                FrameTestRole f = new FrameTestRole();
+                f.setVisible(true);
+                f.setLocationRelativeTo(null);
             }
         });
     }
@@ -167,10 +237,9 @@ public class FrameTestRole extends javax.swing.JFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnSave;
     private javax.swing.JCheckBox cbBoxInsertMode;
-    private javax.swing.JComboBox<String> cbBoxPriority;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField txtFieldTask;
+    private javax.swing.JTextField txtFieldProject;
     // End of variables declaration//GEN-END:variables
 }

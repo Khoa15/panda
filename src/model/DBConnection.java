@@ -34,7 +34,7 @@ public class DBConnection extends Thread {
 
     public static void setUsername(String aUsername) {
         
-        username = normalize(aUsername);
+        username = normalize(aUsername).toUpperCase();
     }
 
     public static void setPassword(String aPassword) {

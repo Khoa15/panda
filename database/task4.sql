@@ -170,7 +170,7 @@ BEGIN
         ORDER BY OBJECT_TYPE;
     ELSE 
         OPEN list_role_others FOR
-        SELECT TABLE_NAME, type, privilege
+        SELECT TABLE_NAME, type, privilege, grantable
         FROM dba_tab_privs 
         WHERE grantee = p_role;
     END IF;
@@ -325,20 +325,63 @@ BEGIN
     END IF;
 END;
 /
-
-
-
-    
-        //IF p_sys_priv = 'N' AND v_has_sys_priv = 'Y' THEN
-        //    EXECUTE IMMEDIATE 'REVOKE ' || p_object || ' FROM ' || p_role;
-        //END IF;
+//SET SERVEROUT ON;
+CREATE OR REPLACE PROCEDURE GRANT_OR_REVOKE_GRANT
+(
+    p_grantee VARCHAR2,
+    p_privilege VARCHAR2,
+    p_object VARCHAR2,
+    p_grant_option CHAR,
+    p_grant CHAR
+)
+IS
+    v_has_priv CHAR(1) := 'N';
+    v_has_grant_option CHAR(3) := 'N';
+    v_sql VARCHAR(4000);
+BEGIN
+        SELECT COALESCE(MAX(CASE WHEN privilege = p_privilege THEN 'Y' ELSE 'N' END), 'N')
+        INTO v_has_priv
+        FROM dba_tab_privs
+        WHERE table_name = p_object
+        AND privilege = p_privilege
+        AND grantee = p_grantee;
+        
+        
+            IF p_grant = 'N' AND v_has_priv = 'Y' THEN
+                 EXECUTE IMMEDIATE 'REVOKE '|| p_privilege ||' ON ' || p_object || ' FROM ' || p_grantee;
+            ELSIF p_grant = 'Y' THEN
+                DBMS_OUTPUT.PUT_LINE(p_grant_option);
+                
+                SELECT COALESCE(MAX(CASE WHEN grantable = 'YES' THEN 'Y' ELSE 'N' END), 'N')
+                INTO v_has_grant_option
+                FROM dba_tab_privs
+                WHERE table_name = p_object
+                AND privilege = p_privilege
+                AND grantee = p_grantee;
+            
+                v_sql := 'GRANT '||p_privilege||' ON ' || p_object || ' TO ' || p_grantee;
+                IF p_grant_option = 'Y' THEN
+                    v_sql := v_sql || ' WITH GRANT OPTION';
+                ELSIF p_grant_option = 'N' AND v_has_grant_option = 'Y' THEN
+                    EXECUTE IMMEDIATE 'REVOKE '|| p_privilege ||' ON ' || p_object || ' FROM ' || p_grantee;
+                END IF;
+                EXECUTE IMMEDIATE v_sql;
+            END IF;
+END;
+/
 CREATE OR REPLACE PROCEDURE update_role_privs (
     p_role VARCHAR2,
     p_object VARCHAR2,
     p_execute CHAR,
+    p_grant_execute CHAR,
     p_select CHAR,
+    p_grant_select CHAR,
     p_update CHAR,
+    p_grant_update CHAR,
     p_delete CHAR,
+    p_grant_delete CHAR,
+    p_insert CHAR,
+    p_grant_insert CHAR,
     p_sys_priv CHAR,
     p_option VARCHAR
 )
@@ -347,12 +390,48 @@ IS
     v_has_select CHAR(1) := 'N';
     v_has_update CHAR(1) := 'N';
     v_has_delete CHAR(1) := 'N';
+    v_has_insert CHAR(1) := 'N';
     v_has_sys_priv CHAR(1) := 'N';
     v_has_option CHAR(1) := 'N';
     v_text_option VARCHAR(100) := '';
 BEGIN
     BEGIN
-    
+        GRANT_OR_REVOKE_GRANT(
+            p_role,
+            'EXECUTE',
+            p_object,
+            p_grant_execute,
+            p_execute
+        );
+        GRANT_OR_REVOKE_GRANT(
+            p_role,
+            'SELECT',
+            p_object,
+            p_grant_select,
+            p_select
+        );
+        GRANT_OR_REVOKE_GRANT(
+            p_role,
+            'UPDATE',
+            p_object,
+            p_grant_update,
+            p_select
+        );
+        GRANT_OR_REVOKE_GRANT(
+            p_role,
+            'DELETE',
+            p_object,
+            p_grant_delete,
+            p_select
+        );
+        GRANT_OR_REVOKE_GRANT(
+            p_role,
+            'INSERT',
+            p_object,
+            p_grant_insert,
+            p_insert
+        );
+        
         SELECT COALESCE(MAX(CASE WHEN GRANTED_ROLE = p_object THEN 'Y' ELSE 'N' END), 'N')
         INTO v_has_sys_priv
         FROM dba_role_privs
@@ -377,67 +456,6 @@ BEGIN
             FROM dba_sys_privs
             WHERE grantee = p_role AND privilege = p_object;
             END IF;
-        
-        SELECT COALESCE(MAX(CASE WHEN privilege = 'EXECUTE' THEN 'Y' ELSE 'N' END), 'N')
-        INTO v_has_execute
-        FROM dba_tab_privs
-        WHERE table_name = p_object
-        AND privilege = 'EXECUTE'
-        AND grantee = p_role;
-
-        SELECT COALESCE(MAX(CASE WHEN privilege = 'SELECT' THEN 'Y' ELSE 'N' END), 'N')
-        INTO v_has_select
-        FROM dba_tab_privs
-        WHERE table_name = p_object
-        AND privilege = 'SELECT'
-        AND grantee = p_role;
-
-        SELECT COALESCE(MAX(CASE WHEN privilege = 'UPDATE' THEN 'Y' ELSE 'N' END), 'N')
-        INTO v_has_update
-        FROM dba_tab_privs
-        WHERE table_name = p_object
-        AND privilege = 'UPDATE'
-        AND grantee = p_role;
-
-        SELECT COALESCE(MAX(CASE WHEN privilege = 'DELETE' THEN 'Y' ELSE 'N' END), 'N')
-        INTO v_has_delete
-        FROM dba_tab_privs
-        WHERE table_name = p_object
-        AND privilege = 'DELETE'
-        AND grantee = p_role;
-        
-        
-        IF p_execute = 'N' AND v_has_execute = 'Y' THEN
-            EXECUTE IMMEDIATE 'REVOKE EXECUTE ON ' || p_object || ' FROM ' || p_role;
-        END IF;
-
-        IF p_select = 'N' AND v_has_select = 'Y' THEN
-            EXECUTE IMMEDIATE 'REVOKE SELECT ON ' || p_object || ' FROM ' || p_role;
-        END IF;
-
-        IF p_update = 'N' AND v_has_update = 'Y' THEN
-            EXECUTE IMMEDIATE 'REVOKE UPDATE ON ' || p_object || ' FROM ' || p_role;
-        END IF;
-
-        IF p_delete = 'N' AND v_has_delete = 'Y' THEN
-            EXECUTE IMMEDIATE 'REVOKE DELETE ON ' || p_object || ' FROM ' || p_role;
-        END IF;
-
-        IF p_execute = 'Y' AND v_has_execute = 'N' THEN
-            EXECUTE IMMEDIATE 'GRANT EXECUTE ON ' || p_object || ' TO ' || p_role;
-        END IF;
-
-        IF p_select = 'Y' AND v_has_select = 'N' THEN
-            EXECUTE IMMEDIATE 'GRANT SELECT ON ' || p_object || ' TO ' || p_role;
-        END IF;
-
-        IF p_update = 'Y' AND v_has_update = 'N' THEN
-            EXECUTE IMMEDIATE 'GRANT UPDATE ON ' || p_object || ' TO ' || p_role;
-        END IF;
-
-        IF p_delete = 'Y' AND v_has_delete = 'N' THEN
-            EXECUTE IMMEDIATE 'GRANT DELETE ON ' || p_object || ' TO ' || p_role;
-        END IF;
         
         IF v_has_option = 'Y' AND p_option = 'N' THEN
             EXECUTE IMMEDIATE 'REVOKE ' || p_object || ' FROM ' || p_role;
@@ -466,9 +484,15 @@ CREATE OR REPLACE PROCEDURE insert_role_privs (
     p_role VARCHAR2,
     p_object VARCHAR2,
     p_execute CHAR,
+    p_grant_execute CHAR,
     p_select CHAR,
+    p_grant_select CHAR,
     p_update CHAR,
+    p_grant_update CHAR,
     p_delete CHAR,
+    p_grant_delete CHAR,
+    p_insert CHAR,
+    p_grant_insert CHAR,
     p_sys_priv CHAR,
     p_option VARCHAR
 )
@@ -476,21 +500,60 @@ IS
 BEGIN
     EXECUTE IMMEDIATE 'CREATE ROLE ' || p_role;
 
-    IF p_execute = 'Y' THEN
-        EXECUTE IMMEDIATE 'GRANT EXECUTE ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
-    END IF;
-
-    IF p_select = 'Y' THEN
-        EXECUTE IMMEDIATE 'GRANT SELECT ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
-    END IF;
-
-    IF p_update = 'Y' THEN
-        EXECUTE IMMEDIATE 'GRANT UPDATE ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
-    END IF;
-
-    IF p_delete = 'Y' THEN
-        EXECUTE IMMEDIATE 'GRANT DELETE ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
-    END IF;
+        GRANT_OR_REVOKE_GRANT(
+            p_role,
+            'EXECUTE',
+            p_object,
+            p_grant_execute,
+            p_execute
+        );
+        GRANT_OR_REVOKE_GRANT(
+            p_role,
+            'SELECT',
+            p_object,
+            p_grant_select,
+            p_select
+        );
+        GRANT_OR_REVOKE_GRANT(
+            p_role,
+            'UPDATE',
+            p_object,
+            p_grant_update,
+            p_select
+        );
+        GRANT_OR_REVOKE_GRANT(
+            p_role,
+            'DELETE',
+            p_object,
+            p_grant_delete,
+            p_select
+        );
+        GRANT_OR_REVOKE_GRANT(
+            p_role,
+            'INSERT',
+            p_object,
+            p_grant_insert,
+            p_insert
+        );
+--    IF p_execute = 'Y' THEN
+--        EXECUTE IMMEDIATE 'GRANT EXECUTE ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
+--    END IF;
+--
+--    IF p_select = 'Y' THEN
+--        EXECUTE IMMEDIATE 'GRANT SELECT ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
+--    END IF;
+--
+--    IF p_update = 'Y' THEN
+--        EXECUTE IMMEDIATE 'GRANT UPDATE ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
+--    END IF;
+--
+--    IF p_delete = 'Y' THEN
+--        EXECUTE IMMEDIATE 'GRANT DELETE ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
+--    END IF;
+--
+--    IF p_insert = 'Y' THEN
+--        EXECUTE IMMEDIATE 'GRANT INSERT ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
+--    END IF;
 
     IF p_sys_priv = 'Y' THEN
         EXECUTE IMMEDIATE 'GRANT ' || p_object || ' TO ' || p_role || ' ' || p_option;

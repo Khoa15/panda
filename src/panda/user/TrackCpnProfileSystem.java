@@ -13,13 +13,12 @@ public class TrackCpnProfileSystem extends Thread {
     @Override
     public void run(){
         while(true){
-            System.out.println("Tracking");
 
             cpnProfile.reloadTable();
             try{
                 Thread.sleep(3000);
             }catch(Exception e){
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }

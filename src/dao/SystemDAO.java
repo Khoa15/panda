@@ -295,7 +295,7 @@ public class SystemDAO {
             return setDefaultDataTableModel("GetSgaInfo");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }
@@ -635,16 +635,38 @@ public class SystemDAO {
         return model;
     }
 
-    public static void UpdateRolePrivs(String role, String object, String typeObject, boolean execute, boolean select, boolean update, boolean delete, boolean sys_priv, boolean option) throws Exception {
+    public static void UpdateRolePrivs(
+            String role, 
+            String object, 
+            String typeObject, 
+            boolean execute, 
+            boolean grant_execute, 
+            boolean select, 
+            boolean grant_select, 
+            boolean update, 
+            boolean grant_update, 
+            boolean delete, 
+            boolean grant_delete, 
+            boolean insert,
+            boolean grant_insert, 
+            boolean sys_priv, 
+            boolean option
+    ) throws Exception {
         try{
             
             Object[] values = new Object[]{
                 role,
                 object,
-                (execute) ? "Y": "N",
-                (select) ? "Y": "N",
-                (update) ? "Y": "N",
-                (delete) ? "Y": "N",
+                (execute) ? "EXECUTE": "Y",
+                (grant_execute) ? "Y" : "N",
+                (select) ? "SELECT": "Y",
+                (grant_select) ? "Y" : "N",
+                (update) ? "UPDATE": "Y",
+                (grant_update) ? "Y" : "N",
+                (delete) ? "DELETE": "Y",
+                (grant_delete) ? "Y" : "N",
+                (insert) ? "INSERT": "Y",
+                (grant_insert) ? "Y" : "N",
                 (sys_priv) ? "Y": "N",
                 (option) ? "Y" : "N"
             };
@@ -654,15 +676,37 @@ public class SystemDAO {
         }
     }
 
-    public static void InsertRolePrivs(String role, String object, String typeObject, boolean execute, boolean select, boolean update, boolean delete, boolean sys_priv, boolean option) throws Exception {
+    public static void InsertRolePrivs(
+            String role, 
+            String object, 
+            String typeObject, 
+            boolean execute, 
+            boolean grant_execute, 
+            boolean select, 
+            boolean grant_select, 
+            boolean update, 
+            boolean grant_update, 
+            boolean delete, 
+            boolean grant_delete, 
+            boolean insert,
+            boolean grant_insert, 
+            boolean sys_priv, 
+            boolean option
+    ) throws Exception {
         try{           
             Object[] values = new Object[]{
                 role,
                 object,
-                (execute) ? "Y": "N",
-                (select) ? "Y": "N",
-                (update) ? "Y": "N",
-                (delete) ? "Y": "N",
+                (execute) ? "EXECUTE": "Y",
+                (grant_execute) ? "Y" : "N",
+                (select) ? "SELECT": "Y",
+                (grant_select) ? "Y" : "N",
+                (update) ? "UPDATE": "Y",
+                (grant_update) ? "Y" : "N",
+                (delete) ? "DELETE": "Y",
+                (grant_delete) ? "Y" : "N",
+                (insert) ? "INSERT": "Y",
+                (grant_insert) ? "Y" : "N",
                 (sys_priv) ? "Y": "N",
                 (option) ? "Y" : "N"
             };

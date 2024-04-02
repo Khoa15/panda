@@ -38,12 +38,12 @@ public class mgnRole extends javax.swing.JFrame {
     }
 
     private void setRoleModel() {
-        if(cbUser.isSelected()){
+        if (cbUser.isSelected()) {
             jLabel1.setText("Username");
             tbListRoles.setModel(SystemDAO.LoadUsersName());
-        }else{
+        } else {
             jLabel1.setText("Role");
-            tbListRoles.setModel(SystemDAO.LoadRoleName());            
+            tbListRoles.setModel(SystemDAO.LoadRoleName());
         }
     }
 
@@ -98,7 +98,13 @@ public class mgnRole extends javax.swing.JFrame {
         rdBtnGrantedRoles = new javax.swing.JRadioButton();
         rdBtnSysPrivs = new javax.swing.JRadioButton();
         rdBtnOthers = new javax.swing.JRadioButton();
-        cbBoxOption = new javax.swing.JCheckBox();
+        cbBoxGrantInsert = new javax.swing.JCheckBox();
+        cbBoxInsertPriv = new javax.swing.JCheckBox();
+        cbBoxGrantDelete = new javax.swing.JCheckBox();
+        cbBoxGrantUpdate = new javax.swing.JCheckBox();
+        cbBoxGrantSelect = new javax.swing.JCheckBox();
+        cbBoxGrantExecute = new javax.swing.JCheckBox();
+        cbBoxGrantAdmin = new javax.swing.JCheckBox();
         txtFieldUsername = new javax.swing.JTextField();
         cbUser = new javax.swing.JCheckBox();
         btnSearch = new javax.swing.JButton();
@@ -167,7 +173,7 @@ public class mgnRole extends javax.swing.JFrame {
 
         cbBoxDelete.setText("Delete");
 
-        cbBoxInsert.setText("Insert");
+        cbBoxInsert.setText("Insert Mode");
         cbBoxInsert.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cbBoxInsertMouseClicked(evt);
@@ -221,7 +227,19 @@ public class mgnRole extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        cbBoxOption.setText("With Grant Option");
+        cbBoxGrantInsert.setText("GRANT");
+
+        cbBoxInsertPriv.setText("Insert");
+
+        cbBoxGrantDelete.setText("GRANT");
+
+        cbBoxGrantUpdate.setText("GRANT");
+
+        cbBoxGrantSelect.setText("GRANT");
+
+        cbBoxGrantExecute.setText("GRANT");
+
+        cbBoxGrantAdmin.setText("GRANT ADMIN");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -230,43 +248,55 @@ public class mgnRole extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtFieldRole)
+                    .addComponent(txtFieldObject, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbBoxInsert)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDelete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnUpdate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnCancel))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(cbBoxExecute)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbBoxGrantExecute)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                         .addComponent(cbBoxSelect)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbBoxGrantSelect)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbBoxUpdate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbBoxGrantUpdate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbBoxDelete)
-                        .addGap(18, 18, 18)
-                        .addComponent(cbBoxOption)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbBoxGrantDelete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbBoxInsertPriv)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbBoxGrantInsert))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtFieldRole)
-                            .addComponent(txtFieldObject, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
-                                .addComponent(cbBoxInsert)
+                                .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnDelete)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnUpdate)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnCancel))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                                .addComponent(cbBoxGrantAdmin)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cbBoxGrantAdmin))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(txtFieldRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -279,7 +309,12 @@ public class mgnRole extends javax.swing.JFrame {
                     .addComponent(cbBoxSelect)
                     .addComponent(cbBoxUpdate)
                     .addComponent(cbBoxDelete)
-                    .addComponent(cbBoxOption))
+                    .addComponent(cbBoxGrantInsert)
+                    .addComponent(cbBoxInsertPriv)
+                    .addComponent(cbBoxGrantDelete)
+                    .addComponent(cbBoxGrantUpdate)
+                    .addComponent(cbBoxGrantSelect)
+                    .addComponent(cbBoxGrantExecute))
                 .addGap(4, 4, 4)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -367,16 +402,16 @@ public class mgnRole extends javax.swing.JFrame {
             String type = tbListPrivs.getValueAt(tbListPrivs.getSelectedRow(), 1).toString();
             switch (type) {
                 case "FUNCTION":
-                    case "PROCEDURE":
-                        cbBoxExecute.setSelected(true);
-                        cbBoxSelect.setEnabled(false);
-                        cbBoxUpdate.setEnabled(false);
-                        cbBoxDelete.setEnabled(false);
-                        break;
+                case "PROCEDURE":
+                    cbBoxExecute.setSelected(true);
+                    cbBoxSelect.setEnabled(false);
+                    cbBoxUpdate.setEnabled(false);
+                    cbBoxDelete.setEnabled(false);
+                    break;
                 case "TABLE":
-                        cbBoxSelect.setEnabled(true);
-                        cbBoxUpdate.setEnabled(true);
-                        cbBoxDelete.setEnabled(true);
+                    cbBoxSelect.setEnabled(true);
+                    cbBoxUpdate.setEnabled(true);
+                    cbBoxDelete.setEnabled(true);
                     break;
             }
         }
@@ -402,15 +437,53 @@ public class mgnRole extends javax.swing.JFrame {
         boolean select = cbBoxSelect.isSelected();
         boolean update = cbBoxUpdate.isSelected();
         boolean delete = cbBoxDelete.isSelected();
+        boolean insert = cbBoxInsertPriv.isSelected();
+        boolean grant_execute = cbBoxGrantExecute.isSelected();
+        boolean grant_select = cbBoxGrantSelect.isSelected();
+        boolean grant_update = cbBoxGrantUpdate.isSelected();
+        boolean grant_delete = cbBoxGrantDelete.isSelected();
+        boolean grant_insert = cbBoxGrantInsert.isSelected();
         //String option = (cbBoxOption.isSelected()) ? "" : cbBoxOption.getText();
-        boolean option = cbBoxOption.isSelected();
+        boolean option = cbBoxGrantAdmin.isSelected();
         boolean sys_priv = (rdBtnGrantedRoles.isSelected() == true || rdBtnSysPrivs.isSelected() == true) && cbBoxInsert.isSelected() == true;
         String typeObject = getTypeObject(object);
         try {
             if (getIndexRole(role) != -1) {
-                SystemDAO.UpdateRolePrivs(role, object, typeObject, execute, select, update, delete, sys_priv, option);
+                SystemDAO.UpdateRolePrivs(
+                        role, 
+                        object, 
+                        typeObject, 
+                        execute, 
+                        grant_execute, 
+                        select, 
+                        grant_select, 
+                        update, 
+                        grant_update, 
+                        delete, 
+                        grant_delete, 
+                        insert, 
+                        grant_insert, 
+                        sys_priv, 
+                        option
+                );
             } else {
-                SystemDAO.InsertRolePrivs(role, object, typeObject, execute, select, update, delete, sys_priv, option);
+                SystemDAO.InsertRolePrivs(
+                        role, 
+                        object, 
+                        typeObject, 
+                        execute, 
+                        grant_execute, 
+                        select, 
+                        grant_select, 
+                        update, 
+                        grant_update, 
+                        delete, 
+                        grant_delete, 
+                        insert, 
+                        grant_insert, 
+                        sys_priv, 
+                        option
+                );
                 setRoleModel();
             }
 
@@ -470,22 +543,19 @@ public class mgnRole extends javax.swing.JFrame {
     private void btnDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseClicked
         try {
             int option;
-            if(cbUser.isSelected()){
+            if (cbUser.isSelected()) {
                 option = JOptionPane.showConfirmDialog(this, "Bạn muốn gỡ quyền " + txtFieldObject.getText() + " !?", "Thông báo!", JOptionPane.YES_NO_OPTION);
-            }else{
-                option = optionDelete();                
+            } else {
+                option = optionDelete();
             }
-            if (
-                    option == JOptionPane.CANCEL_OPTION 
-                    || (option == 1 && txtFieldObject.getText().isEmpty()) 
-                    || (option == JOptionPane.NO_OPTION && cbUser.isSelected())
-                    ) {
+            if (option == JOptionPane.CANCEL_OPTION
+                    || (option == 1 && txtFieldObject.getText().isEmpty())
+                    || (option == JOptionPane.NO_OPTION && cbUser.isSelected())) {
                 return;
-            } else if (!cbUser.isSelected() 
-                    && (option == JOptionPane.YES_OPTION 
-                    || option == JOptionPane.OK_OPTION 
-                    || (option == 0 && txtFieldObject.getText().isEmpty()) 
-                            )) {
+            } else if (!cbUser.isSelected()
+                    && (option == JOptionPane.YES_OPTION
+                    || option == JOptionPane.OK_OPTION
+                    || (option == 0 && txtFieldObject.getText().isEmpty()))) {
                 SystemDAO.deleteRole(currentRole);
                 setRoleModel();
                 loadTypeRole();
@@ -505,21 +575,19 @@ public class mgnRole extends javax.swing.JFrame {
         // TODO add your handling code here:
         loadTypeRole();
         setAllDisabled();
-        cbBoxOption.setText("With Admin Option");
     }//GEN-LAST:event_rdBtnSysPrivsMouseClicked
 
     private void rdBtnOthersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rdBtnOthersMouseClicked
         // TODO add your handling code here:
         loadTypeRole();
         setAllEnabled();
-        cbBoxOption.setText("With Grant Option");
     }//GEN-LAST:event_rdBtnOthersMouseClicked
 
     private void rdBtnGrantedRolesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rdBtnGrantedRolesMouseClicked
         // TODO add your handling code here:
         loadTypeRole();
         setAllDisabled();
-        cbBoxOption.setText("With Grant Option");
+        cbBoxGrantInsert.setText("With Grant Option");
     }//GEN-LAST:event_rdBtnGrantedRolesMouseClicked
 
     private void cbUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbUserMouseClicked
@@ -626,8 +694,14 @@ public class mgnRole extends javax.swing.JFrame {
     private javax.swing.JButton btnUpdate;
     private javax.swing.JCheckBox cbBoxDelete;
     private javax.swing.JCheckBox cbBoxExecute;
+    private javax.swing.JCheckBox cbBoxGrantAdmin;
+    private javax.swing.JCheckBox cbBoxGrantDelete;
+    private javax.swing.JCheckBox cbBoxGrantExecute;
+    private javax.swing.JCheckBox cbBoxGrantInsert;
+    private javax.swing.JCheckBox cbBoxGrantSelect;
+    private javax.swing.JCheckBox cbBoxGrantUpdate;
     private javax.swing.JCheckBox cbBoxInsert;
-    private javax.swing.JCheckBox cbBoxOption;
+    private javax.swing.JCheckBox cbBoxInsertPriv;
     private javax.swing.JCheckBox cbBoxSelect;
     private javax.swing.JCheckBox cbBoxUpdate;
     private javax.swing.JCheckBox cbUser;
