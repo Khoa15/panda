@@ -927,6 +927,22 @@ public class SystemDAO {
             }
         return statement.toString();
     }
+
+    public static String[] LoadAuditPolicies() {
+        ArrayList<String> result = new ArrayList<>();
+        try{
+            ResultSet rs = DBConnectionDAO.CallFunction("get_policies_audit");
+            if(rs == null){
+                throw new IllegalStateException("Data not found");
+            }
+            while(rs.next()){
+                result.add(rs.getString(1));
+            }
+        }catch(Exception e){
+            
+        }
+        return (String[]) result.toArray();
+    }
     
     
 

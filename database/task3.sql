@@ -47,7 +47,7 @@ CREATE OR REPLACE PROCEDURE add_policy
 (
     p_object_name VARCHAR,
     p_policy_name VARCHAR,
-    p_audit_condition VARCHAR,
+    p_audit_condition VARCHAR2,
     p_audit_column VARCHAR,
     p_enable CHAR,
     p_statement_types VARCHAR
@@ -61,15 +61,27 @@ BEGIN
         ELSE
             v_enable := false;
         END IF;
-        DBMS_FGA.ADD_POLICY(
-            object_schema    => 'PANDA', 
-            object_name      => p_object_name,
-            policy_name      => p_policy_name,
-            audit_condition  => p_audit_condition,
-            audit_column     => p_audit_column,
-            enable           => v_enable,
-            statement_types  => p_statement_types
-        );
+        If p_audit_condition = 'all' THEN
+            DBMS_FGA.ADD_POLICY(
+                object_schema    => 'PANDA', 
+                object_name      => p_object_name,
+                policy_name      => p_policy_name,
+                audit_column     => p_audit_column,
+                enable           => v_enable,
+                statement_types  => p_statement_types
+            );
+        ELSE
+            DBMS_FGA.ADD_POLICY(
+                object_schema    => 'PANDA', 
+                object_name      => p_object_name,
+                policy_name      => p_policy_name,
+                audit_condition  => p_audit_condition,
+                audit_column     => p_audit_column,
+                enable           => v_enable,
+                statement_types  => p_statement_types
+            );
+        END IF;
+        
         EXCEPTION
             WHEN OTHERS THEN
                 RAISE;
