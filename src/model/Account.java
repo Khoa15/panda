@@ -9,6 +9,17 @@ public class Account {
     public String profile;
     public String tablespace;
     private byte[] avatar;
+    private byte[] audio;
+
+    public byte[] getAudio() {
+        return audio;
+    }
+
+    public void setAudio(byte[] audio) {
+        this.audio = audio;
+    }
+    
+    
     
     public byte[] getAvatar() {
         return avatar;

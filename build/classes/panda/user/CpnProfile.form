@@ -274,8 +274,11 @@
         <Component class="javax.swing.JButton" name="btnPolicy">
           <Properties>
             <Property name="text" type="java.lang.String" value="Policy"/>
-            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnPolicyMouseClicked"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPolicyActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnProfile">
           <Properties>

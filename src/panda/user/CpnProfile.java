@@ -24,6 +24,7 @@ import panda.user.entities.ManageTask;
 import panda.user.entities.ManageVocab;
 import panda.user.system.AddDatafile;
 import panda.user.system.CreateTablespace;
+import panda.user.system.FAudit;
 import panda.user.system.User;
 import panda.user.system.mgnAudit;
 import panda.user.system.mgnAudit;
@@ -258,7 +259,16 @@ public class CpnProfile extends javax.swing.JPanel {
         });
 
         btnPolicy.setText("Policy");
-        btnPolicy.setEnabled(false);
+        btnPolicy.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnPolicyMouseClicked(evt);
+            }
+        });
+        btnPolicy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPolicyActionPerformed(evt);
+            }
+        });
 
         btnProfile.setText("Profile");
         btnProfile.setEnabled(false);
@@ -661,6 +671,17 @@ public class CpnProfile extends javax.swing.JPanel {
         // TODO add your handling code here:
         FrameTestRole.main(systems);
     }//GEN-LAST:event_btnTestRoleMouseClicked
+
+    private void btnPolicyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPolicyMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnPolicyMouseClicked
+
+    private void btnPolicyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPolicyActionPerformed
+        // TODO add your handling code here:
+        FAudit a = new FAudit();
+        a.setVisible(true);
+        a.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnPolicyActionPerformed
 
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();

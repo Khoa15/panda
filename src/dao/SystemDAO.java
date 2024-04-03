@@ -941,7 +941,26 @@ public class SystemDAO {
         }catch(Exception e){
             
         }
-        return (String[]) result.toArray();
+        return result.toArray(new String[result.size()]);
+    }
+
+    public static Object[] LoadInfoAuditPolicy(String auditPolicy) {
+        Object[] objects = null;
+        try{
+            ResultSet rs = DBConnectionDAO.CallFunction("get_info_policies_audit", auditPolicy);
+            if(rs==null){
+                throw new IllegalStateException("Data not found");
+            }
+            objects = new Object[8];
+            HashMap<String, String> result = new HashMap<>();
+            while(rs.next()){
+                result.put(rs.getString("AUDIT_OPTION_TYPE"), rs.getString("AUDIT_OPTION"));
+            }
+            objects[0] = result;
+        }catch(Exception e){
+            
+        }
+        return objects;
     }
     
     

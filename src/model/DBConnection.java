@@ -48,10 +48,21 @@ public class DBConnection extends Thread {
     public static LocalDateTime getLastLogin(){
         return last_login;
     }
+
+    public static Blob getAvatar() {
+        return avatar;
+    }
+
+    public static Blob getRing_tone() {
+        return ring_tone;
+    }
+    
     private final static String sysuser = "panda_register";
     private final static String syspass = "panda_register";
     private static String username = "";
     private static String password = "";
+    private static Blob avatar = null;
+    private static Blob ring_tone = null;
     private static LocalDateTime last_login = null;
     private static String database = "orcl";
     private static String url = "jdbc:oracle:thin:@localhost:1521/" + database + "?current_schema=panda";
@@ -68,6 +79,12 @@ public class DBConnection extends Thread {
             try{
                 Timestamp last_login = (Timestamp)DBConnectionDAO.CallFunctionWithOutValues("get_last_login", Types.TIMESTAMP);
                 DBConnection.last_login = last_login.toLocalDateTime();
+                String sql = "SELECT avatar, ring_tone FROM PANDA.ACCOUNT WHERE USERNAME = '"+username.toUpperCase()+"'";
+                ResultSet rs = DBConnectionDAO.ExecuteSelectQuery(sql);
+                while(rs.next()){
+                    avatar = rs.getBlob("avatar");
+                    ring_tone = rs.getBlob("ring_tone");
+                }
             }catch(Exception e){
                 
             }

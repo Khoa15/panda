@@ -40,6 +40,7 @@ public class AccountDAO {
         try {
             Object[] values = new Object[]{
                 account.getAvatar(),
+                account.getAudio(),
                 account.getUsername(),
                 account.getFullname(),
                 account.getPassword()

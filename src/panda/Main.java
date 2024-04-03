@@ -5,11 +5,16 @@
 package panda;
 
 import java.awt.Component;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.security.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import panda.user.CpnMain;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -20,7 +25,10 @@ import panda.user.CpnInbox;
 import panda.user.CpnProfile;
 import panda.user.CpnProject;
 import panda.user.TrackCpnProfileSystem;
-
+import java.sql.Blob;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 /**
  *
  * @author nguye
@@ -36,6 +44,13 @@ public class Main extends javax.swing.JFrame  {
         
         pnMain.add(new CpnMain());
         try{
+            Image image = blobToImage(DBConnection.getAvatar());
+            this.setIconImage(image);
+        }catch(Exception e){}
+        try{
+            playAudio(DBConnection.getRing_tone());
+        }catch(Exception e){}
+        try{
             LocalDateTime lastLoginTimestamp = DBConnection.getLastLogin();
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -44,6 +59,49 @@ public class Main extends javax.swing.JFrame  {
             setTitle("Hello: " + DBConnection.getUsername() + ", Last login: " + formattedLastLogin);
         }catch(Exception e){}
     } 
+    
+    private static Image blobToImage(Blob blob) {
+        try {
+            // Đọc dữ liệu từ Blob
+            byte[] data = blob.getBytes(1, (int) blob.length());
+
+            // Tạo hình ảnh từ dữ liệu byte
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(data));
+
+            // Resize hình ảnh nếu cần
+            Image resizedImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+
+            return resizedImage;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    private static void playAudio(Blob blob) {
+        try {
+            // Chuyển đổi Blob thành dữ liệu byte
+            byte[] audioBytes = blob.getBytes(1, (int) blob.length());
+
+            // Tạo AudioInputStream từ dữ liệu byte
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new ByteArrayInputStream(audioBytes));
+
+            // Tạo Clip từ AudioInputStream
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+
+            // Phát Clip
+            clip.start();
+
+            // Đợi cho đến khi Clip hoàn thành
+            Thread.sleep(clip.getMicrosecondLength() / 1000);
+
+            // Đóng Clip sau khi phát xong
+            clip.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     /**
@@ -68,7 +126,6 @@ public class Main extends javax.swing.JFrame  {
         jFormattedTextField1.setText("jFormattedTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("123");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
