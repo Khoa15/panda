@@ -301,22 +301,20 @@ public class SignUp extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRingToneActionPerformed
 
     private byte[] getBytesFromFile(File file){
-        byte[] result = null;
-        try (FileInputStream fis = new FileInputStream(selectedFile)){
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try (InputStream fis = new FileInputStream(file);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream()){
 
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[4096];
                 int bytesRead;
                 while ((bytesRead = fis.read(buffer)) != -1) {
                     bos.write(buffer, 0, bytesRead);
                 }
 
-                result = bos.toByteArray();
-                bos.close();
+                return bos.toByteArray();
             } catch (IOException ex) {
                 ex.printStackTrace();
+                return null;
             }
-        return result;
     }
     
     /**

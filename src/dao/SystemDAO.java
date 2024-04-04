@@ -597,6 +597,26 @@ public class SystemDAO {
 
     }
 
+    /**
+     *
+     * @return
+     */
+    public static String[] LoadStrRoleName() {
+         ArrayList<String> result = new ArrayList<>();
+        try{
+            ResultSet rs = DBConnectionDAO.CallFunction("get_roles");
+            if(rs == null){
+                throw new IllegalStateException("Data not found");
+            }
+            while(rs.next()){
+                result.add(rs.getString(1));
+            }
+        }catch(Exception e){
+            
+        }
+        return result.toArray(new String[result.size()]);
+    }
+
     public static TableModel LoadRolePrivs(String role) {
         DefaultTableModel model = new DefaultTableModel();
         if(role == null || role.isEmpty()) return model;
@@ -961,6 +981,38 @@ public class SystemDAO {
             
         }
         return objects;
+    }
+
+    public static String[] LoadSystemPrivileges() {
+        ArrayList<String> result = new ArrayList<>();
+        try{
+            ResultSet rs = DBConnectionDAO.CallFunction("get_audit_option_syspriv");
+            if(rs == null){
+                throw new IllegalStateException("Data not found");
+            }
+            while(rs.next()){
+                result.add(rs.getString(1));
+            }
+        }catch(Exception e){
+            
+        }
+        return result.toArray(new String[result.size()]);
+    }
+
+    public static String[] LoadAuditAction() {
+        ArrayList<String> result = new ArrayList<>();
+        try{
+            ResultSet rs = DBConnectionDAO.CallFunction("get_audit_option_action");
+            if(rs == null){
+                throw new IllegalStateException("Data not found");
+            }
+            while(rs.next()){
+                result.add(rs.getString(1));
+            }
+        }catch(Exception e){
+            
+        }
+        return result.toArray(new String[result.size()]);
     }
     
     

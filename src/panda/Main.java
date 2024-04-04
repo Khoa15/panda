@@ -29,11 +29,13 @@ import java.sql.Blob;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+
 /**
  *
  * @author nguye
  */
-public class Main extends javax.swing.JFrame  {
+public class Main extends javax.swing.JFrame {
+
     /**
      * Creates new form Main
      */
@@ -41,34 +43,34 @@ public class Main extends javax.swing.JFrame  {
         initComponents();
         DBConnection dbconnection = new DBConnection();
         dbconnection.start();
-        
+
         pnMain.add(new CpnMain());
-        try{
+        try {
             Image image = blobToImage(DBConnection.getAvatar());
             this.setIconImage(image);
-        }catch(Exception e){}
-        try{
+        } catch (Exception e) {
+        }
+        try {
             playAudio(DBConnection.getRing_tone());
-        }catch(Exception e){}
-        try{
+        } catch (Exception e) {
+        }
+        try {
             LocalDateTime lastLoginTimestamp = DBConnection.getLastLogin();
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedLastLogin = lastLoginTimestamp.format(formatter);
 
             setTitle("Hello: " + DBConnection.getUsername() + ", Last login: " + formattedLastLogin);
-        }catch(Exception e){}
-    } 
-    
+        } catch (Exception e) {
+        }
+    }
+
     private static Image blobToImage(Blob blob) {
         try {
-            // Đọc dữ liệu từ Blob
             byte[] data = blob.getBytes(1, (int) blob.length());
 
-            // Tạo hình ảnh từ dữ liệu byte
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(data));
 
-            // Resize hình ảnh nếu cần
             Image resizedImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
             return resizedImage;
@@ -77,32 +79,29 @@ public class Main extends javax.swing.JFrame  {
             return null;
         }
     }
-    
+
     private static void playAudio(Blob blob) {
-        try {
-            // Chuyển đổi Blob thành dữ liệu byte
-            byte[] audioBytes = blob.getBytes(1, (int) blob.length());
+        Thread audioThread = new Thread(() -> {
+            try {
+                byte[] audioBytes = blob.getBytes(1, (int) blob.length());
 
-            // Tạo AudioInputStream từ dữ liệu byte
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new ByteArrayInputStream(audioBytes));
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new ByteArrayInputStream(audioBytes));
 
-            // Tạo Clip từ AudioInputStream
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInputStream);
 
-            // Phát Clip
-            clip.start();
+                clip.start();
 
-            // Đợi cho đến khi Clip hoàn thành
-            Thread.sleep(clip.getMicrosecondLength() / 1000);
+                Thread.sleep(clip.getMicrosecondLength() / 1000);
 
-            // Đóng Clip sau khi phát xong
-            clip.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                clip.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        audioThread.start();
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -236,7 +235,7 @@ public class Main extends javax.swing.JFrame  {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private void navigateToPanel(Component comp){
+    private void navigateToPanel(Component comp) {
         pnMain.removeAll();
         pnMain.add(comp);
         pnMain.revalidate();
@@ -320,8 +319,9 @@ public class Main extends javax.swing.JFrame  {
             }
         });
     }
+
     @Override
-    public void setVisible(boolean b){
+    public void setVisible(boolean b) {
         super.setVisible(b);
         this.setLocationRelativeTo(null);
     }
