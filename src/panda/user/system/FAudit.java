@@ -45,6 +45,7 @@ public class FAudit extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listActions = new javax.swing.JList<>();
+        jComboBox1 = new javax.swing.JComboBox<>();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -57,7 +58,7 @@ public class FAudit extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         cbBoxAllUsers = new javax.swing.JCheckBox();
         cbBoxUsers = new javax.swing.JComboBox<>();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        cbBoxOnlyTopLevel = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         cbBoxContainer = new javax.swing.JComboBox<>();
@@ -108,6 +109,8 @@ public class FAudit extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(listActions);
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Standard", "Component" }));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -117,18 +120,22 @@ public class FAudit extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 100, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         jLabel2.setText("Privilege");
@@ -222,7 +229,7 @@ public class FAudit extends javax.swing.JFrame {
                 .addContainerGap(7, Short.MAX_VALUE))
         );
 
-        jCheckBox1.setText("ONLY TOPLEVEL");
+        cbBoxOnlyTopLevel.setText("ONLY TOPLEVEL");
 
         jLabel7.setText("CONTAINER");
 
@@ -276,7 +283,7 @@ public class FAudit extends javax.swing.JFrame {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox1)
+                    .addComponent(cbBoxOnlyTopLevel)
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -304,7 +311,7 @@ public class FAudit extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbBoxOnlyTopLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -402,14 +409,21 @@ public class FAudit extends javax.swing.JFrame {
     
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
-        String name = txtFieldPolicy.getText();
-        List<String> privs = listPrivilege.getSelectedValuesList();
-        List<String> actions = listActions.getSelectedValuesList();
-        List<String> roles = listActions.getSelectedValuesList();
-        boolean allUsers = cbBoxAllUsers.isSelected();
-        String user = cbBoxUsers.getSelectedItem().toString();
-        String evaluate = cbBoxEvaluate.getSelectedItem().toString();
-        String container = cbBoxContainer.getSelectedItem().toString();
+        try{
+            String name = txtFieldPolicy.getText();
+            List<String> privs = listPrivilege.getSelectedValuesList();
+            List<String> actions = listActions.getSelectedValuesList();
+            List<String> roles = listActions.getSelectedValuesList();
+            boolean allUsers = cbBoxAllUsers.isSelected();
+            String user = cbBoxUsers.getSelectedItem().toString();
+            String evaluate = cbBoxEvaluate.getSelectedItem().toString();
+            boolean onlyTopLevel = cbBoxOnlyTopLevel.isSelected();
+            String container = cbBoxContainer.getSelectedItem().toString();
+            
+            SystemDAO.insertAudit(name, privs, actions, roles, allUsers, user, evaluate, onlyTopLevel, container);
+        }catch(Exception e){
+            
+        }
         
         
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -473,9 +487,10 @@ public class FAudit extends javax.swing.JFrame {
     private javax.swing.JCheckBox cbBoxAllUsers;
     private javax.swing.JComboBox<String> cbBoxContainer;
     private javax.swing.JComboBox<String> cbBoxEvaluate;
+    private javax.swing.JCheckBox cbBoxOnlyTopLevel;
     private javax.swing.JComboBox<String> cbBoxUsers;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

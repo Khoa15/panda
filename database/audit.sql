@@ -57,6 +57,39 @@ END;
 //AUDIT ALL ON PANDA.TASK BY ACCESS;
 
 GRANT SELECT ON AUDIT_UNIFIED_POLICIES TO PANDA;
+
+CREATE OR REPLACE FUNCTION get_list_username RETURN SYS_REFCURSOR
+IS
+    list_username SYS_REFCURSOR;
+BEGIN
+    OPEN list_username FOR
+    SELECT username FROM all_users;
+    RETURN list_username;
+END;
+/
+
+CREATE OR REPLACE FUNCTION get_audit_option_sys_action
+RETURN SYS_REFCURSOR
+IS
+    list_audit SYS_REFCURSOR;
+BEGIN
+    OPEN list_audit FOR
+    SELECT NAME FROM AUDITABLE_SYSTEM_ACTIONS WHERE COMPONENT = 'STANDARD';
+    RETURN list_audit;
+END;
+/
+
+CREATE OR REPLACE FUNCTION get_audit_option_syspriv
+RETURN SYS_REFCURSOR
+IS
+    list_audit SYS_REFCURSOR;
+BEGIN
+    OPEN list_audit FOR
+    SELECT NAME FROM SYSTEM_PRIVILEGE_MAP;
+    RETURN list_audit;
+END;
+/
+GRANT SELECT ON AUDIT_UNIFIED_POLICIES TO PANDA;
 CREATE OR REPLACE FUNCTION get_policies_audit
 RETURN SYS_REFCURSOR
 IS
@@ -90,55 +123,57 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE CREATE_AUDIT_OBJECT
+CREATE OR REPLACE PROCEDURE CREATE_AUDIT
 (
     p_name VARCHAR,
-    p_statement VARCHAR,
+    p_sys_privs VARCHAR,
+    p_actions VARCHAR,
+    p_roles VARCHAR,
     p_user VARCHAR,
-    p_all CHAR
+    p_evaluate VARCHAR,
+    p_only_top VARCHAR,
+    p_container VARCHAR
 )
 IS
-    v_sql VARCHAR(1000);
+    v_sql VARCHAR(4000);
 BEGIN
-    IF p_all = 'Y' THEN
-    v_sql := 'CREATE AUDIT POLICY ' || p_name || ' ACTIONS ' || p_statement || ' ON ' || p_user;
-    ELSE
-    v_sql := 'CREATE AUDIT POLICY ' || p_name || ' ACTIONS ALL';
+    v_sql := 'CREATE AUDIT POLICY ' || p_name || ' ';
+    IF LENGTH(p_sys_privs) > 0 THEN
+    v_sql := v_sql || ' PRIVILEGES ' || p_sys_privs;
     END IF;
+    IF LENGTH(p_actions) > 0 THEN
+    v_sql := v_sql || ' ACTIONS ' || p_actions;
+    END IF;
+    IF LENGTH(p_roles) > 0 THEN
+    v_sql := v_sql || p_roles;
+    END IF;
+    IF LENGTH(p_user) > 0 THEN
+        v_sql := v_sql || ' WHEN ''SYS_CONTEXT(''''USERENV'''', ''''SESSION_USER'''') = ''''|| p_user ||''''''  EVALUATE PER ' || p_evaluate ;
+    END IF;
+    
+    IF p_only_top = 'Y' THEN
+    v_sql := v_sql || ' ONLY TOPLEVEL ';
+    END IF;
+    IF LENGTH(p_container) > 0 THEN
+    v_sql := v_sql || ' CONTAINER = ' || p_container;
+    END IF;
+    DBMS_OUTPUT.PUT_LINE(v_sql);
     EXECUTE IMMEDIATE v_sql;
 END;
 /
 
-CREATE OR REPLACE PROCEDURE CREATE_AUDIT_SYSTEM
-(
-    p_name VARCHAR,
-    p_statement VARCHAR,
-    p_action VARCHAR,
-    p_user VARCHAR
-)
-IS
-    v_sql VARCHAR(1000);
 BEGIN
-    v_sql := 'CREATE AUDIT POLICY ' || p_name || ' PRIVILEGES ' || p_statement;
-    if p_action != '' THEN
-        v_sql := v_sql || ' ACTION ' || p_action;
-         IF p_user != '' THEN 
-            v_sql := v_sql || ' ON ' || p_user;
-         END IF;
-    END IF;
-    EXECUTE IMMEDIATE v_sql;
+CREATE_AUDIT(
+    p_name =>  'test',
+    p_sys_privs => 'CREATE ANY TABLE',
+    p_actions => '',
+    p_roles => '',
+    p_user => 'ABC',
+    p_evaluate => 'SESSION',
+    p_only_top => 'N',
+    p_container => ''
+);
 END;
 /
-CREATE OR REPLACE PROCEDURE CREATE_AUDIT_ROLE
-(
-    p_name VARCHAR,
-    p_statement VARCHAR,
-    p_roles VARCHAR
-)
-IS
-    v_sql VARCHAR(1000);
-BEGIN
-    v_sql := 'CREATE AUDIT POLICY ' || p_name || ' ROLE ' || p_roles || ' ON ' || p_user;
-    EXECUTE IMMEDIATE v_sql;
-END;
-/
+
+

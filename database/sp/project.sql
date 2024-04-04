@@ -10,21 +10,13 @@ CREATE OR REPLACE PROCEDURE add_project
 )
 IS
 BEGIN
-
-    INSERT INTO PROJECT (username, name, description, priority, started_at, ended_at)
-    VALUES (
-        user,
-        p_name,
-        p_description,
-        p_priority,
-        p_started_at,
-        p_ended_at
+    ProjectPackage.AddProject(
+        p_name => p_name,
+        p_description => p_description,
+        p_priority => p_priority,
+        p_started_at => p_started_at,
+        p_ended_at => p_ended_at
     );
-    COMMIT;
-    EXCEPTION
-        WHEN OTHERS THEN
-            ROLLBACK;
-            RAISE;
 END;
 /
 GRANT EXECUTE ON add_project TO PANDA_USER_ROLE;
@@ -41,18 +33,15 @@ CREATE OR REPLACE PROCEDURE update_project
 )
 IS
 BEGIN
-    UPDATE PROJECT SET
-        name = p_name,
-        description = p_description,
-        priority = p_priority,
-        started_at = p_started_at,
-        ended_at = p_ended_at
-    WHERE username = user AND id = p_pid;
-    COMMIT;
-    EXCEPTION
-        WHEN OTHERS THEN
-            ROLLBACK;
-            RAISE;
+    ProjectPackage.UpdateProject(
+        p_pid => p_pid,
+        p_name_old => p_name_old,
+        p_name => p_name,
+        p_description => p_description,
+        p_priority => p_priority,
+        p_started_at => p_started_at,
+        p_ended_at => p_ended_at
+    );
 
 END;
 /

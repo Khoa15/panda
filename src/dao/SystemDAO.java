@@ -17,6 +17,7 @@ import model.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Clob;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.table.TableModel;
@@ -1013,6 +1014,24 @@ public class SystemDAO {
             
         }
         return result.toArray(new String[result.size()]);
+    }
+
+    public static void insertAudit(
+            String name, 
+            List<String> privs, 
+            List<String> actions, 
+            List<String> roles, 
+            boolean allUsers, 
+            String user, 
+            String evaluate, 
+            boolean onlyTopLevel,
+            String container) {
+        
+        try{
+            
+        }catch(Exception e){
+            
+        }
     }
     
     
