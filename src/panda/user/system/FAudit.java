@@ -101,7 +101,7 @@ public class FAudit extends javax.swing.JFrame {
         jLabel3.setText("Action");
 
         listActions.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "ALTER", "AUDIT", "COMMENT", "DELETE", "FLASHBACK", "GRANT", "INDEX", "INSERT", "LOCK", "RENAME", "SELECT", "UPDATE" };
+            String[] strings = { "EXECUTE", "ALTER", "AUDIT", "COMMENT", "DELETE", "FLASHBACK", "GRANT", "INDEX", "INSERT", "LOCK", "RENAME", "SELECT", "UPDATE" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });

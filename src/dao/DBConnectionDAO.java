@@ -37,7 +37,6 @@ public class DBConnectionDAO {
             Connection con = DBConnection.getConn();
             Statement statement = con.createStatement();
             statement.executeUpdate(query);
-            con.commit();
             return true;
         } catch (Exception e) {
             e.printStackTrace();

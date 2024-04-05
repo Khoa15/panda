@@ -203,19 +203,20 @@
                 <Component class="javax.swing.JList" name="listActions">
                   <Properties>
                     <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-                      <StringArray count="12">
-                        <StringItem index="0" value="ALTER"/>
-                        <StringItem index="1" value="AUDIT"/>
-                        <StringItem index="2" value="COMMENT"/>
-                        <StringItem index="3" value="DELETE"/>
-                        <StringItem index="4" value="FLASHBACK"/>
-                        <StringItem index="5" value="GRANT"/>
-                        <StringItem index="6" value="INDEX"/>
-                        <StringItem index="7" value="INSERT"/>
-                        <StringItem index="8" value="LOCK"/>
-                        <StringItem index="9" value="RENAME"/>
-                        <StringItem index="10" value="SELECT"/>
-                        <StringItem index="11" value="UPDATE"/>
+                      <StringArray count="13">
+                        <StringItem index="0" value="EXECUTE"/>
+                        <StringItem index="1" value="ALTER"/>
+                        <StringItem index="2" value="AUDIT"/>
+                        <StringItem index="3" value="COMMENT"/>
+                        <StringItem index="4" value="DELETE"/>
+                        <StringItem index="5" value="FLASHBACK"/>
+                        <StringItem index="6" value="GRANT"/>
+                        <StringItem index="7" value="INDEX"/>
+                        <StringItem index="8" value="INSERT"/>
+                        <StringItem index="9" value="LOCK"/>
+                        <StringItem index="10" value="RENAME"/>
+                        <StringItem index="11" value="SELECT"/>
+                        <StringItem index="12" value="UPDATE"/>
                       </StringArray>
                     </Property>
                   </Properties>
