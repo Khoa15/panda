@@ -116,7 +116,7 @@ public class DBConnectionDAO {
         }
     }
 
-    public static ResultSet CallProcedure(String procedure, Object[] values) {
+    public static ResultSet CallProcedure(String procedure, Object[] values) throws Exception {
         CallableStatement callStatement = null;
         ResultSet resultSet = null;
         try {
@@ -126,7 +126,7 @@ public class DBConnectionDAO {
             callStatement.execute();
             resultSet = (ResultSet) callStatement.getObject(values.length + 1);
         } catch (Exception e) {
-            return null;
+            throw e;
         }
         return resultSet;
     }

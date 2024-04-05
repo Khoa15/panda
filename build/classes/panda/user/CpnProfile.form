@@ -282,9 +282,11 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnProfile">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Profile"/>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="Actions"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProfileActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnAudit">
           <Properties>

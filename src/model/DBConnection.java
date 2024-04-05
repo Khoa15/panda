@@ -10,6 +10,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DBConnection extends Thread {
+
+    public static String getSchema() {
+        return "PANDA";
+    }
     @Override
     public void run(){
         while (true) {
@@ -42,6 +46,9 @@ public class DBConnection extends Thread {
     }
     
     public static Connection getConn(){
+        if(con == null){
+            return openConnection();
+        }
         return con;
     }
     

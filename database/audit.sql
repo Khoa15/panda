@@ -8,7 +8,7 @@ SELECT * FROM DBA_AUDIT_OBJECT;
 
 SELECT DISTINCT OBJECT_NAME FROM dba_objects;
 
-SELECT * FROM AUDIT_UNIFIED_POLICIES;
+SELECT DISTINCT POLICY_NAME FROM AUDIT_UNIFIED_POLICIES;
 
 SELECT * FROM DBA_AUDIT_TRAIL;
 SELECT * FROM unified_audit_trail;
@@ -74,7 +74,7 @@ IS
     list_audit SYS_REFCURSOR;
 BEGIN
     OPEN list_audit FOR
-    SELECT NAME FROM AUDITABLE_SYSTEM_ACTIONS WHERE COMPONENT = 'STANDARD';
+    SELECT NAME FROM AUDITABLE_SYSTEM_ACTIONS WHERE COMPONENT = 'Standard';
     RETURN list_audit;
 END;
 /
@@ -131,8 +131,7 @@ CREATE OR REPLACE PROCEDURE CREATE_AUDIT
     p_roles VARCHAR,
     p_user VARCHAR,
     p_evaluate VARCHAR,
-    p_only_top VARCHAR,
-    p_container VARCHAR
+    p_only_top VARCHAR
 )
 IS
     v_sql VARCHAR(4000);
@@ -145,7 +144,7 @@ BEGIN
     v_sql := v_sql || ' ACTIONS ' || p_actions;
     END IF;
     IF LENGTH(p_roles) > 0 THEN
-    v_sql := v_sql || p_roles;
+    v_sql := v_sql || ' ROLES ' || p_roles;
     END IF;
     IF LENGTH(p_user) > 0 THEN
         v_sql := v_sql || ' WHEN ''SYS_CONTEXT(''''USERENV'''', ''''SESSION_USER'''') = ''''|| p_user ||''''''  EVALUATE PER ' || p_evaluate ;
@@ -154,26 +153,36 @@ BEGIN
     IF p_only_top = 'Y' THEN
     v_sql := v_sql || ' ONLY TOPLEVEL ';
     END IF;
-    IF LENGTH(p_container) > 0 THEN
-    v_sql := v_sql || ' CONTAINER = ' || p_container;
-    END IF;
     DBMS_OUTPUT.PUT_LINE(v_sql);
+    EXECUTE IMMEDIATE v_sql;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RAISE;
+END;
+/
+
+--SET SERVEROUTPUT ON ;
+--BEGIN
+--CREATE_AUDIT(
+--    p_name =>  'test2',
+--    p_sys_privs => '',
+--    p_actions => '',
+--    p_roles => '',
+--    p_user => 'ABC',
+--    p_evaluate => 'Session',
+--    p_only_top => 'N'
+--);
+--END;
+--/
+
+CREATE OR REPLACE PROCEDURE delete_audit_policy
+(
+    p_audit_policy VARCHAR
+)
+IS
+    v_sql VARCHAR(1000);
+BEGIN
+    v_sql := 'DROP AUDIT POLICY ' || p_audit_policy;
     EXECUTE IMMEDIATE v_sql;
 END;
 /
-
-BEGIN
-CREATE_AUDIT(
-    p_name =>  'test',
-    p_sys_privs => 'CREATE ANY TABLE',
-    p_actions => '',
-    p_roles => '',
-    p_user => 'ABC',
-    p_evaluate => 'SESSION',
-    p_only_top => 'N',
-    p_container => ''
-);
-END;
-/
-
-

@@ -5,6 +5,7 @@
 package panda;
 
 import dao.AccountDAO;
+import dao.SystemDAO;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -74,6 +75,12 @@ public class SignUp extends javax.swing.JFrame {
         });
 
         jLabel1.setText("Username:");
+
+        txtFieldFullname.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtFieldFullnameFocusLost(evt);
+            }
+        });
 
         jLabel3.setText("Fullname:");
 
@@ -299,6 +306,12 @@ public class SignUp extends javax.swing.JFrame {
             audio = getBytesFromFile(xselectedFile);
         }
     }//GEN-LAST:event_btnRingToneActionPerformed
+
+    private void txtFieldFullnameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldFullnameFocusLost
+        // TODO add your handling code here:
+        String username = SystemDAO.GenerateUsername(txtFieldFullname.getText());
+        txtFieldEmail.setText(username);
+    }//GEN-LAST:event_txtFieldFullnameFocusLost
 
     private byte[] getBytesFromFile(File file){
         try (InputStream fis = new FileInputStream(file);

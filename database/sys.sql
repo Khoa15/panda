@@ -791,6 +791,84 @@ END;
 -- END PROCEDURE TASK
 
 
+
+
+
+CREATE OR REPLACE FUNCTION get_tables RETURN SYS_REFCURSOR
+IS
+    list_tables SYS_REFCURSOR;
+BEGIN
+    OPEN list_tables FOR
+    SELECT DISTINCT OWNER, OBJECT_NAME 
+  FROM DBA_OBJECTS
+ WHERE OBJECT_TYPE = 'TABLE'
+   AND OWNER = 'PANDA';
+    RETURN list_tables;
+END;
+/
+
+ALTER SESSION SET CURRENT_SCHEMA=PANDA;
+create table PANDA.ACTIONS(
+    name_action VARCHAR2(100),
+    event_action DATE,
+    event_time VARCHAR2(100)
+)
+
+create or replace trigger actions_startup_with_db
+AFTER STARTUP ON DATABASE
+BEGIN
+    INSERT INTO PANDA.ACTIONS VALUES( ORA_sysevent,sysdate,to_char(sysdate,'hh24:mm:ss'));
+END;
+/
+
+create or replace trigger actions_shutdown_with_db
+BEFORE SHUTDOWN ON DATABASE
+BEGIN
+    INSERT INTO PANDA.ACTIONS VALUES( ORA_sysevent,sysdate,to_char(sysdate,'hh24:mm:ss'));
+END;
+/
+
+CREATE OR REPLACE FUNCTION get_actions RETURN SYS_REFCURSOR
+IS
+    list_actions SYS_REFCURSOR;
+BEGIN
+    OPEN list_actions FOR
+    SELECT * FROM PANDA.ACTIONS;
+    RETURN list_actions;
+END;
+/
+GRANT EXECUTE ON generate_username TO PANDA_REGISTER;
+GRANT SELECT ON all_users TO PANDA_REGISTER;
+CREATE OR REPLACE FUNCTION generate_username(fullname IN VARCHAR2) RETURN VARCHAR2 
+IS
+    generated_username VARCHAR2(100);
+    suffix VARCHAR2(10);
+    count_user NUMBER := 0;
+BEGIN
+    -- Xóa d?u cách và chuy?n ??i tên thành ch? th??ng
+    generated_username := REPLACE(UPPER(fullname), ' ', '_');
+    
+    -- Ki?m tra xem username ?ã t?n t?i ch?a
+    SELECT COUNT(*) INTO count_user FROM all_users WHERE username = generated_username;
+    
+    -- N?u username ?ã t?n t?i, thêm s? ??m vào cu?i
+    IF count_user > 0 THEN
+        SELECT TO_CHAR(count_user + 1) INTO suffix FROM DUAL;
+        generated_username := generated_username || '_' || suffix;
+    END IF;
+    
+    RETURN generated_username;
+END;
+/
+
+
+
+
+
+
+
+
+
 DROP ROLE PANDA_USER_ROLE;
 
 CREATE ROLE PANDA_USER_ROLE;

@@ -26,6 +26,7 @@ import panda.user.system.AddDatafile;
 import panda.user.system.CreateTablespace;
 import panda.user.system.FAudit;
 import panda.user.system.User;
+import panda.user.system.frmActions;
 import panda.user.system.mgnAudit;
 import panda.user.system.mgnAudit;
 import panda.user.system.mgnProfile;
@@ -270,8 +271,12 @@ public class CpnProfile extends javax.swing.JPanel {
             }
         });
 
-        btnProfile.setText("Profile");
-        btnProfile.setEnabled(false);
+        btnProfile.setText("Actions");
+        btnProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProfileActionPerformed(evt);
+            }
+        });
 
         btnAudit.setText("Audit");
         btnAudit.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -682,6 +687,11 @@ public class CpnProfile extends javax.swing.JPanel {
         a.setVisible(true);
         a.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnPolicyActionPerformed
+
+    private void btnProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfileActionPerformed
+        // TODO add your handling code here:
+        frmActions.main(systems);
+    }//GEN-LAST:event_btnProfileActionPerformed
 
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();

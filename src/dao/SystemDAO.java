@@ -7,6 +7,7 @@ package dao;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.sql.ResultSet;
@@ -1011,7 +1012,7 @@ public class SystemDAO {
                 result.add(rs.getString(1));
             }
         }catch(Exception e){
-            
+            e.printStackTrace();
         }
         return result.toArray(new String[result.size()]);
     }
@@ -1020,18 +1021,76 @@ public class SystemDAO {
             String name, 
             List<String> privs, 
             List<String> actions, 
+            String on,
             List<String> roles, 
             boolean allUsers, 
             String user, 
             String evaluate, 
-            boolean onlyTopLevel,
-            String container) {
+            boolean onlyTopLevel) throws Exception {
         
         try{
-            
+            String sql_privs = (privs.size()>0) ? " "+ String.join(", ", privs) + " " : "";
+            String sql_roles = (roles.size()>0) ? " "+ String.join(", ", roles) + " " : "";
+            String sql_actions = "";
+            if(actions.size()>0){
+                if(on.toUpperCase().equals("ALL")){
+                    sql_actions = " ALL ";
+                }else{
+                    sql_actions += " ";
+                    for(int i = 0; i < actions.size() - 1; i++){
+                        sql_actions += actions.get(i) + " ON " + DBConnection.getSchema() + "." + on +", ";
+                    }
+                    sql_actions += actions.get(actions.size() - 1) + " ON " + DBConnection.getSchema() + "." + on + " ";
+                }
+            }
+            Object[] values = new Object[]{
+                name,
+                sql_privs,
+                sql_actions,
+                sql_roles,
+                (allUsers) ? null : user,
+                evaluate.toUpperCase(),
+                (onlyTopLevel) ? "Y": "N"
+            };
+            DBConnectionDAO.CallProcedureNoParameterOut("CREATE_AUDIT", values);
         }catch(Exception e){
-            
+            throw e;
         }
+    }
+
+    public static ArrayList<String> LoadTablesName() {
+        try{
+            ResultSet rs = DBConnectionDAO.CallFunction("get_tables");
+            ArrayList<String> result = new ArrayList<>();
+            while(rs.next()){
+                result.add(rs.getNString(2));
+            }
+            return result;
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+    public static void deleteAuditPolicy(String auditName) throws Exception {
+        Object[] values = new Object[]{
+            auditName
+        };
+        DBConnectionDAO.CallProcedureNoParameterOut("delete_audit_policy", values);
+    }
+
+    public static DefaultTableModel LoadActions() {
+        try {
+
+            return setDefaultDataTableModel("get_actions");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String GenerateUsername(String fullname) {
+        return (String) DBConnectionDAO.CallFunction("generate_username", new Object[]{fullname}, OracleTypes.NVARCHAR);
     }
     
     

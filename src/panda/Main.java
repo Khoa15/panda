@@ -75,7 +75,6 @@ public class Main extends javax.swing.JFrame {
 
             return resizedImage;
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -96,7 +95,6 @@ public class Main extends javax.swing.JFrame {
 
                 clip.close();
             } catch (Exception e) {
-                e.printStackTrace();
             }
         });
 
