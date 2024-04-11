@@ -29,6 +29,8 @@ public class AddDatafile extends javax.swing.JFrame {
         for(String tb : tablespaces){
             cbBoxTablespace.addItem(tb);
         }
+        jPanel5.setVisible(false);
+        jPanel4.setVisible(false);
     }
 
     /**
@@ -276,12 +278,10 @@ public class AddDatafile extends javax.swing.JFrame {
         // TODO add your handling code here:
         String tablespace = (String) cbBoxTablespace.getSelectedItem();
         String size = txtFieldSize.getText();
-        String maxsize = txtFieldMaxsize.getText();
-        String quota = txtFieldQuota.getText();
         String location = txtFieldLocation.getText();
         
         try {
-            SystemDAO.createDatafile(tablespace, size, maxsize, quota, location);
+            SystemDAO.createDatafile(tablespace, size, location);
             CustomDialog.show("Successfully!");
         } catch (Exception ex) {
             CustomDialog.show(ex.getMessage());

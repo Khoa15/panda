@@ -54,15 +54,17 @@ public class Main extends javax.swing.JFrame {
             playAudio(DBConnection.getRing_tone());
         } catch (Exception e) {
         }
+        String helloUsername = "Hello: " + DBConnection.getUsername();
         try {
             LocalDateTime lastLoginTimestamp = DBConnection.getLastLogin();
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedLastLogin = lastLoginTimestamp.format(formatter);
 
-            setTitle("Hello: " + DBConnection.getUsername() + ", Last login: " + formattedLastLogin);
+            helloUsername += ", Last login: " + formattedLastLogin;
         } catch (Exception e) {
         }
+        setTitle(helloUsername);
     }
 
     private static Image blobToImage(Blob blob) {

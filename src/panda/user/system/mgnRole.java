@@ -443,7 +443,6 @@ public class mgnRole extends javax.swing.JFrame {
         boolean grant_update = cbBoxGrantUpdate.isSelected();
         boolean grant_delete = cbBoxGrantDelete.isSelected();
         boolean grant_insert = cbBoxGrantInsert.isSelected();
-        //String option = (cbBoxOption.isSelected()) ? "" : cbBoxOption.getText();
         boolean option = cbBoxGrantAdmin.isSelected();
         boolean sys_priv = (rdBtnGrantedRoles.isSelected() == true || rdBtnSysPrivs.isSelected() == true) && cbBoxInsert.isSelected() == true;
         String typeObject = getTypeObject(object);

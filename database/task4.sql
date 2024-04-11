@@ -325,6 +325,8 @@ BEGIN
     END IF;
 END;
 /
+
+SELECT * FROM PANDA.ACCOUNT;
 //SET SERVEROUT ON;
 CREATE OR REPLACE PROCEDURE GRANT_OR_REVOKE_GRANT
 (
@@ -415,14 +417,14 @@ BEGIN
             'UPDATE',
             p_object,
             p_grant_update,
-            p_select
+            p_update
         );
         GRANT_OR_REVOKE_GRANT(
             p_role,
             'DELETE',
             p_object,
             p_grant_delete,
-            p_select
+            p_delete
         );
         GRANT_OR_REVOKE_GRANT(
             p_role,
@@ -519,14 +521,14 @@ BEGIN
             'UPDATE',
             p_object,
             p_grant_update,
-            p_select
+            p_update
         );
         GRANT_OR_REVOKE_GRANT(
             p_role,
             'DELETE',
             p_object,
             p_grant_delete,
-            p_select
+            p_delete
         );
         GRANT_OR_REVOKE_GRANT(
             p_role,
@@ -535,26 +537,6 @@ BEGIN
             p_grant_insert,
             p_insert
         );
---    IF p_execute = 'Y' THEN
---        EXECUTE IMMEDIATE 'GRANT EXECUTE ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
---    END IF;
---
---    IF p_select = 'Y' THEN
---        EXECUTE IMMEDIATE 'GRANT SELECT ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
---    END IF;
---
---    IF p_update = 'Y' THEN
---        EXECUTE IMMEDIATE 'GRANT UPDATE ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
---    END IF;
---
---    IF p_delete = 'Y' THEN
---        EXECUTE IMMEDIATE 'GRANT DELETE ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
---    END IF;
---
---    IF p_insert = 'Y' THEN
---        EXECUTE IMMEDIATE 'GRANT INSERT ON ' || p_object || ' TO ' || p_role || ' ' || p_option;
---    END IF;
-
     IF p_sys_priv = 'Y' THEN
         EXECUTE IMMEDIATE 'GRANT ' || p_object || ' TO ' || p_role || ' ' || p_option;
     END IF;
@@ -600,18 +582,18 @@ begin
     PASSWORD_GRACE_TIME 10';
 END;
 /
-
-CREATE OR REPLACE PROCEDURE PROC_CREATE_PROFILE(nameProfile in varchar2, sessionN in int, connectTime in int,reUsePass in int, failLogin in int, passlock in varchar2)
-is
-begin
-    execute immediate 'create profile ' ||nameProfile|| ' limit
-     SESSIONS_PER_USER '||sessionN|| '
-     CONNECT_TIME '||connectTime|| '
-     PASSWORD_REUSE_MAX '||reUsePass||' 
-     FAILED_LOGIN_ATTEMPTS '||failLogin|| '
-     PASSWORD_LOCK_TIME '|| passlock||' ';
-end;     
-/
+--
+--CREATE OR REPLACE PROCEDURE PROC_CREATE_PROFILE(nameProfile in varchar2, sessionN in int, connectTime in int,reUsePass in int, failLogin in int, passlock in varchar2)
+--is
+--begin
+--    execute immediate 'create profile ' ||nameProfile|| ' limit
+--     SESSIONS_PER_USER '||sessionN|| '
+--     CONNECT_TIME '||connectTime|| '
+--     PASSWORD_REUSE_MAX '||reUsePass||' 
+--     FAILED_LOGIN_ATTEMPTS '||failLogin|| '
+--     PASSWORD_LOCK_TIME '|| passlock||' ';
+--end;     
+--/
 
 
 CREATE OR REPLACE PROCEDURE ADD_ACCOUNT_PROFILE (

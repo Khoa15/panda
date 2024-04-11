@@ -141,6 +141,7 @@ CREATE TABLE vocab (
     ipa   NVARCHAR2(50),
     CONSTRAINT pk_vocab PRIMARY KEY ( word )
 );
+
 CREATE TABLE vocab_typevocab (
     word           NVARCHAR2(100),
     pos            NVARCHAR2(10),
@@ -211,6 +212,8 @@ CREATE TABLE collection_card (
     CONSTRAINT fk_collect_card_card FOREIGN KEY ( card_id )
         REFERENCES card ( id )
 );
+
+SELECT * FROM PANDA.ACCOUNT;
 
 -- PROCEDURE
 
@@ -792,26 +795,29 @@ END;
 
 
 
-
+GRANT SELECT ON DBA_OBJECTS TO PANDA;
 
 CREATE OR REPLACE FUNCTION get_tables RETURN SYS_REFCURSOR
 IS
     list_tables SYS_REFCURSOR;
 BEGIN
     OPEN list_tables FOR
-    SELECT DISTINCT OWNER, OBJECT_NAME 
+    SELECT DISTINCT OWNER, OBJECT_NAME, OBJECT_TYPE
       FROM DBA_OBJECTS
-     WHERE (OBJECT_TYPE = 'TABLE' OR OBJECT_TYPE = 'PROCEDURE')
-    AND OWNER = 'PANDA';
+     WHERE (OBJECT_TYPE = 'TABLE' OR OBJECT_TYPE = 'PROCEDURE' OR OBJECT_TYPE='FUNCTION')
+    AND OWNER = 'PANDA'
+    ORDER BY OBJECT_TYPE DESC
+    ;
     RETURN list_tables;
 END;
 /
 ALTER SESSION SET CURRENT_SCHEMA=PANDA;
+
 create table PANDA.ACTIONS(
     name_action VARCHAR2(100),
     event_action DATE,
     event_time VARCHAR2(100)
-)
+);
 
 create or replace trigger actions_startup_with_db
 AFTER STARTUP ON DATABASE
@@ -836,30 +842,58 @@ BEGIN
     RETURN list_actions;
 END;
 /
-GRANT EXECUTE ON generate_username TO PANDA_REGISTER;
 GRANT SELECT ON all_users TO PANDA_REGISTER;
+--CREATE OR REPLACE FUNCTION generate_username(fullname IN VARCHAR2) RETURN VARCHAR2 
+--IS
+--    generated_username VARCHAR2(100);
+--    suffix VARCHAR2(10);
+--    count_user NUMBER := 0;
+--BEGIN
+--    generated_username := REPLACE(UPPER(fullname), ' ', '_');
+--    
+--    SELECT COUNT(*) INTO count_user FROM all_users WHERE username = generated_username;
+--    
+--    IF count_user > 0 THEN
+--        SELECT TO_CHAR(count_user + 1) INTO suffix FROM DUAL;
+--        generated_username := generated_username || '_' || suffix;
+--    END IF;
+--    
+--    RETURN generated_username;
+--END;
+--/
+
 CREATE OR REPLACE FUNCTION generate_username(fullname IN VARCHAR2) RETURN VARCHAR2 
 IS
     generated_username VARCHAR2(100);
     suffix VARCHAR2(10);
     count_user NUMBER := 0;
 BEGIN
-    -- Xóa d?u cách và chuy?n ??i tên thành ch? th??ng
-    generated_username := REPLACE(UPPER(fullname), ' ', '_');
+    generated_username := fullname;
     
-    -- Ki?m tra xem username ?ã t?n t?i ch?a
+    IF length(fullname) - length(replace(fullname, ' ', '')) + 1 > 1 THEN    
+        generated_username := '';
+        FOR i IN 1..LENGTH(fullname) LOOP
+            IF i = 1 OR SUBSTR(fullname, i - 1, 1) = ' ' THEN
+                generated_username := generated_username || LOWER(SUBSTR(fullname, i, 1));
+            END IF;
+        END LOOP;
+    END IF;
+
     SELECT COUNT(*) INTO count_user FROM all_users WHERE username = generated_username;
-    
-    -- N?u username ?ã t?n t?i, thêm s? ??m vào cu?i
+
     IF count_user > 0 THEN
         SELECT TO_CHAR(count_user + 1) INTO suffix FROM DUAL;
-        generated_username := generated_username || '_' || suffix;
+        generated_username := generated_username || suffix;
     END IF;
-    
+
     RETURN generated_username;
 END;
 /
 
+-- G?i hàm v?i tên ??y ?? ?? sinh ra username
+SELECT generate_username('Nguy?n Tr?ng ??ng Khoa') AS generated_username FROM dual;
+
+GRANT EXECUTE ON generate_username TO PANDA_REGISTER;
 
 
 

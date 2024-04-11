@@ -22,8 +22,8 @@ IS
     list_policies SYS_REFCURSOR;
 BEGIN
     OPEN list_policies FOR
-        SELECT OBJECT_SCHEMA, OBJECT_NAME, ACTION_NAME, CURRENT_USER, SQL_TEXT, EVENT_TIMESTAMP_UTC
-        FROM UNIFIED_AUDIT_TRAIL WHERE DBUSERNAME='PANDA' ORDER BY EVENT_TIMESTAMP_UTC DESC;
+        SELECT OBJECT_SCHEMA, OBJECT_NAME, ACTION_NAME, DBUSERNAME, SQL_TEXT, EVENT_TIMESTAMP_UTC
+        FROM UNIFIED_AUDIT_TRAIL ORDER BY EVENT_TIMESTAMP_UTC DESC;
 
     RETURN list_policies;
 END;
@@ -129,7 +129,6 @@ IS
     list_users SYS_REFCURSOR;
 BEGIN
     OPEN list_users FOR
-    --SELECT user_id, username, account_status, expiry_date, profile, last_login FROM dba_users;
     SELECT
                         u.user_id,
                           u.username,
@@ -182,34 +181,6 @@ GRANT SELECT ON dba_users TO PANDA_USER_ROLE;
 GRANT EXECUTE ON PANDA.GET_LAST_LOGIN TO PANDA_USER_ROLE;
 /
 
---CREATE OR REPLACE FUNCTION get_policies (p_owner IN VARCHAR2)
---RETURN SYS_REFCURSOR IS
---    c_policy SYS_REFCURSOR;
---BEGIN
---
---    OPEN c_policy FOR SELECT
---                                object_owner, policy_name, function
---                            FROM
---                                all_policies
---                                WHERE object_owner = UPPER(p_owner);
---
---    RETURN c_policy;
---END;
---/
-CREATE OR REPLACE FUNCTION vpd_account_access_policy (
-    schema_name IN VARCHAR2,
-    table_name IN VARCHAR2
-) RETURN VARCHAR2 AS
-    v_predicate VARCHAR2(4000);
-BEGIN
-    IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'PANDA' THEN
-        v_predicate := '1=2'; -- Kh��c󠨠ng n௠kh?p v?i ?i?u ki?n n�?
-    ELSE
-        v_predicate := '1=1'; -- T?t c? cᣠh஧ kh?p v?i ?i?u ki?n n�?
-    END IF;
-    RETURN v_predicate;
-END;
-/
 
 CREATE OR REPLACE FUNCTION vpd_account_access_policy (
     schema_name IN VARCHAR2,
@@ -218,29 +189,87 @@ CREATE OR REPLACE FUNCTION vpd_account_access_policy (
     v_predicate VARCHAR2(4000);
 BEGIN
     IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'PANDA' THEN
-        v_predicate := '1=2'; -- Kh?ng c? h?ng n?o kh?p v?i ?i?u ki?n n?y
+        v_predicate := '1=1';
     ELSE
-        v_predicate := '1=1'; -- T?t c? c?c h?ng kh?p v?i ?i?u ki?n n?y
+        v_predicate := '1=2';
     END IF;
     RETURN v_predicate;
 END;
-
+/
+BEGIN
+    DBMS_RLS.ADD_POLICY (
+        object_schema    => 'PANDA',
+        object_name      => 'Account',
+        policy_name      => 'account_access_policy',
+        function_schema  => 'PANDA',
+        policy_function  => 'vpd_account_access_policy',
+        statement_types  => 'SELECT,INSERT,UPDATE,DELETE',
+        update_check     => TRUE,
+        enable           => TRUE
+    );
+END;
 /
 
---CREATE OR REPLACE FUNCTION get_policies(p_owner IN VARCHAR2)
---RETURN SYS_REFCURSOR
---IS
---    policies_cursor SYS_REFCURSOR;
---BEGIN
---    OPEN policies_cursor FOR
---        SELECT object_owner, policy_name, function
---        FROM all_policies
---        WHERE object_owner = UPPER(p_owner);
---
---    RETURN policies_cursor;
---END;
---/
+CREATE OR REPLACE FUNCTION vpd_task_access_policy (
+    schema_name IN VARCHAR2,
+    table_name IN VARCHAR2
+) RETURN VARCHAR2 AS
+    v_predicate VARCHAR2(4000);
+BEGIN
+    IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'PANDA' THEN
+        v_predicate := '1=2';
+    ELSE
+        v_predicate := '1=1';
+    END IF;
+    RETURN v_predicate;
+END;
+/
 
+BEGIN
+    DBMS_RLS.ADD_POLICY (
+        object_schema    => 'PANDA',
+        object_name      => 'TASK',
+        policy_name      => 'task_access_policy',
+        function_schema  => 'PANDA',
+        policy_function  => 'vpd_task_access_policy',
+        statement_types  => 'SELECT,INSERT,UPDATE,DELETE',
+        update_check     => TRUE,
+        enable           => TRUE 
+    );
+END;
+/
+
+CREATE OR REPLACE FUNCTION check_project_creation_limit
+RETURN VARCHAR2
+IS
+    v_project_count NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO v_project_count
+    FROM project
+    WHERE created_at >= SYSTIMESTAMP - INTERVAL '3' MINUTE;
+
+    IF v_project_count >= 3 THEN
+        RETURN '1=2';
+    ELSE
+        RETURN NULL;
+    END IF;
+END;
+/
+
+BEGIN
+    DBMS_RLS.ADD_POLICY(
+        object_schema   => 'PANDA',
+        object_name     => 'PROJECT',
+        policy_name     => 'project_creation_limit_policy',
+        function_schema => 'PANDA',
+        policy_function => 'check_project_creation_limit',
+        statement_types => 'INSERT',
+        update_check    => TRUE,
+        enable          => TRUE
+    );
+END;
+/
 CREATE OR REPLACE FUNCTION get_quota_user(
     p_user IN VARCHAR
 ) RETURN SYS_REFCURSOR

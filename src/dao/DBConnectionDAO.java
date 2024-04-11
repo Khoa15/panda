@@ -32,15 +32,14 @@ public class DBConnectionDAO {
         }
     }
 
-    public static Boolean ExecuteScalarQuery(String query) {
+    public static Boolean ExecuteScalarQuery(String query) throws Exception {
         try {
             Connection con = DBConnection.getConn();
             Statement statement = con.createStatement();
             statement.executeUpdate(query);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw e;
         }
     }
 
@@ -151,7 +150,6 @@ public class DBConnectionDAO {
             ResultSet rs = (ResultSet) callStatement.getObject(1);
             return rs;
         } catch (Exception e) {
-            //e.printStackTrace();
             return null;
         }
     }

@@ -7,6 +7,7 @@ package dao;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.Timestamp;
 import java.sql.CallableStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,8 @@ import model.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Clob;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,6 +28,9 @@ import javax.swing.table.TableModel;
 import model.Account;
 import model.Profile;
 import oracle.jdbc.OracleTypes;
+import static oracle.jdbc.OracleTypes.TIMESTAMPTZ;
+import oracle.sql.TIMESTAMP;
+import oracle.sql.TIMESTAMPTZ;
 
 /**
  *
@@ -259,7 +265,7 @@ public class SystemDAO {
         }
     }
 
-    public static boolean createDatafile(String tablespace, String size, String maxsize, String quota, String location) throws Exception {
+    public static boolean createDatafile(String tablespace, String size, String location) throws Exception {
         try {
             Object[] values = {
                 tablespace,
@@ -297,7 +303,6 @@ public class SystemDAO {
             return setDefaultDataTableModel("GetSgaInfo");
 
         } catch (Exception e) {
-            //e.printStackTrace();
             return null;
         }
     }
@@ -407,18 +412,6 @@ public class SystemDAO {
         return result;
     }
 
-//    public static DefaultTableModel LoadDataFiles() {
-//        try {
-//
-//            ResultSet rs = DBConnectionDAO.ExecuteSelectQuery("SELECT file_id, file_name, tablespace_name from dba_data_files");
-//            return setDefaultDataTableModel(rs);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-
     public static DefaultTableModel LoadPolicy() {
         try {
             DefaultTableModel tmp = setDefaultDataTableModel("get_audit_policies");//get_policy_in_user");
@@ -433,7 +426,6 @@ public class SystemDAO {
 
     public static DefaultTableModel LoadAudit() {
         try {
-            //ResultSet rs = DBConnectionDAO.ExecuteSelectQuery("SELECT * FROM DBA_AUDIT_TRAIL");
             return setDefaultDataTableModel("get_audit_trail");
 
         } catch (Exception e) {
@@ -462,19 +454,7 @@ public class SystemDAO {
         try {
             Object[] values = {sid};
             ResultSet resultSet = (ResultSet) DBConnectionDAO.CallFunction("get_process_with_session", values, OracleTypes.CURSOR);
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-            DefaultTableModel tableModel = new DefaultTableModel(new Object[columnCount], 0);
-
-            while (resultSet.next()) {
-                Object[] rowData = new Object[columnCount];
-                for (int i = 1; i <= columnCount; i++) {
-                    rowData[i - 1] = resultSet.getObject(i);
-                }
-                tableModel.addRow(rowData);
-            }
-            resultSet.close();
-            return tableModel;
+            return setDefaultDataTableModel(resultSet);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -499,10 +479,21 @@ public class SystemDAO {
                 int i = 1;
                 for (; i <= columnCount; i++) {
                     Object value = resultSet.getObject(i);
-                    if(value instanceof Clob){
-                        Clob clob = (Clob) value;
-                        value = clob.getSubString(1, (int) clob.length());
-                    } 
+                    if(value != null){
+                        if(value instanceof Clob){
+                            Clob clob = (Clob) value;
+                            value = clob.getSubString(1, (int) clob.length());
+                        } else if(value instanceof TIMESTAMPTZ){
+                            try{
+                                TIMESTAMPTZ t = (TIMESTAMPTZ) value;
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss yyyy/MM/dd");
+                                String localDateTime = t.timestampValue(DBConnection.getConn()).toLocalDateTime().format(formatter);
+                                value = localDateTime;
+                            }catch(Exception r){
+                                r.printStackTrace();
+                            }
+                        }
+                    }
                     rowData[i - 1] = value;
                 }
                 tableModel.addRow(rowData);
@@ -858,7 +849,6 @@ public class SystemDAO {
     public static void AddPolicy(String Policy,
             String ObjectName,
             String AuditCondition,
-            String AuditColumn,
             boolean enable,
             boolean delete,
             boolean select,
@@ -872,12 +862,10 @@ public class SystemDAO {
             Object[] values = new Object[]{
                 (ObjectName.isEmpty()) ? null : ObjectName,
                 (Policy.isEmpty()) ? null : Policy,
-                (AuditCondition.isEmpty()) ? null : AuditCondition,
-                (AuditColumn.isEmpty()) ? null : AuditColumn,
-                (enable) ? "1" : "0",
-                (statement.isEmpty()) ? null : statement.toString()
+                (statement.isEmpty()) ? null : statement.toString(),
+                (AuditCondition.isEmpty()) ? null : AuditCondition
             };
-            DBConnectionDAO.CallProcedureNoParameterOut("add_policy", values);
+            DBConnectionDAO.CallProcedureNoParameterOut("ADD_FGA_POLICY", values);
         }catch(Exception e){
             throw e;
         }
@@ -888,14 +876,13 @@ public class SystemDAO {
             objectName,
             policyName
         };
-        DBConnectionDAO.CallProcedureNoParameterOut("drop_audit_policy", values);
+        DBConnectionDAO.CallProcedureNoParameterOut("DROP_FGA_POLICY", values);//drop_audit_policy", values);
     }
 
     public static void ModifyPolicy(
             String Policy, 
             String ObjectName, 
             String AuditCondition, 
-            String AuditColumn, 
             boolean enable, 
             boolean delete, 
             boolean select, 
@@ -908,11 +895,10 @@ public class SystemDAO {
                 (ObjectName.isEmpty()) ? null : ObjectName,
                 (Policy.isEmpty()) ? null : Policy,
                 (AuditCondition.isEmpty()) ? null : AuditCondition,
-                (AuditColumn.isEmpty()) ? null : AuditColumn,
                 (enable) ? "1" : "0",
                 (statement.isEmpty()) ? null : statement.toString()
             };
-        DBConnectionDAO.CallProcedureNoParameterOut("modify_audit_policy", values);
+        DBConnectionDAO.CallProcedureNoParameterOut("MODIFY_FGA_POLICY", values);
     }
     
     private static String getStatementType(

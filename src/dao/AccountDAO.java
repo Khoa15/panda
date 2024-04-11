@@ -31,8 +31,6 @@ public class AccountDAO {
             return false;
         } catch (Exception e) {
             throw e;
-        } finally {
-            //DBConnection.closeConnection();
         }
     }
 

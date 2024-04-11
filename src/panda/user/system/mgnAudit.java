@@ -5,6 +5,7 @@
 package panda.user.system;
 
 import dao.SystemDAO;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -21,6 +22,20 @@ public class mgnAudit extends javax.swing.JFrame {
     public mgnAudit() {
         initComponents();
         initPolicies();
+        
+        ArrayList<String> tables = SystemDAO.LoadTablesName();
+        for(String table : tables){
+            cbBoxActionOn.addItem(table);            
+        }
+        
+        try {                
+            cbBoxUsers.addItem("All");
+            ArrayList<Object[]> users = SystemDAO.loadListUsers();
+            for(Object[] user : users){
+                cbBoxUsers.addItem(user[1].toString());            
+            }
+        } catch (Exception ex) {}
+        
         cbBoxInsert.setSelected(true);
     }
     
@@ -42,10 +57,6 @@ public class mgnAudit extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtFieldPolicy = new javax.swing.JTextField();
-        txtFieldObjectName = new javax.swing.JTextField();
-        txtFieldAuditCondition = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        txtFieldAuditColumn = new javax.swing.JTextField();
         btnCancel = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
@@ -55,6 +66,8 @@ public class mgnAudit extends javax.swing.JFrame {
         cbBoxUpdate = new javax.swing.JCheckBox();
         cbBoxDelete = new javax.swing.JCheckBox();
         cbBoxAuditInsert = new javax.swing.JCheckBox();
+        cbBoxActionOn = new javax.swing.JComboBox<>();
+        cbBoxUsers = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbPolicies = new javax.swing.JTable();
 
@@ -65,8 +78,6 @@ public class mgnAudit extends javax.swing.JFrame {
         jLabel2.setText("Object name");
 
         jLabel3.setText("Audit condition");
-
-        jLabel4.setText("Audit column");
 
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -112,20 +123,17 @@ public class mgnAudit extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1)
                     .addComponent(jLabel3)
                     .addComponent(jLabel2)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtFieldPolicy, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
-                        .addComponent(txtFieldObjectName, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtFieldAuditCondition, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                    .addComponent(txtFieldPolicy, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                    .addComponent(cbBoxActionOn, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbBoxUsers, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(txtFieldAuditColumn, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cbBoxEnable)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,7 +143,7 @@ public class mgnAudit extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(cbBoxAuditInsert)
                                     .addComponent(cbBoxDelete))))
-                        .addGap(104, 104, 104))
+                        .addGap(133, 133, 133))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(cbBoxInsert)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -152,39 +160,35 @@ public class mgnAudit extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFieldAuditColumn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cbBoxSelect)
-                            .addComponent(cbBoxAuditInsert))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(76, 76, 76)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cbBoxUpdate)
                             .addComponent(cbBoxDelete))
                         .addGap(32, 32, 32)
                         .addComponent(cbBoxEnable)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnCancel)
                             .addComponent(btnSave)
                             .addComponent(btnDelete)
-                            .addComponent(cbBoxInsert))
-                        .addContainerGap())
+                            .addComponent(cbBoxInsert)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFieldPolicy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtFieldPolicy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbBoxSelect)
+                            .addComponent(cbBoxAuditInsert))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFieldObjectName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbBoxActionOn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFieldAuditCondition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(24, 52, Short.MAX_VALUE))))
+                        .addComponent(cbBoxUsers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         tbPolicies.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -234,9 +238,8 @@ public class mgnAudit extends javax.swing.JFrame {
         String enable = tbPolicies.getValueAt(row, 9).toString();
         
         txtFieldPolicy.setText(policyName);
-        txtFieldObjectName.setText(objectName);
-        txtFieldAuditCondition.setText(policyText);
-        txtFieldAuditColumn.setText((String) policyColumn);
+        cbBoxActionOn.setSelectedItem(objectName);
+        cbBoxUsers.setSelectedItem(policyText);
         cbBoxSelect.setSelected("YES".equals(select));
         cbBoxUpdate.setSelected("YES".equals(update));
         cbBoxDelete.setSelected("YES".equals(delete));
@@ -247,21 +250,19 @@ public class mgnAudit extends javax.swing.JFrame {
     private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
         // TODO add your handling code here:
         String Policy = txtFieldPolicy.getText();
-        String ObjectName = txtFieldObjectName.getText();
-        String AuditCondition = txtFieldAuditCondition.getText();
-        String AuditColumn = txtFieldAuditColumn.getText();
+        String ObjectName = (String)cbBoxActionOn.getSelectedItem();
+        String AuditCondition = (String)cbBoxUsers.getSelectedItem();
         boolean isEnable = cbBoxEnable.isSelected();
         boolean isDelete = cbBoxDelete.isSelected();
-        boolean isSelect = cbBoxDelete.isSelected();
+        boolean isSelect = cbBoxSelect.isSelected();
         boolean isInsert = cbBoxAuditInsert.isSelected();
-        boolean isUpdate = cbBoxDelete.isSelected();
+        boolean isUpdate = cbBoxUpdate.isSelected();
         boolean isInsertMode = cbBoxInsert.isSelected();
         try{
             if(isInsertMode){
                 SystemDAO.AddPolicy(Policy,
                         ObjectName,
                         AuditCondition,
-                        AuditColumn,
                         isEnable,
                         isDelete,
                         isSelect,
@@ -272,7 +273,6 @@ public class mgnAudit extends javax.swing.JFrame {
                 SystemDAO.ModifyPolicy(Policy,
                         ObjectName,
                         AuditCondition,
-                        AuditColumn,
                         isEnable,
                         isDelete,
                         isSelect,
@@ -298,7 +298,7 @@ public class mgnAudit extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             String policyName = txtFieldPolicy.getText();
-            String objectName = txtFieldObjectName.getText();
+            String objectName = (String)cbBoxActionOn.getSelectedItem();
             SystemDAO.deleteAudit(policyName, objectName);
             JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
             initPolicies();
@@ -354,22 +354,20 @@ public class mgnAudit extends javax.swing.JFrame {
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox<String> cbBoxActionOn;
     private javax.swing.JCheckBox cbBoxAuditInsert;
     private javax.swing.JCheckBox cbBoxDelete;
     private javax.swing.JCheckBox cbBoxEnable;
     private javax.swing.JCheckBox cbBoxInsert;
     private javax.swing.JCheckBox cbBoxSelect;
     private javax.swing.JCheckBox cbBoxUpdate;
+    private javax.swing.JComboBox<String> cbBoxUsers;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbPolicies;
-    private javax.swing.JTextField txtFieldAuditColumn;
-    private javax.swing.JTextField txtFieldAuditCondition;
-    private javax.swing.JTextField txtFieldObjectName;
     private javax.swing.JTextField txtFieldPolicy;
     // End of variables declaration//GEN-END:variables
 }

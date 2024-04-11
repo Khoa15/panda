@@ -44,7 +44,7 @@ public class CpnProfile extends javax.swing.JPanel {
      * Creates new form CpnProfile
      */
     String[] systems = {
-        "SGA", "PGA", "PROCESS", "INSTANCE", "DATABASE", "DATAFILE", "CONTROL FILES", "SPFILE",
+        "SGA", "PGA", "PROCESS", "INSTANCE", "DATABASE", "CONTROL FILES", "SPFILE",
         "SESSION", "TABLESPACES", "DATAFILES", "POLICIES", "AUDIT", "USERS", "PROFILES"
     };
     String system = "SGA";
@@ -52,9 +52,7 @@ public class CpnProfile extends javax.swing.JPanel {
     public CpnProfile() {
         initComponents();
         listSystems.setListData(systems);
-        if (!"panda_user".equals(DBConnection.getUsername())) {
-            LoadDataTableModel(SystemDAO.LoadSGA());
-        }
+        LoadDataTableModel(SystemDAO.LoadSGA());
     }
 
     public void reloadTable() {
