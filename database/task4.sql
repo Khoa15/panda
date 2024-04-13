@@ -1,8 +1,5 @@
 -- Task 4
 alter session set current_schema=panda;
--- Role user about system
---GRANT SELECT ON role_tab_privs TO PANDA;
---GRANT SELECT ON all_objects TO PANDA;
 GRANT SELECT ON dba_role_privs TO PANDA;
 GRANT SELECT ON dba_roles TO PANDA;
 CREATE OR REPLACE PROCEDURE delete_all_data_user (
@@ -74,11 +71,11 @@ IS
 BEGIN
     BEGIN
         EXECUTE IMMEDIATE 'DROP USER ' || p_user || ' CASCADE';
-        BEGIN delete_tablespace(p_user); END;
         BEGIN delete_all_data_user(p_user); END;
-    EXCEPTION
-        WHEN OTHERS THEN
-            RAISE;
+        EXCEPTION        
+            WHEN OTHERS THEN
+                RAISE;
+        BEGIN delete_tablespace(p_user); END;
     END;
 END;
 /
@@ -613,7 +610,6 @@ IS
                  || p_username
                  || ' IDENTIFIED BY '
                  || p_password;
-        EXECUTE IMMEDIATE 'GRANT CREATE SESSION TO ' || p_username;
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' PROFILE ' || p_profile_name;
         EXECUTE IMMEDIATE 'GRANT PANDA_USER_ROLE TO ' || p_username;
         EXECUTE IMMEDIATE 'CREATE TABLESPACE ' || p_username || ' datafile ''D:\' || p_username || '.dbf'' size 100m AUTOEXTEND OFF';
@@ -662,19 +658,19 @@ IS
     v_need_password_update BOOLEAN := FALSE;
     v_need_lock_account BOOLEAN := FALSE;
 BEGIN
-    IF p_password IS NOT NULL AND LENGTH(TRIM(p_password)) > 0 THEN
+    IF p_password IS NOT NULL OR LENGTH(TRIM(p_password)) > 0 THEN
         v_need_password_update := TRUE;
     END IF;
 
-    IF p_profile_name IS NOT NULL AND LENGTH(TRIM(p_profile_name)) > 0 THEN
+    IF p_profile_name IS NOT NULL OR LENGTH(TRIM(p_profile_name)) > 0 THEN
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' PROFILE ' || p_profile_name;
     END IF;
 
-    IF p_tablespace_name IS NOT NULL AND LENGTH(TRIM(p_tablespace_name)) > 0 THEN
+    IF p_tablespace_name IS NOT NULL OR LENGTH(TRIM(p_tablespace_name)) > 0 THEN
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' DEFAULT TABLESPACE ' || p_tablespace_name;
     END IF;
     
-    IF p_quota IS NOT NULL AND LENGTH(TRIM(p_quota)) > 0 THEN
+    IF p_quota IS NOT NULL OR LENGTH(TRIM(p_quota)) > 0 THEN
         EXECUTE IMMEDIATE 'ALTER USER ' || p_username || ' QUOTA ' || p_quota || ' ON ' || p_tablespace_name;
     END IF;
 
@@ -728,7 +724,7 @@ AS
     result_user SYS_REFCURSOR;
 BEGIN
     OPEN result_user FOR
-    SELECT du.profile, du.DEFAULT_TABLESPACE, acc.*
+    SELECT du.profile, du.DEFAULT_TABLESPACE, acc.*, du.ACCOUNT_STATUS
     FROM dba_users du
     LEFT JOIN PANDA.ACCOUNT acc ON acc.username = du.username
     WHERE du.username = p_user;

@@ -91,6 +91,7 @@ public class SystemDAO {
                 user.setAvatar(rs.getBytes(3));
                 user.setUsername(rs.getString(5));
                 user.setFullname(rs.getString(6));
+                user.setLock(rs.getString(7));
             }
             rs.close();
         } catch (Exception e) {
@@ -812,10 +813,11 @@ public class SystemDAO {
             Object[] values = new Object[]{
                 username
             };
-            ResultSet rs = (ResultSet)DBConnectionDAO.CallProcedure("get_quota_user", values);
+            ResultSet rs = (ResultSet)DBConnectionDAO.CallFunction("get_quota_user", values);
             if(rs == null) return quota;
             while(rs.next()){
-                quota = rs.getString(8);
+                int iquota = rs.getInt(8) / (1024*1024);
+                quota = String.valueOf(iquota);
             }
         }catch(Exception e){
             e.printStackTrace();

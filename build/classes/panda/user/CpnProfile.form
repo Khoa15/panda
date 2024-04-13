@@ -179,9 +179,9 @@
                           <Component id="btnTask" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="btnPolicy" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnProfile" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="btnActions" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnAudit" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
@@ -210,8 +210,8 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btnPolicy" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnProfile" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnActions" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnAudit" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnRole" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnUser" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -271,21 +271,21 @@
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnVocabMouseClicked"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnPolicy">
+        <Component class="javax.swing.JButton" name="btnProfile">
           <Properties>
             <Property name="text" type="java.lang.String" value="Policy"/>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnPolicyMouseClicked"/>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPolicyActionPerformed"/>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnProfileMouseClicked"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProfileActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnProfile">
+        <Component class="javax.swing.JButton" name="btnActions">
           <Properties>
             <Property name="text" type="java.lang.String" value="Actions"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProfileActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnActionsActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnAudit">
@@ -307,10 +307,10 @@
         <Component class="javax.swing.JButton" name="btnUser">
           <Properties>
             <Property name="text" type="java.lang.String" value="User"/>
-            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnUserMouseClicked"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUserActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnTestRole">

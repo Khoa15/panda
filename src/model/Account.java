@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class Account {
+    public boolean lock;
+    public void setLock(String lock){
+        this.lock = !lock.equals("OPEN");
+    }
     public String profile;
     public String tablespace;
     private byte[] avatar;

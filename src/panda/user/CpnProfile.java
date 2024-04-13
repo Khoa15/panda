@@ -133,8 +133,8 @@ public class CpnProfile extends javax.swing.JPanel {
         btnProject = new javax.swing.JButton();
         btnTask = new javax.swing.JButton();
         btnVocab = new javax.swing.JButton();
-        btnPolicy = new javax.swing.JButton();
         btnProfile = new javax.swing.JButton();
+        btnActions = new javax.swing.JButton();
         btnAudit = new javax.swing.JButton();
         btnRole = new javax.swing.JButton();
         btnUser = new javax.swing.JButton();
@@ -257,22 +257,22 @@ public class CpnProfile extends javax.swing.JPanel {
             }
         });
 
-        btnPolicy.setText("Policy");
-        btnPolicy.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnProfile.setText("Policy");
+        btnProfile.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnPolicyMouseClicked(evt);
+                btnProfileMouseClicked(evt);
             }
         });
-        btnPolicy.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPolicyActionPerformed(evt);
-            }
-        });
-
-        btnProfile.setText("Actions");
         btnProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnProfileActionPerformed(evt);
+            }
+        });
+
+        btnActions.setText("Actions");
+        btnActions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActionsActionPerformed(evt);
             }
         });
 
@@ -291,10 +291,14 @@ public class CpnProfile extends javax.swing.JPanel {
         });
 
         btnUser.setText("User");
-        btnUser.setEnabled(false);
         btnUser.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnUserMouseClicked(evt);
+            }
+        });
+        btnUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUserActionPerformed(evt);
             }
         });
 
@@ -325,9 +329,9 @@ public class CpnProfile extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 15, Short.MAX_VALUE)
                         .addComponent(btnTask))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnPolicy)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnProfile)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnActions)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAudit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -351,8 +355,8 @@ public class CpnProfile extends javax.swing.JPanel {
                     .addComponent(btnVocab))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnPolicy)
                     .addComponent(btnProfile)
+                    .addComponent(btnActions)
                     .addComponent(btnAudit)
                     .addComponent(btnRole)
                     .addComponent(btnUser)
@@ -596,8 +600,8 @@ public class CpnProfile extends javax.swing.JPanel {
     private void btnRemoveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRemoveMouseClicked
         // TODO add your handling code here:
         String sys = system;
-        String object = jTableSystem.getValueAt(jTableSystem.getSelectedRow(), 0).toString();
         try{
+            String object = jTableSystem.getValueAt(jTableSystem.getSelectedRow(), 0).toString();
             switch(sys){
                 case "TABLESPACES":
                     SystemDAO.deleteTablespace(object);
@@ -625,12 +629,6 @@ public class CpnProfile extends javax.swing.JPanel {
             }
             DBConnection.closeConnection();
         }
-//        try {
-//            Account.deleteSessionDevice();
-//        } catch (IOException ex) {
-//            Logger.getLogger(CpnProfile.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        
     }//GEN-LAST:event_btnSignoutMouseClicked
 
     private void btnRoleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRoleMouseClicked
@@ -675,21 +673,26 @@ public class CpnProfile extends javax.swing.JPanel {
         FrameTestRole.main(systems);
     }//GEN-LAST:event_btnTestRoleMouseClicked
 
-    private void btnPolicyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPolicyMouseClicked
+    private void btnProfileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProfileMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnPolicyMouseClicked
-
-    private void btnPolicyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPolicyActionPerformed
-        // TODO add your handling code here:
-        FAudit a = new FAudit();
-        a.setVisible(true);
-        a.setLocationRelativeTo(null);
-    }//GEN-LAST:event_btnPolicyActionPerformed
+    }//GEN-LAST:event_btnProfileMouseClicked
 
     private void btnProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfileActionPerformed
         // TODO add your handling code here:
-        frmActions.main(systems);
+        mgnProfile.main(systems);
     }//GEN-LAST:event_btnProfileActionPerformed
+
+    private void btnActionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActionsActionPerformed
+        // TODO add your handling code here:
+        frmActions.main(systems);
+    }//GEN-LAST:event_btnActionsActionPerformed
+
+    private void btnUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUserActionPerformed
+        // TODO add your handling code here:
+        User user = new User();
+        user.setVisible(true);
+        user.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnUserActionPerformed
 
 //    public void LoadSGA() {
 //        DefaultTableModel sga = SystemDAO.LoadSGA();
@@ -709,13 +712,13 @@ public class CpnProfile extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActions;
     private javax.swing.JButton btnAddDatafile;
     private javax.swing.JButton btnAudit;
     private javax.swing.JButton btnCollection;
     private javax.swing.JButton btnCreateTableSpace;
     private javax.swing.JButton btnFlashcard;
     private javax.swing.JButton btnKillSession;
-    private javax.swing.JButton btnPolicy;
     private javax.swing.JButton btnProfile;
     private javax.swing.JButton btnProject;
     private javax.swing.JButton btnRemove;

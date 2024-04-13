@@ -256,6 +256,9 @@ CREATE OR REPLACE PROCEDURE delete_tablespace(
 IS
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLESPACE ' || p_tablespace || ' including contents and datafiles';
+    Exception
+        WHEN OTHERS THEN
+            RAISE;
 END;
 /
 

@@ -44,8 +44,8 @@ public class AccountDAO {
                 account.getPassword()
             };
             DBConnection.openConnection();
-            int res = DBConnectionDAO.Update("Add_Account", values);
-            return res > 0;
+            DBConnectionDAO.CallProcedureNoParameterOut("Add_Account", values);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

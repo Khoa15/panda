@@ -27,6 +27,12 @@ public class User extends javax.swing.JFrame {
     String profile;
     String currentUsername;
 
+    public User() {
+        initComponents();
+        loadListProfiles();
+        loadListTablespaces();
+        loadListUser();
+    }
     public User(String username) {
         initComponents();
         loadListProfiles();
@@ -59,6 +65,7 @@ public class User extends javax.swing.JFrame {
 
     private void loadListUser() {
         try {
+            cbBoxListUsers.removeAll();
             Users = SystemDAO.loadListUsers();
             for (Object[] user : Users) {
                 cbBoxListUsers.addItem((String) user[1]);
@@ -114,7 +121,7 @@ public class User extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         txtFieldQuota = new javax.swing.JTextField();
-        cbBoxTypeSizeQuota = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -279,7 +286,7 @@ public class User extends javax.swing.JFrame {
             }
         });
 
-        cbBoxTypeSizeQuota.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MB", "KB" }));
+        jLabel6.setText("M");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -289,9 +296,9 @@ public class User extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtFieldQuota, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(cbBoxTypeSizeQuota, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtFieldQuota)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -301,7 +308,7 @@ public class User extends javax.swing.JFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtFieldQuota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbBoxTypeSizeQuota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel6))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -319,7 +326,7 @@ public class User extends javax.swing.JFrame {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 12, Short.MAX_VALUE)
                         .addComponent(btnDelete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSave)
@@ -368,6 +375,7 @@ public class User extends javax.swing.JFrame {
                 cbBoxListProfiles.setSelectedItem(user.profile);
                 cbBoxTablespaces.setSelectedItem(user.tablespace);
                 txtFieldQuota.setText(SystemDAO.getQuotaOfUser(username));
+                cbLock.setSelected(user.lock);
             } catch (Exception ex) {
                 JOptionPane.showConfirmDialog(this, ex.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
             }
@@ -386,7 +394,7 @@ public class User extends javax.swing.JFrame {
         String profile = cbBoxListProfiles.getSelectedItem().toString();
         String quota = null;
         if(!txtFieldQuota.getText().isEmpty()){
-            quota = txtFieldQuota.getText() + cbBoxTypeSizeQuota.getSelectedItem().toString().substring(0, 1);
+            quota = txtFieldQuota.getText() + "M";
         }
         String tablespace = cbBoxTablespaces.getSelectedItem().toString();
         boolean lock = cbLock.isSelected();
@@ -397,6 +405,7 @@ public class User extends javax.swing.JFrame {
             } else {
                 SystemDAO.saveUser(username, password, profile, tablespace, quota, lock);
             }
+            loadListUser();
             JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
         } catch (Exception e) {
             JOptionPane.showConfirmDialog(this, e.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
@@ -423,7 +432,6 @@ public class User extends javax.swing.JFrame {
             try {
                 SystemDAO.removeUser(txtFieldUsername.getText());
                 JOptionPane.showConfirmDialog(this, "Successfully!", "Thông báo!", JOptionPane.DEFAULT_OPTION);
-                cbBoxListUsers.removeAllItems();
                 loadListUser();
             } catch (Exception ex) {
                 JOptionPane.showConfirmDialog(this, ex.getMessage(), "Thông báo!", JOptionPane.DEFAULT_OPTION);
@@ -490,7 +498,6 @@ public class User extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbBoxListProfiles;
     private javax.swing.JComboBox<String> cbBoxListUsers;
     private javax.swing.JComboBox<String> cbBoxTablespaces;
-    private javax.swing.JComboBox<String> cbBoxTypeSizeQuota;
     private javax.swing.JCheckBox cbInsert;
     private javax.swing.JCheckBox cbLock;
     private javax.swing.JLabel jLabel1;
@@ -498,6 +505,7 @@ public class User extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

@@ -72,7 +72,7 @@ public class DBConnection extends Thread {
     private static Blob ring_tone = null;
     private static LocalDateTime last_login = null;
     private static String database = "orcl";
-    private static String url = "jdbc:oracle:thin:@localhost:1521/" + database + "?current_schema=panda";
+    private static String url = "jdbc:oracle:thin:@localhost:1521/" + database + "?current_schema=PANDA";
     private static Connection con;
 
     public DBConnection() {
@@ -113,8 +113,7 @@ public class DBConnection extends Thread {
             if(username.isEmpty()){
                 con = DriverManager.getConnection(url, sysuser, syspass);
             }else{
-            con = DriverManager.getConnection(url, username, password);
-                
+                con = DriverManager.getConnection(url, username, password);
             }
             if (con != null) {
                 System.out.println("Connected");

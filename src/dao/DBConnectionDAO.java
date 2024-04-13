@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLType;
 import java.sql.Types;
+import java.sql.Blob;
 import java.sql.Statement;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -153,6 +154,7 @@ public class DBConnectionDAO {
             return null;
         }
     }
+
     public static ResultSet CallFunction(String function, Object[] values) {
         CallableStatement callStatement = null;
         try {
@@ -165,6 +167,7 @@ public class DBConnectionDAO {
         }
         return null;
     }
+
     public static ResultSet CallFunction(String function, Object value) {
         CallableStatement callStatement = null;
         try {
