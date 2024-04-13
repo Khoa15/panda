@@ -182,94 +182,98 @@ GRANT EXECUTE ON PANDA.GET_LAST_LOGIN TO PANDA_USER_ROLE;
 /
 
 
---CREATE OR REPLACE FUNCTION vpd_account_access_policy (
---    schema_name IN VARCHAR2,
---    table_name IN VARCHAR2
---) RETURN VARCHAR2 AS
---    v_predicate VARCHAR2(4000);
---BEGIN
---    IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'PANDA' OR SYS_CONTEXT('USERENV', 'SESSION_USER') = 'PANDA_REGISTER' THEN
---        v_predicate := '1=1';
---    ELSE
---        v_predicate := '1=2';
---    END IF;
---    RETURN v_predicate;
---END;
---/
---BEGIN
---    DBMS_RLS.ADD_POLICY (
---        object_schema    => 'PANDA',
---        object_name      => 'Account',
---        policy_name      => 'account_access_policy',
---        function_schema  => 'PANDA',
---        policy_function  => 'vpd_account_access_policy',
---        statement_types  => 'SELECT,INSERT,UPDATE,DELETE',
---        update_check     => TRUE,
---        enable           => TRUE
---    );
---END;
---/
---
---CREATE OR REPLACE FUNCTION vpd_task_access_policy (
---    schema_name IN VARCHAR2,
---    table_name IN VARCHAR2
---) RETURN VARCHAR2 AS
---    v_predicate VARCHAR2(4000);
---BEGIN
---    IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'PANDA' THEN
---        v_predicate := '1=2';
---    ELSE
---        v_predicate := '1=1';
---    END IF;
---    RETURN v_predicate;
---END;
---/
---
---BEGIN
---    DBMS_RLS.ADD_POLICY (
---        object_schema    => 'PANDA',
---        object_name      => 'TASK',
---        policy_name      => 'task_access_policy',
---        function_schema  => 'PANDA',
---        policy_function  => 'vpd_task_access_policy',
---        statement_types  => 'SELECT,INSERT,UPDATE,DELETE',
---        update_check     => TRUE,
---        enable           => TRUE 
---    );
---END;
---/
---
---CREATE OR REPLACE FUNCTION check_project_creation_limit
---RETURN VARCHAR2
---IS
---    v_project_count NUMBER;
---BEGIN
---    SELECT COUNT(*)
---    INTO v_project_count
---    FROM project
---    WHERE created_at >= SYSTIMESTAMP - INTERVAL '3' MINUTE;
---
---    IF v_project_count >= 3 THEN
---        RETURN '1=2';
---    ELSE
---        RETURN '1=1';
---    END IF;
---END;
---/
---
---BEGIN
---    DBMS_RLS.ADD_POLICY(
---        object_schema   => 'PANDA',
---        object_name     => 'PROJECT',
---        policy_name     => 'project_creation_limit_policy',
---        function_schema => 'PANDA',
---        policy_function => 'check_project_creation_limit',
---        statement_types => 'INSERT',
---        update_check    => TRUE,
---        enable          => TRUE
---    );
---END;
---/
+CREATE OR REPLACE FUNCTION vpd_account_access_policy (
+    schema_name IN VARCHAR2,
+    table_name IN VARCHAR2
+) RETURN VARCHAR2 AS
+    v_predicate VARCHAR2(4000);
+BEGIN
+    IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'PANDA' OR SYS_CONTEXT('USERENV', 'SESSION_USER') = 'PANDA_REGISTER' THEN
+        v_predicate := '1=1';
+    ELSE
+        v_predicate := '1=2';
+    END IF;
+    RETURN v_predicate;
+END;
+/
+BEGIN
+    DBMS_RLS.ADD_POLICY (
+        object_schema    => 'PANDA',
+        object_name      => 'Account',
+        policy_name      => 'account_access_policy',
+        function_schema  => 'PANDA',
+        policy_function  => 'vpd_account_access_policy',
+        statement_types  => 'SELECT,INSERT,UPDATE,DELETE',
+        update_check     => TRUE,
+        enable           => TRUE
+    );
+END;
+/
+
+CREATE OR REPLACE FUNCTION vpd_task_access_policy (
+    schema_name IN VARCHAR2,
+    table_name IN VARCHAR2
+) RETURN VARCHAR2 AS
+    v_predicate VARCHAR2(4000);
+BEGIN
+    IF SYS_CONTEXT('USERENV', 'SESSION_USER') = 'PANDA' THEN
+        v_predicate := '1=2';
+    ELSE
+        v_predicate := '1=1';
+    END IF;
+    RETURN v_predicate;
+END;
+/
+
+BEGIN
+    DBMS_RLS.ADD_POLICY (
+        object_schema    => 'PANDA',
+        object_name      => 'TASK',
+        policy_name      => 'task_access_policy',
+        function_schema  => 'PANDA',
+        policy_function  => 'vpd_task_access_policy',
+        statement_types  => 'SELECT,INSERT,UPDATE,DELETE',
+        update_check     => TRUE,
+        enable           => TRUE 
+    );
+END;
+/
+
+CREATE OR REPLACE FUNCTION check_project_creation_limit(
+    schema_name IN VARCHAR2,
+    table_name IN VARCHAR2
+)
+RETURN VARCHAR2 AS
+    v_predicate VARCHAR2(4000);
+    v_project_count NUMBER;
+BEGIN
+        SELECT COUNT(*)
+        INTO v_project_count
+        FROM PANDA.project
+        WHERE created_at >= SYSTIMESTAMP - INTERVAL '3' MINUTE;
+    
+        IF v_project_count >= 3 THEN
+            v_predicate := '1=2';
+        ELSE
+            v_predicate := '1=1';
+        END IF;
+    RETURN v_predicate;
+END;
+/
+
+BEGIN
+    DBMS_RLS.ADD_POLICY(
+        object_schema   => 'PANDA',
+        object_name     => 'PROJECT',
+        policy_name     => 'project_creation_limit_policy',
+        function_schema => 'PANDA',
+        policy_function => 'check_project_creation_limit',
+        statement_types => 'INSERT',
+        update_check    => TRUE,
+        enable          => TRUE
+    );
+END;
+/
 CREATE OR REPLACE FUNCTION get_quota_user(
     p_user IN VARCHAR
 ) RETURN SYS_REFCURSOR

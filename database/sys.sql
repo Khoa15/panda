@@ -218,9 +218,6 @@ BEGIN
     --v_sql := 'CREATE TABLESPACE ' || p_username || ' datafile ''D:\' || p_username || '.dbf'' size 100m AUTOEXTEND OFF';-- QUOTA 10MB ON ' || p_username ;
     --EXECUTE IMMEDIATE v_sql;
     
-    v_sql := 'ALTER USER ' || p_username || ' QUOTA 10M ON ' || p_username || '';
-    EXECUTE IMMEDIATE v_sql;
-    
     INSERT INTO ACCOUNT (avatar, ring_tone, username, fullname)
     VALUES (p_avatar, p_ring_tone, up_username, p_fullname);
     BEGIN
@@ -871,13 +868,7 @@ BEGIN
 END;
 /
 
--- G?i hàm v?i tên ??y ?? ?? sinh ra username
-SELECT generate_username('Nguy?n Tr?ng ??ng Khoa') AS generated_username FROM dual;
-
 GRANT EXECUTE ON generate_username TO PANDA_REGISTER;
-
-
-
 
 
 

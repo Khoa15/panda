@@ -3,11 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/dao/SystemDAO.java</file>
-            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/dao/DBConnectionDAO.java</file>
-            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/panda/user/system/User.java</file>
-            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/model/Account.java</file>
-            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/panda/user/CpnProfile.java</file>
+            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/panda/user/entities/ManageProject.java</file>
+            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/panda/SignUp.java</file>
+            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/panda/user/system/CreateTablespace.java</file>
+            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/panda/user/system/mgnRole.java</file>
+            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/dao/AccountDAO.java</file>
+            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/panda/user/CpnProject.java</file>
+            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/panda/project/AddProject.java</file>
+            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/panda/user/system/CpnDatafile.java</file>
+            <file>file:/C:/Users/Khoa/OneDrive%20-%20Ho%20Chi%20Minh%20city%20University%20of%20Food%20Industry/Project/panda/src/panda/user/system/mgnProfile.java</file>
         </group>
     </open-files>
 </project-private>

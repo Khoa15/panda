@@ -45,12 +45,11 @@ public class AccountDAO {
             };
             DBConnection.openConnection();
             DBConnectionDAO.CallProcedureNoParameterOut("Add_Account", values);
+            DBConnection.closeConnection();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }finally{
-            DBConnection.closeConnection();
         }
     }
     
