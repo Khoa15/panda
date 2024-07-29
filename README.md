@@ -1,5 +1,5 @@
 # Panda
-a productive app
+An administrator controller including user management connect to oracle, privileges management, role, group role, session management
 # Members
 - Nguyen Trong Dang Khoa ( main)
 - Tran Minh Hoa
